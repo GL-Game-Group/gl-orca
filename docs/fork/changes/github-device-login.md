@@ -139,6 +139,11 @@ pnpm test src/main/runtime/github-auth src/main/runtime/runtime-rpc-github-ident
 (cd mobile && pnpm typecheck && pnpm test src/mobile-web-shell/mobile-web-shell-flag-census.test.ts)
 ```
 
+## 界面验证记录
+
+- 2026-09-30：用后台 Electron（`ORCA_BACKGROUND_LAUNCH=1`）加本机假登录接口，CDP 截图检查了访问链接页、GitHub 登录页、等待授权、登录失败 4 个状态，覆盖英文、中文、法文和深色主题。发现等待授权时页脚三个按钮溢出对话框，已把“复制验证码并打开 GitHub”移到验证码下方、占满整行。
+- 官方问题（未修）：`en.json` 里 `pairingHelpSuffix` 还是旧文案，访问链接页的说明只显示后半句。可以向官方提 PR。
+
 ## 已知限制和待办
 
 - 只适用于 `orca serve`。Orca 桌面版在配对之前只监听本机，外部设备访问不到登录接口。
@@ -148,4 +153,3 @@ pnpm test src/main/runtime/github-auth src/main/runtime/runtime-rpc-github-ident
   - 登录失败的错误文案翻译成多种语言（目前由共用客户端返回英文）
   - 操作日志
   - 结构化会话（Claude Agent SDK、Codex app-server）的按人身份注入
-  - 用 CDP 截图确认桌面端对话框的实际渲染效果

@@ -77,6 +77,23 @@ export function AddRemoteHostGithubLoginPanel({
           <div className="select-all rounded-md border border-border/60 p-3 text-center font-mono text-2xl font-semibold tracking-widest">
             {state.userCode}
           </div>
+          {/* Why: in the footer this third button overflows the dialog, worse in longer locales. */}
+          <Button
+            type="button"
+            className="w-full"
+            onClick={() => openGithub(state.userCode, state.verificationUri)}
+          >
+            <Github />
+            {copied
+              ? translate(
+                  'auto.components.sidebar.AddRemoteHostDialog.githubCopiedOpen',
+                  'Code copied — open GitHub'
+                )
+              : translate(
+                  'auto.components.sidebar.AddRemoteHostDialog.githubCopyOpen',
+                  'Copy code and open GitHub'
+                )}
+          </Button>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Loader2 className="size-3.5 animate-spin" />
             {translate(
@@ -162,20 +179,7 @@ export function AddRemoteHostGithubLoginPanel({
           >
             {translate('auto.components.sidebar.AddRemoteHostDialog.cancel', 'Cancel')}
           </Button>
-          {state.kind === 'awaiting' ? (
-            <Button type="button" onClick={() => openGithub(state.userCode, state.verificationUri)}>
-              <Github />
-              {copied
-                ? translate(
-                    'auto.components.sidebar.AddRemoteHostDialog.githubCopiedOpen',
-                    'Code copied — open GitHub'
-                  )
-                : translate(
-                    'auto.components.sidebar.AddRemoteHostDialog.githubCopyOpen',
-                    'Copy code and open GitHub'
-                  )}
-            </Button>
-          ) : (
+          {state.kind === 'awaiting' ? null : (
             <Button type="button" onClick={submit} disabled={!canSubmit}>
               {state.kind === 'starting' ? <Loader2 className="animate-spin" /> : <Github />}
               {translate(
