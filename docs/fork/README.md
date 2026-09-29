@@ -1,4 +1,4 @@
-# eva2show/orca fork 维护说明
+# GL-Game-Group/gl-orca fork 维护说明
 
 本仓库 fork 自 [stablyai/orca](https://github.com/stablyai/orca)。这份文档记录 fork 的分支约定、同步官方更新的步骤，以及每项自研改动的上下文，方便以后合并官方更新时快速判断冲突、补测试。
 
@@ -8,7 +8,7 @@
 
 | 远端 | 地址 | 用途 |
 | --- | --- | --- |
-| `origin` | `git@github.com:eva2show/orca.git` | 我们的 fork，日常推送 |
+| `origin` | `git@github.com:GL-Game-Group/gl-orca.git` | 我们的 fork，日常推送 |
 | `upstream` | `git@github.com:stablyai/orca.git` | 官方仓库，只拉取 `main`，推送已禁用 |
 
 | 分支 | 规则 |
