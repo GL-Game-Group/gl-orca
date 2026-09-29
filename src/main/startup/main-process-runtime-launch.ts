@@ -15,6 +15,7 @@ import { OffscreenBrowserBackend } from '../browser/offscreen-browser-backend'
 import { browserManager } from '../browser/browser-manager'
 import { getDesktopRelayStatus, publishDesktopRelayStatus } from './main-process-relay-status'
 import { DesktopRelayService } from '../runtime/relay/desktop-relay-service'
+import { installGithubDeviceLogin } from '../runtime/github-auth/github-device-login-installation'
 import { getServeOptions, getBundledWebClientRoot, printServeReady } from './main-process-serve'
 import {
   bindTerminalRuntimeStartupServices,
@@ -94,6 +95,10 @@ function installRuntimeRpc(
     webClientRoot: getBundledWebClientRoot()
   })
   state.runtimeRpc = runtimeRpc
+  installGithubDeviceLogin(runtimeRpc, {
+    pairingAddress: serveOptions?.pairingAddress ?? null,
+    userDataPath: getCanonicalUserDataPath()
+  })
   registerMobileHandlers(runtimeRpc, {
     getRelayStatus: getDesktopRelayStatus,
     consumePendingUnpairedDeviceAuthFailure: (webContentsId) => {

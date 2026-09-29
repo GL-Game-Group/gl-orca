@@ -26,6 +26,7 @@ import {
   mobileOnboardingDestination
 } from '../src/onboarding/mobile-onboarding-plan'
 import { pairScanStyles as styles } from '../src/pair-scan-styles'
+import { GithubIcon } from '../src/components/GithubIcon'
 
 // Why: see pair-confirm.tsx — cap initial-pair "Connecting…" so a broken
 // route surfaces as a real error with the log visible instead of a
@@ -246,6 +247,13 @@ export default function PairScanScreen() {
             <ClipboardIcon size={16} color={colors.textSecondary} />
             <Text style={styles.pasteButtonText}>Paste code instead</Text>
           </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.pasteButton, pressed && styles.pasteButtonPressed]}
+            onPress={() => router.push('/github-login')}
+          >
+            <GithubIcon size={16} color={colors.textSecondary} />
+            <Text style={styles.pasteButtonText}>Sign in with GitHub instead</Text>
+          </Pressable>
         </View>
         <TextInputModal
           visible={pasteVisible}
@@ -303,6 +311,13 @@ export default function PairScanScreen() {
           >
             <ClipboardIcon size={16} color={colors.textSecondary} />
             <Text style={styles.pasteButtonText}>Or paste pairing code</Text>
+          </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.pasteButton, pressed && styles.pasteButtonPressed]}
+            onPress={() => router.push('/github-login')}
+          >
+            <GithubIcon size={16} color={colors.textSecondary} />
+            <Text style={styles.pasteButtonText}>Or sign in with GitHub</Text>
           </Pressable>
         </>
       )}

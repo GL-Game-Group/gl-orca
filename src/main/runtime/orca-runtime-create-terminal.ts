@@ -5,12 +5,18 @@ import { createDesktopTerminal } from './orca-runtime-create-terminal-desktop'
 import { buildRuntimeAgentTeamsLaunchPlan } from './orca-runtime-agent-teams-launch-plan'
 import { createPtySpawnCommitReporter } from './orca-runtime-report-pty-spawn-commit'
 import { recordPtySurface, spawnSurfaceClaimSequence } from './pty-recorded-surface-topology'
+import { githubCallerEnvOverlay } from './github-auth/github-caller-git-env'
 
 export class OrcaRuntimeWithCreateTerminal extends OrcaRuntimeWithTerminalCreateDeduplication {
   async createTerminal(
     worktreeSelector?: string,
     opts: dependencies.TerminalCreateOptions = {}
   ): Promise<dependencies.RuntimeTerminalCreate> {
+    // Why: a terminal opened for a GitHub-signed-in device commits and pushes as that user.
+    const githubCallerEnv = githubCallerEnvOverlay({ ...process.env, ...opts.env })
+    if (githubCallerEnv) {
+      opts = { ...opts, env: { ...opts.env, ...githubCallerEnv } }
+    }
     if (opts.startupAgent && worktreeSelector === undefined) {
       throw new Error(`startupAgent ${opts.startupAgent} requires a workspace selector.`)
     }

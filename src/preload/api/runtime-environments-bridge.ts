@@ -4,6 +4,10 @@ import {
   type RuntimeHostStatusSnapshot
 } from '../../shared/runtime-host-status'
 import type { VerifyAndAddRuntimeEnvironmentResult } from '../../shared/remote-pairing-verification'
+import type {
+  GithubRemoteHostLoginCompleteResult,
+  GithubRemoteHostLoginStartResult
+} from '../../shared/github-remote-host-login-types'
 import type { RuntimeStatus } from '../../shared/runtime-types'
 import type { RuntimeRpcResponse } from '../../shared/runtime-rpc-envelope'
 import type { PublicKnownRuntimeEnvironment } from '../../shared/runtime-environments'
@@ -39,6 +43,15 @@ export const runtimeEnvironmentsApi = {
     allowLoopback?: boolean
   }): Promise<VerifyAndAddRuntimeEnvironmentResult> =>
     ipcRenderer.invoke('runtimeEnvironments:verifyAndAddFromPairingCode', args),
+  githubLoginStart: (args: { server: string }): Promise<GithubRemoteHostLoginStartResult> =>
+    ipcRenderer.invoke('runtimeEnvironments:githubLoginStart', args),
+  githubLoginComplete: (args: {
+    loginKey: string
+    name: string
+  }): Promise<GithubRemoteHostLoginCompleteResult> =>
+    ipcRenderer.invoke('runtimeEnvironments:githubLoginComplete', args),
+  githubLoginCancel: (args: { loginKey: string }): Promise<void> =>
+    ipcRenderer.invoke('runtimeEnvironments:githubLoginCancel', args),
   resolve: (args: { selector: string }): Promise<PublicKnownRuntimeEnvironment> =>
     ipcRenderer.invoke('runtimeEnvironments:resolve', args),
   remove: (args: { selector: string }): Promise<{ removed: PublicKnownRuntimeEnvironment }> =>

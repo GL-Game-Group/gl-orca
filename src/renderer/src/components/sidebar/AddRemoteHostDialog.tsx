@@ -13,6 +13,8 @@ import {
 import { AddRemoteHostSshConfigPicker } from './AddRemoteHostSshConfigPicker'
 import { AddRemoteHostSshFormPanel } from './AddRemoteHostSshFormPanel'
 import { AddRemoteHostServerFormPanel } from './AddRemoteHostServerFormPanel'
+import { AddRemoteHostGithubLoginPanel } from './AddRemoteHostGithubLoginPanel'
+import { isGithubRemoteHostLoginAvailable } from './use-github-remote-host-login'
 import {
   addAllSshConfigHostsToOrca,
   loadSshConfigHostsForPicker,
@@ -56,6 +58,7 @@ export function AddRemoteHostDialog({
   const [serverName, setServerName] = useState('')
   const [pairingCode, setPairingCode] = useState('')
   const [allowLoopback, setAllowLoopback] = useState(false)
+  const [serverView, setServerView] = useState<'link' | 'github'>('link')
   const [isSaving, setIsSaving] = useState(false)
   const configSearchGeneration = useRef(0)
   const configSearchQuery = useRef('')
@@ -95,6 +98,7 @@ export function AddRemoteHostDialog({
     setServerName('')
     setPairingCode('')
     setAllowLoopback(false)
+    setServerView('link')
   }
 
   const close = () => {
@@ -237,6 +241,18 @@ export function AddRemoteHostDialog({
     }
   }
 
+  // Why: shared by access-link and GitHub sign-in so both refresh the host list identically.
+  const completeServerAdded = async () => {
+    const environments = await window.api.runtimeEnvironments.list()
+    setRuntimeEnvironments(environments)
+    await readRuntimeHostStatusSnapshots()
+    toast.success(
+      translate('auto.components.sidebar.AddRemoteHostDialog.serverSaved', 'Remote server added.')
+    )
+    reset()
+    onOpenChange(null)
+  }
+
   const saveRemoteServer = async () => {
     const trimmedName = serverName.trim()
     const trimmedPairingCode = pairingCode.trim()
@@ -281,14 +297,7 @@ export function AddRemoteHostDialog({
         )
         return
       }
-      const environments = await window.api.runtimeEnvironments.list()
-      setRuntimeEnvironments(environments)
-      await readRuntimeHostStatusSnapshots()
-      toast.success(
-        translate('auto.components.sidebar.AddRemoteHostDialog.serverSaved', 'Remote server added.')
-      )
-      reset()
-      onOpenChange(null)
+      await completeServerAdded()
     } catch (error) {
       toast.error(
         error instanceof Error
@@ -350,6 +359,12 @@ export function AddRemoteHostDialog({
             onCancel={close}
             onFillFromConfig={() => void openSshConfigPicker()}
           />
+        ) : serverView === 'github' ? (
+          <AddRemoteHostGithubLoginPanel
+            onBack={() => setServerView('link')}
+            onCancel={close}
+            onSaved={completeServerAdded}
+          />
         ) : (
           <AddRemoteHostServerFormPanel
             name={serverName}
@@ -366,6 +381,9 @@ export function AddRemoteHostDialog({
             onAllowLoopbackChange={setAllowLoopback}
             onSubmit={() => void saveRemoteServer()}
             onCancel={close}
+            {...(isGithubRemoteHostLoginAvailable()
+              ? { onUseGithub: () => setServerView('github') }
+              : {})}
           />
         )}
       </DialogContent>

@@ -138,6 +138,11 @@ export function mobileShellBuildKind(): MobileShellBuildKind {
   return process.env.EXPO_PUBLIC_MOBILE_SHELL === 'ota' ? 'ota' : 'native'
 }
 
+/** Build-time GitHub sign-in server, so a team build can ship pointed at its own host. */
+export function bundledGithubLoginServer(): string {
+  return process.env.EXPO_PUBLIC_ORCA_LOGIN_SERVER ?? ''
+}
+
 // Why: the hybrid shell route is dark in every build but an OTA one. Default-off means a native
 // store build never fetches, writes or sweeps a bundle cache — anything but `'true'`, including an
 // unreadable store, is off there.

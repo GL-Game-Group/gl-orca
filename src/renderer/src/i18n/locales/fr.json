@@ -351,7 +351,8 @@
         "loopbackPairingBlocked": "Ce lien d'accès pointe vers cet appareil lui-même.",
         "remotePairingUnreachable": "Impossible de joindre Orca à l'adresse {{endpoint}}.",
         "remotePairingInvalidDetails": "Ce lien d'accès contient des détails de connexion invalides.",
-        "remotePairingSaveFailed": "Orca a vérifié l'hôte mais n'a pas pu l'enregistrer. Vérifiez le stockage du navigateur et réessayez."
+        "remotePairingSaveFailed": "Orca a vérifié l'hôte mais n'a pas pu l'enregistrer. Vérifiez le stockage du navigateur et réessayez.",
+        "githubLoginUnavailable": "La connexion GitHub est disponible dans l’application de bureau Orca."
       },
       "web": {
         "preload": {
@@ -6230,7 +6231,19 @@
           "sshConfigPickerAddAllEmpty": "Tout ajouter à Orca",
           "identityFileFromConfigHint": "Volontairement laissé vide : Orca utilise toutes les clés résolues par ~/.ssh/config pour {{value0}}. Saisissez un chemin pour n'utiliser que cette clé.",
           "sshConfigPickerRetry": "Réessayer",
-          "sshConfigPickerResolving": "Lecture…"
+          "sshConfigPickerResolving": "Lecture…",
+          "githubTitle": "Se connecter avec GitHub",
+          "githubDescription": "Connectez-vous à un serveur Orca d’équipe qui autorise l’appairage des membres de son organisation GitHub.",
+          "githubEnterCode": "Saisissez ce code sur GitHub pour autoriser cet ordinateur :",
+          "githubWaiting": "En attente de l’autorisation sur GitHub…",
+          "githubServer": "Serveur",
+          "githubServerPlaceholder": "https://orca.example.com",
+          "githubNamePlaceholder": "orca.example.com",
+          "githubUseLink": "Utiliser plutôt un lien d’accès",
+          "githubCopiedOpen": "Code copié — ouvrir GitHub",
+          "githubCopyOpen": "Copier le code et ouvrir GitHub",
+          "githubContinue": "Continuer avec GitHub",
+          "githubInstead": "Se connecter plutôt avec GitHub"
         },
         "ForgetSshWorkspaceDialog": {
           "reconnectFailed": "Échec de la reconnexion",

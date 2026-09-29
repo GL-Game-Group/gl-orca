@@ -1,3 +1,4 @@
+import { Github } from 'lucide-react'
 import { DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { translate } from '@/i18n/i18n'
@@ -15,7 +16,8 @@ export function AddRemoteHostServerFormPanel({
   onPairingCodeChange,
   onAllowLoopbackChange,
   onSubmit,
-  onCancel
+  onCancel,
+  onUseGithub
 }: {
   name: string
   pairingCode: string
@@ -28,6 +30,8 @@ export function AddRemoteHostServerFormPanel({
   onAllowLoopbackChange: (value: boolean) => void
   onSubmit: () => void
   onCancel: () => void
+  /** Absent where GitHub sign-in cannot run (web builds). */
+  onUseGithub?: () => void
 }): React.JSX.Element {
   return (
     <>
@@ -59,7 +63,17 @@ export function AddRemoteHostServerFormPanel({
       />
 
       <DialogFooter className="sm:justify-between">
-        <span />
+        {onUseGithub ? (
+          <Button type="button" variant="ghost" onClick={onUseGithub} disabled={disabled}>
+            <Github />
+            {translate(
+              'auto.components.sidebar.AddRemoteHostDialog.githubInstead',
+              'Sign in with GitHub instead'
+            )}
+          </Button>
+        ) : (
+          <span />
+        )}
         <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <Button type="button" variant="outline" onClick={onCancel} disabled={disabled}>
             {translate('auto.components.sidebar.AddRemoteHostDialog.cancel', 'Cancel')}

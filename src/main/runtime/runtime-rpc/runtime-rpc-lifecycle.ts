@@ -174,6 +174,8 @@ export class RuntimeRpcLifecycle extends RuntimeRpcWebSocketDispatch {
       host: options.host,
       port: options.port,
       staticRoot: this.webClientRoot,
+      requestInterceptor: (request, response) =>
+        this.httpRequestInterceptor?.(request, response) ?? false,
       ...(options.fallbackPort !== undefined ? { fallbackPort: options.fallbackPort } : {}),
       ...(options.preferPinnedPort ? { preferPinnedPort: true } : {})
     })

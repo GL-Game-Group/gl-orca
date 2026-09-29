@@ -21,6 +21,7 @@ import {
   type EnvironmentAddResult,
   type EnvironmentRemoveResult
 } from '../runtime/environments'
+import { createEnvironmentLoginHandler } from './environment-github-login'
 
 export const ENVIRONMENT_HANDLERS: Record<string, CommandHandler> = {
   'host name': async ({ client, flags, json }) => {
@@ -61,6 +62,7 @@ export const ENVIRONMENT_HANDLERS: Record<string, CommandHandler> = {
         `Saved environment ${result.environment.name} (${result.environment.id}).`
     )
   },
+  'environment login': createEnvironmentLoginHandler(),
   // Why: an agent told "run it on <name>" had nowhere to look. `orca environment list` showed
   // paired servers only, and nothing in the CLI listed SSH targets at all, so the wrong-axis
   // guess was the only move available. This is the one place that answers both.

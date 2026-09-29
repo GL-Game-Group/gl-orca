@@ -34,6 +34,7 @@ export const ROOT_HELP_TEXT_PRIMARY = [
   '',
   'Environments:',
   '  environment add           Save a remote Orca runtime from a pairing code',
+  '  environment login         Sign in with GitHub and save a remote Orca runtime',
   '  environment list          List saved remote Orca runtimes',
   '  environment show          Show one saved remote Orca runtime',
   '  environment rm            Remove a saved remote Orca runtime',

@@ -8,6 +8,7 @@ import type { WebSocket } from 'ws'
 import type { DeviceRegistry } from '../device-registry'
 import type { E2EEKeypair } from '../e2ee-keypair'
 import type { UnpairedDeviceAuthThrottle } from '../rpc/unpaired-device-auth-throttle'
+import type { HttpRequestInterceptor } from '../rpc/ws-transport'
 import type { MobileSocketWiring } from '../rpc/mobile-socket-wiring'
 import { RelayRevokeOutbox } from '../relay/relay-revoke-outbox'
 import { PushUnregisterOutbox } from '../push/push-unregister-outbox'
@@ -79,6 +80,10 @@ export class RuntimeRpcState {
   } | null = null
   protected mobilePairingOfferGeneration = 0
   protected onUnpairedDeviceAuthFailure: (() => void) | null = null
+  // Why: read per request so it can be installed after the listener is already bound.
+  protected httpRequestInterceptor: HttpRequestInterceptor | null = null
+  // Why: set by GitHub sign-in; rejects devices paired without a GitHub identity.
+  protected requireGithubIdentity = false
   protected unpairedDeviceAuthThrottle: UnpairedDeviceAuthThrottle | null = null
   protected readonly binaryMessageRouter = new RuntimeBinaryMessageRouter()
   protected readonly wsDispatchAbortStates = new Map<

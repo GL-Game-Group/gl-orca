@@ -48,6 +48,7 @@ export const FLAG_HELP_TEXT: Record<string, string> = {
   prompt: '--prompt <text>        Prompt text for agent-backed commands',
   query: '--query <text>        Search text for matching refs',
   ref: '--ref <ref>            Base ref to persist for the repo',
+  server: '--server <https-url>  Orca server that offers GitHub sign-in',
   repo: '--repo <selector>      Repo selector such as id:<id>, name:<name>, or path:<path>',
   'restore-window': '--restore-window     Bring the target app/window forward before the operation',
   session: '--session <id>        Snapshot namespace for a related computer-use workflow',

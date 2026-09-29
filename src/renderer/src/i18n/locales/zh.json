@@ -252,7 +252,8 @@
         "loopbackPairingBlocked": "此访问链接会指回此设备。",
         "remotePairingUnreachable": "无法连接 {{endpoint}} 上的 Orca。",
         "remotePairingInvalidDetails": "此访问链接包含无效的连接信息。",
-        "remotePairingSaveFailed": "Orca 验证了主机但无法保存它。检查浏览器存储并重试。"
+        "remotePairingSaveFailed": "Orca 验证了主机但无法保存它。检查浏览器存储并重试。",
+        "githubLoginUnavailable": "GitHub 登录仅在 Orca 桌面应用中可用。"
       },
       "web": {
         "preload": {
@@ -6153,7 +6154,19 @@
           "sshConfigPickerAddAllEmpty": "全部添加到 Orca",
           "identityFileFromConfigHint": "故意留空：Orca 使用 ~/.ssh/config 解析为 {{value0}} 的每个密钥。键入一个路径以仅使用该键。",
           "sshConfigPickerRetry": "重试",
-          "sshConfigPickerResolving": "阅读…"
+          "sshConfigPickerResolving": "阅读…",
+          "githubTitle": "使用 GitHub 登录",
+          "githubDescription": "连接到允许其 GitHub 组织成员配对的团队 Orca 服务器。",
+          "githubEnterCode": "在 GitHub 上输入此验证码以授权这台电脑：",
+          "githubWaiting": "正在等待 GitHub 授权…",
+          "githubServer": "服务器",
+          "githubServerPlaceholder": "https://orca.example.com",
+          "githubNamePlaceholder": "orca.example.com",
+          "githubUseLink": "改用访问链接",
+          "githubCopiedOpen": "验证码已复制 — 打开 GitHub",
+          "githubCopyOpen": "复制验证码并打开 GitHub",
+          "githubContinue": "使用 GitHub 继续",
+          "githubInstead": "改用 GitHub 登录"
         },
         "ForgetSshWorkspaceDialog": {
           "reconnectFailed": "重新连接失败",

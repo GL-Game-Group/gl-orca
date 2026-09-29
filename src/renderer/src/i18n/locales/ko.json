@@ -252,7 +252,8 @@
         "loopbackPairingBlocked": "이 액세스 링크는 이 기기 자체를 가리킵니다.",
         "remotePairingUnreachable": "{{endpoint}}의 Orca에 연결할 수 없습니다.",
         "remotePairingInvalidDetails": "이 액세스 링크에 잘못된 연결 정보가 포함되어 있습니다.",
-        "remotePairingSaveFailed": "Orca가 호스트를 확인했지만 저장할 수 없습니다. 브라우저 저장 공간을 확인하고 다시 시도하세요."
+        "remotePairingSaveFailed": "Orca가 호스트를 확인했지만 저장할 수 없습니다. 브라우저 저장 공간을 확인하고 다시 시도하세요.",
+        "githubLoginUnavailable": "GitHub 로그인은 Orca 데스크톱 앱에서 사용할 수 있습니다."
       },
       "web": {
         "preload": {
@@ -6153,7 +6154,19 @@
           "sshConfigPickerAddAllEmpty": "Orca에 모두 추가",
           "identityFileFromConfigHint": "의도적으로 비워 두기: Orca는 ~/.ssh/config가 {{value0}}을 확인하는 모든 키를 사용합니다. 해당 키만 사용하려면 경로를 입력하세요.",
           "sshConfigPickerRetry": "다시 시도하세요",
-          "sshConfigPickerResolving": "독서…"
+          "sshConfigPickerResolving": "독서…",
+          "githubTitle": "GitHub로 로그인",
+          "githubDescription": "GitHub 조직 구성원이 페어링할 수 있는 팀 Orca 서버에 연결합니다.",
+          "githubEnterCode": "이 컴퓨터를 승인하려면 GitHub에서 이 코드를 입력하세요:",
+          "githubWaiting": "GitHub 승인을 기다리는 중…",
+          "githubServer": "서버",
+          "githubServerPlaceholder": "https://orca.example.com",
+          "githubNamePlaceholder": "orca.example.com",
+          "githubUseLink": "대신 액세스 링크 사용",
+          "githubCopiedOpen": "코드 복사됨 — GitHub 열기",
+          "githubCopyOpen": "코드 복사 후 GitHub 열기",
+          "githubContinue": "GitHub로 계속",
+          "githubInstead": "대신 GitHub로 로그인"
         },
         "ForgetSshWorkspaceDialog": {
           "reconnectFailed": "재연결 실패",

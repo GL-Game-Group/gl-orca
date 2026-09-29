@@ -37,6 +37,16 @@ export const ENVIRONMENT_COMMAND_SPECS: CommandSpec[] = [
     examples: ['orca environment add --name work-laptop --pairing-code orca://pair?code=...']
   },
   {
+    path: ['environment', 'login'],
+    summary: 'Sign in with GitHub on a remote Orca runtime and save it as an environment',
+    usage: 'orca environment login --name <name> --server <https-url> [--json]',
+    allowedFlags: [...GLOBAL_FLAGS, 'name', 'server'],
+    notes: [
+      'Works only with servers that enable GitHub sign-in. Open the printed GitHub URL, enter the code, and the paired server is saved like `environment add`.'
+    ],
+    examples: ['orca environment login --name office --server https://orca.example.com']
+  },
+  {
     path: ['environment', 'list'],
     summary: 'List saved Orca runtime environments',
     usage: 'orca environment list [--json]',

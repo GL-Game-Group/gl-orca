@@ -26,6 +26,7 @@ import { buildNetworkSshPolicyEnv } from './git-ssh-policy-env'
 import { nonInteractiveGitEnv, untranslatedGitOutputEnv } from './git-process-env'
 import { acquireGitAdmission } from './git-subprocess-admission'
 import { GitCommandTimeoutError, gitCommandTimeoutMs } from './git-command-timeout'
+import { withGithubCallerEnv } from '../../runtime/github-auth/github-caller-git-env'
 
 /**
  * Async git command execution. Drop-in replacement for
@@ -164,8 +165,12 @@ async function gitExecFileAsyncUnlocked(
 
 export function gitExecFileAsync(
   args: string[],
-  options: GitExecOptions
+  gitOptions: GitExecOptions
 ): Promise<{ stdout: string; stderr: string }> {
+  // Why: commits and pushes made for a GitHub-signed-in device are attributed to that user (WSL keeps its own env).
+  const options = gitOptions.wslDistro
+    ? gitOptions
+    : { ...gitOptions, env: withGithubCallerEnv(gitOptions.env) }
   const command = resolveGitFetchHeadCommand(args, options.cwd)
   return command.needsLock
     ? runWithGitFetchHeadLock(

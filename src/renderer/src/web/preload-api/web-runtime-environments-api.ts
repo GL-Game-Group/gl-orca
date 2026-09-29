@@ -54,6 +54,23 @@ export function createRuntimeEnvironmentsApi(): NonNullable<
       saveStoredWebRuntimeEnvironment(webRuntimeState.activeEnvironment)
       return { environment: redactStoredWebRuntimeEnvironment(webRuntimeState.activeEnvironment) }
     },
+    // Why: the device flow runs in the desktop main process; the web client pairs by access link.
+    githubLoginStart: async () => ({
+      ok: false,
+      message: translate(
+        'auto.web.webPreloadApi.githubLoginUnavailable',
+        'GitHub sign-in is available in the Orca desktop app.'
+      )
+    }),
+    githubLoginComplete: async () => ({
+      ok: false,
+      kind: 'github-login-failed',
+      message: translate(
+        'auto.web.webPreloadApi.githubLoginUnavailable',
+        'GitHub sign-in is available in the Orca desktop app.'
+      )
+    }),
+    githubLoginCancel: async () => {},
     verifyAndAddFromPairingCode: async ({ name, pairingCode, allowLoopback }) => {
       const parsed = parseHostAccessLink(pairingCode)
       if (!parsed.ok) {

@@ -1,4 +1,5 @@
 import type { WebSocket } from 'ws'
+import { bindGithubCaller } from '../github-auth/github-caller-context'
 import type {
   PairingGetEndpointsParams,
   PairingProvisionRelayParams
@@ -86,6 +87,15 @@ export class RuntimeRpcWebSocketDispatch extends RuntimeRpcRequestAdmission {
       return
     }
 
+    if (this.requireGithubIdentity && !device.githubIdentity) {
+      reply(
+        JSON.stringify(
+          this.buildError(request.id, 'forbidden', 'This device must sign in with GitHub')
+        )
+      )
+      return
+    }
+
     // Why: bind deviceToken to this socket so ws.on('close') knows which mobile client disconnected.
     if (wsTransport && ws) {
       wsTransport.setClientId(ws, token)
@@ -131,8 +141,13 @@ export class RuntimeRpcWebSocketDispatch extends RuntimeRpcRequestAdmission {
               )
           }
         : undefined
+    // Why: terminals and git spawned while serving this request act as the device's GitHub user.
+    const dispatchStreaming = bindGithubCaller(
+      device.githubIdentity,
+      this.dispatcher.dispatchStreaming.bind(this.dispatcher)
+    )
     try {
-      await this.dispatcher.dispatchStreaming(request, replyForRequest, {
+      await dispatchStreaming(request, replyForRequest, {
         // Why: the validated credential preserves existing federation ownership without trusting request fields.
         authenticatedCallerFingerprint: fingerprintAuthenticatedPairingCredential(token),
         connectionId,

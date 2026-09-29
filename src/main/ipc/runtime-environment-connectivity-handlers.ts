@@ -17,6 +17,8 @@ import type { Store } from '../persistence'
 import { clearBrowserRoutePartitionStorageForEnvironment } from '../browser/browser-route-partition-storage-runtime'
 import { retireBrowserRoutePartitionStorageForEnvironment } from '../browser/browser-route-partition-storage-retirement'
 import { verifyAndAddRuntimeEnvironmentFromPairingCode } from './runtime-environment-pairing-verification'
+import { registerRuntimeEnvironmentGithubLoginHandlers } from './runtime-environment-github-login'
+import type { VerifyAndAddRuntimeEnvironmentResult } from '../../shared/remote-pairing-verification'
 import { clearRuntimeEnvironmentCapabilityEvidence } from './runtime-environment-capability-evidence'
 import {
   closeRemoteRuntimeRequestConnection,
@@ -79,22 +81,28 @@ export function registerRuntimeEnvironmentConnectivityHandlers({
       return { environment: redactRuntimeEnvironment(environment) }
     }
   )
-  ipcMain.handle(
-    'runtimeEnvironments:verifyAndAddFromPairingCode',
-    async (_event, args: { name: string; pairingCode: string; allowLoopback?: boolean }) => {
-      const result = await verifyAndAddRuntimeEnvironmentFromPairingCode(getUserDataPath(), args)
-      if (result.ok) {
-        clearRuntimeEnvironmentManualDisconnect(result.environment.id)
-        getRuntimeEnvironmentStatusOwner(getUserDataPath(), result.environment.id).acceptVerified({
-          id: 'status.get',
-          ok: true,
-          result: result.runtimeStatus,
-          _meta: { runtimeId: result.runtimeStatus.runtimeId }
-        })
-      }
-      return result
+  const verifyAndAdd = async (args: {
+    name: string
+    pairingCode: string
+    allowLoopback?: boolean
+  }): Promise<VerifyAndAddRuntimeEnvironmentResult> => {
+    const result = await verifyAndAddRuntimeEnvironmentFromPairingCode(getUserDataPath(), args)
+    if (result.ok) {
+      clearRuntimeEnvironmentManualDisconnect(result.environment.id)
+      getRuntimeEnvironmentStatusOwner(getUserDataPath(), result.environment.id).acceptVerified({
+        id: 'status.get',
+        ok: true,
+        result: result.runtimeStatus,
+        _meta: { runtimeId: result.runtimeStatus.runtimeId }
+      })
     }
+    return result
+  }
+  ipcMain.handle('runtimeEnvironments:verifyAndAddFromPairingCode', (_event, args) =>
+    verifyAndAdd(args)
   )
+  // Why: GitHub sign-in ends in the same verify-and-add so both paths save a server identically.
+  registerRuntimeEnvironmentGithubLoginHandlers(verifyAndAdd)
   ipcMain.handle('runtimeEnvironments:resolve', (_event, args: { selector: string }) =>
     redactRuntimeEnvironment(resolveEnvironment(getUserDataPath(), args.selector))
   )

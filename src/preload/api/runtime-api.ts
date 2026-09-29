@@ -11,6 +11,10 @@ import type { ClientHostedBrowserRowsEvent } from '../../shared/client-hosted-br
 import type { PublicKnownRuntimeEnvironment } from '../../shared/runtime-environments'
 import type { VerifyAndAddRuntimeEnvironmentResult } from '../../shared/remote-pairing-verification'
 import type {
+  GithubRemoteHostLoginCompleteResult,
+  GithubRemoteHostLoginStartResult
+} from '../../shared/github-remote-host-login-types'
+import type {
   BrowserClientHostPlacementPreparationRequest,
   BrowserPageCreationPlacement
 } from '../../shared/browser-client-host-placement'
@@ -90,6 +94,12 @@ export type RuntimeApi = {
       pairingCode: string
       allowLoopback?: boolean
     }) => Promise<VerifyAndAddRuntimeEnvironmentResult>
+    githubLoginStart: (args: { server: string }) => Promise<GithubRemoteHostLoginStartResult>
+    githubLoginComplete: (args: {
+      loginKey: string
+      name: string
+    }) => Promise<GithubRemoteHostLoginCompleteResult>
+    githubLoginCancel: (args: { loginKey: string }) => Promise<void>
     resolve: (args: { selector: string }) => Promise<PublicKnownRuntimeEnvironment>
     remove: (args: { selector: string }) => Promise<{ removed: PublicKnownRuntimeEnvironment }>
     disconnect: (args: {

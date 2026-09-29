@@ -252,7 +252,8 @@
         "loopbackPairingBlocked": "このアクセスリンクはこのデバイス自身を指しています。",
         "remotePairingUnreachable": "{{endpoint}} の Orca に接続できません。",
         "remotePairingInvalidDetails": "このアクセスリンクには無効な接続情報が含まれています。",
-        "remotePairingSaveFailed": "Orca はホストを確認しましたが、ホストを保存できませんでした。ブラウザのストレージを確認して、もう一度試してください。"
+        "remotePairingSaveFailed": "Orca はホストを確認しましたが、ホストを保存できませんでした。ブラウザのストレージを確認して、もう一度試してください。",
+        "githubLoginUnavailable": "GitHub サインインは Orca デスクトップアプリで利用できます。"
       },
       "web": {
         "preload": {
@@ -6153,7 +6154,19 @@
           "sshConfigPickerAddAllEmpty": "すべてを Orca に追加",
           "identityFileFromConfigHint": "意図的に空のままにします: Orca は ~/.ssh/config が {{value0}} に対して解決するすべてのキーを使用します。そのキーのみを使用するパスを入力します。",
           "sshConfigPickerRetry": "再試行",
-          "sshConfigPickerResolving": "読む…"
+          "sshConfigPickerResolving": "読む…",
+          "githubTitle": "GitHub でサインイン",
+          "githubDescription": "GitHub Organization のメンバーがペアリングできるチームの Orca サーバーに接続します。",
+          "githubEnterCode": "このコンピューターを承認するには、GitHub でこのコードを入力してください:",
+          "githubWaiting": "GitHub での承認を待っています…",
+          "githubServer": "サーバー",
+          "githubServerPlaceholder": "https://orca.example.com",
+          "githubNamePlaceholder": "orca.example.com",
+          "githubUseLink": "代わりにアクセスリンクを使用",
+          "githubCopiedOpen": "コードをコピーしました — GitHub を開く",
+          "githubCopyOpen": "コードをコピーして GitHub を開く",
+          "githubContinue": "GitHub で続行",
+          "githubInstead": "代わりに GitHub でサインイン"
         },
         "ForgetSshWorkspaceDialog": {
           "reconnectFailed": "再接続に失敗しました",

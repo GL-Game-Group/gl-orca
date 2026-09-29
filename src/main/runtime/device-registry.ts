@@ -19,8 +19,9 @@ import {
   parseMobilePushRegistration,
   type MobilePushRegistration
 } from '../../shared/mobile-push-contract'
+import { parseDeviceGithubIdentity, type DeviceGithubIdentity } from './device-github-identity'
 
-export type { DeviceScope }
+export type { DeviceScope, DeviceGithubIdentity }
 
 export type DeviceEntry = {
   deviceId: string
@@ -37,6 +38,8 @@ export type DeviceEntry = {
   // Why: survives a desktop restart so the host can keep pushing without the phone
   // re-registering. Absent on every registry written before background push existed.
   pushRegistration?: MobilePushRegistration
+  // Why: set only by GitHub device-flow sign-in; the org membership recheck revokes by this identity.
+  githubIdentity?: DeviceGithubIdentity
 }
 
 function validRelayBinding(value: unknown, deviceId: string): RelayDeviceBinding | undefined {
@@ -82,11 +85,20 @@ export class DeviceRegistry {
     return this.createAndPersistDevice(this.devices, name, scope, pairingReach)
   }
 
+  addGithubBoundDevice(
+    name: string,
+    scope: DeviceScope,
+    githubIdentity: DeviceGithubIdentity
+  ): DeviceEntry {
+    return this.createAndPersistDevice(this.devices, name, scope, 'network', githubIdentity)
+  }
+
   private createAndPersistDevice(
     existingDevices: DeviceEntry[],
     name: string,
     scope: DeviceScope,
-    pairingReach: RuntimePairingReach
+    pairingReach: RuntimePairingReach,
+    githubIdentity?: DeviceGithubIdentity
   ): DeviceEntry {
     const entry: DeviceEntry = {
       deviceId: randomUUID(),
@@ -95,7 +107,8 @@ export class DeviceRegistry {
       scope,
       pairedAt: Date.now(),
       lastSeenAt: 0,
-      pairingReach
+      pairingReach,
+      ...(githubIdentity ? { githubIdentity } : {})
     }
     const nextDevices = [...existingDevices, entry]
     // Why: a credential is not valid until its durable registry write succeeds.
@@ -327,7 +340,8 @@ export class DeviceRegistry {
         pairingReach: device.pairingReach === 'this-computer' ? 'this-computer' : 'network',
         // Why: a malformed row must degrade to "no background push", never fail the load
         // and strand every paired device.
-        pushRegistration: parseMobilePushRegistration(device.pushRegistration)
+        pushRegistration: parseMobilePushRegistration(device.pushRegistration),
+        githubIdentity: parseDeviceGithubIdentity(device.githubIdentity)
       }))
       this.registryUnreadable = false
     } catch (error) {

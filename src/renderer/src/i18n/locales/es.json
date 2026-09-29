@@ -186,7 +186,8 @@
         "runtimeEnvironmentManuallyDisconnected": "El entorno de ejecución se ha desconectado manualmente.",
         "loopbackPairingBlocked": "Este enlace de acceso apunta de nuevo a este dispositivo.",
         "remotePairingUnreachable": "No se puede acceder a Orca en {{endpoint}}.",
-        "remotePairingInvalidDetails": "Este enlace de acceso contiene datos de conexión no válidos."
+        "remotePairingInvalidDetails": "Este enlace de acceso contiene datos de conexión no válidos.",
+        "githubLoginUnavailable": "El inicio de sesión con GitHub está disponible en la app de escritorio de Orca."
       },
       "web": {
         "preload": {
@@ -5323,7 +5324,19 @@
           "linkDestination": "Destino del enlace",
           "sshTunnel": "Estoy usando un túnel SSH",
           "sshTunnelHelp": "De lo contrario, este enlace apunta a este dispositivo y no puede identificar el otro equipo.",
-          "loopbackBlocked": "Activa la opción de túnel SSH o crea un enlace nuevo con la dirección de Tailscale o LAN del otro host."
+          "loopbackBlocked": "Activa la opción de túnel SSH o crea un enlace nuevo con la dirección de Tailscale o LAN del otro host.",
+          "githubTitle": "Iniciar sesión con GitHub",
+          "githubDescription": "Conéctate a un servidor de Orca del equipo que permite emparejar a los miembros de su organización de GitHub.",
+          "githubEnterCode": "Introduce este código en GitHub para autorizar este equipo:",
+          "githubWaiting": "Esperando la autorización en GitHub…",
+          "githubServer": "Servidor",
+          "githubServerPlaceholder": "https://orca.example.com",
+          "githubNamePlaceholder": "orca.example.com",
+          "githubUseLink": "Usar un enlace de acceso",
+          "githubCopiedOpen": "Código copiado — abrir GitHub",
+          "githubCopyOpen": "Copiar código y abrir GitHub",
+          "githubContinue": "Continuar con GitHub",
+          "githubInstead": "Iniciar sesión con GitHub"
         },
         "ForgetSshWorkspaceDialog": {
           "reconnectFailed": "Error de reconexión",

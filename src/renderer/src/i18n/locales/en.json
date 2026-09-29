@@ -368,7 +368,8 @@
         "loopbackPairingBlocked": "This access link points back to this device.",
         "remotePairingUnreachable": "Cannot reach Orca at {{endpoint}}.",
         "remotePairingInvalidDetails": "This access link contains invalid connection details.",
-        "remotePairingSaveFailed": "Orca verified the host but could not save it. Check browser storage and try again."
+        "remotePairingSaveFailed": "Orca verified the host but could not save it. Check browser storage and try again.",
+        "githubLoginUnavailable": "GitHub sign-in is available in the Orca desktop app."
       },
       "web": {
         "preload": {
@@ -6283,7 +6284,19 @@
           "sshConfigPickerAddAllEmpty": "Add all to Orca",
           "identityFileFromConfigHint": "Left empty on purpose: Orca uses every key ~/.ssh/config resolves for {{value0}}. Type a path to use just that key.",
           "sshConfigPickerRetry": "Try again",
-          "sshConfigPickerResolving": "Reading…"
+          "sshConfigPickerResolving": "Reading…",
+          "githubTitle": "Sign in with GitHub",
+          "githubDescription": "Connect to a team Orca server that lets members of its GitHub organization pair.",
+          "githubEnterCode": "Enter this code on GitHub to approve this computer:",
+          "githubWaiting": "Waiting for authorization on GitHub…",
+          "githubServer": "Server",
+          "githubServerPlaceholder": "https://orca.example.com",
+          "githubNamePlaceholder": "orca.example.com",
+          "githubUseLink": "Use an access link instead",
+          "githubCopiedOpen": "Code copied — open GitHub",
+          "githubCopyOpen": "Copy code and open GitHub",
+          "githubContinue": "Continue with GitHub",
+          "githubInstead": "Sign in with GitHub instead"
         },
         "ForgetSshWorkspaceDialog": {
           "reconnectFailed": "Reconnection failed",
