@@ -19269,12 +19269,12 @@
     },
     "hooks": {
       "title": "在 GL Work 里显示代理状态",
-      "on": "已开启：Claude Code 和 Codex 通过它们设置里的 GL Work 钩子报告“工作中、等待中、已完成”。",
-      "off": "未开启。开启后会在 Claude Code 和 Codex 自己的设置里加入钩子；GL Work 会先征得你的同意。",
+      "on": "已开启：已启用的编程工具通过它们设置里的 GL Work 钩子报告“工作中、等待中、已完成”。",
+      "off": "未开启。开启后会在已启用的编程工具自己的设置里加入钩子；GL Work 会先征得你的同意。",
       "turnOn": "开启…",
       "turnOff": "关闭",
       "confirmTitle": "在 GL Work 里显示代理状态？",
-      "confirmDescription": "GL Work 会在这些编程工具自己的设置里加入状态钩子：~/.claude/settings.json（Claude Code）和 ~/.codex/config.toml（Codex）。钩子只向 GL Work 报告“工作中、等待中、已完成”。以后关闭时会移除它们。",
+      "confirmDescription": "GL Work 会在这些编程工具自己的设置里加入状态钩子：已启用的工具中的 ~/.claude/settings.json（Claude Code）、~/.codex/config.toml（Codex）、~/.qwen/settings.json（Qwen Code）、~/.qoder/settings.json（Qoder）。钩子只向 GL Work 报告“工作中、等待中、已完成”。以后关闭时会移除它们。",
       "agree": "同意并开启"
     }
   }

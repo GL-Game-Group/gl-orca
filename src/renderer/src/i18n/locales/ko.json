@@ -19269,12 +19269,12 @@
     },
     "hooks": {
       "title": "GL Work에서 에이전트 상태 표시",
-      "on": "켜짐: Claude Code와 Codex가 설정에 있는 GL Work 훅을 통해 작업 중, 대기 중, 완료를 보고합니다.",
-      "off": "꺼짐. 켜면 Claude Code와 Codex 자체 설정에 훅을 추가합니다. GL Work가 먼저 물어봅니다.",
+      "on": "켜짐: 켜 둔 코딩 도구가 설정에 있는 GL Work 훅을 통해 작업 중, 대기 중, 완료를 보고합니다.",
+      "off": "꺼짐. 켜면 켜 둔 코딩 도구 자체 설정에 훅을 추가합니다. GL Work가 먼저 물어봅니다.",
       "turnOn": "켜기…",
       "turnOff": "끄기",
       "confirmTitle": "GL Work에서 에이전트 상태를 표시할까요?",
-      "confirmDescription": "GL Work가 코딩 도구 자체 설정에 상태 훅을 추가합니다: ~/.claude/settings.json(Claude Code)과 ~/.codex/config.toml(Codex). 훅은 작업 중, 대기 중, 완료만 GL Work에 보고합니다. 나중에 끄면 제거됩니다.",
+      "confirmDescription": "GL Work가 코딩 도구 자체 설정에 상태 훅을 추가합니다: 켜 둔 도구의 ~/.claude/settings.json (Claude Code), ~/.codex/config.toml (Codex), ~/.qwen/settings.json (Qwen Code), ~/.qoder/settings.json (Qoder). 훅은 작업 중, 대기 중, 완료만 GL Work에 보고합니다. 나중에 끄면 제거됩니다.",
       "agree": "동의하고 켜기"
     }
   }

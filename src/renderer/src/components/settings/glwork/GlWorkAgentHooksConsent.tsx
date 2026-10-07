@@ -18,7 +18,7 @@ export function GlWorkAgentHooksConsent(): React.JSX.Element {
       title: translate('glwork.hooks.confirmTitle', 'Show agent status in GL Work?'),
       description: translate(
         'glwork.hooks.confirmDescription',
-        'GL Work will add its status hooks to the coding tools’ own settings: ~/.claude/settings.json (Claude Code) and ~/.codex/config.toml (Codex). They only report working, waiting and done to GL Work. Turning this off later removes them.'
+        'GL Work will add its status hooks to the coding tools’ own settings: ~/.claude/settings.json (Claude Code), ~/.codex/config.toml (Codex), ~/.qwen/settings.json (Qwen Code), ~/.qoder/settings.json (Qoder), for the tools you have enabled. They only report working, waiting and done to GL Work. Turning this off later removes them.'
       ),
       confirmLabel: translate('glwork.hooks.agree', 'Agree and turn on')
     })
@@ -38,11 +38,11 @@ export function GlWorkAgentHooksConsent(): React.JSX.Element {
           {enabled
             ? translate(
                 'glwork.hooks.on',
-                'On: Claude Code and Codex report working, waiting and done through GL Work’s hooks in their settings.'
+                'On: your enabled coding tools report working, waiting and done through GL Work’s hooks in their settings.'
               )
             : translate(
                 'glwork.hooks.off',
-                'Off. Turning it on adds hooks to Claude Code’s and Codex’s own settings; GL Work asks first.'
+                'Off. Turning it on adds hooks to your enabled coding tools’ own settings; GL Work asks first.'
               )}
         </p>
       </div>
