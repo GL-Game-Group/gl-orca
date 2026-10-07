@@ -15,6 +15,7 @@ import {
 } from './glwork-company-client'
 import { startCompanySignIn, type PendingSignIn } from './glwork-sign-in'
 import { readGlWorkModelSources, writeGlWorkModelSource } from './glwork-model-sources'
+import { readGlWorkCliToolStatuses } from './glwork-cli-tools'
 
 let pending: PendingSignIn | null = null
 let lastError: string | null = null
@@ -142,6 +143,7 @@ export function registerGlWorkAccountIpcHandlers(): void {
   ipcMain.handle('glwork:signOut', () => signOut())
   ipcMain.handle('glwork:models', () => models())
   ipcMain.handle('glwork:modelSources', () => readGlWorkModelSources())
+  ipcMain.handle('glwork:cliTools', () => readGlWorkCliToolStatuses())
   ipcMain.handle('glwork:setModelSource', (_event, tool: unknown, choice: unknown) =>
     setModelSource(tool, choice)
   )

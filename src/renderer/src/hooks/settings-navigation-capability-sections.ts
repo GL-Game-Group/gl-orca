@@ -25,7 +25,7 @@ import {
 } from 'lucide-react'
 import type { SettingsNavigationBuildOptions } from './settings-navigation-build-options'
 import {
-  glWorkAccountNavSection,
+  glWorkSettingsNavSections,
   isGlWorkClient
 } from '@/components/settings/glwork/glwork-account-settings-section'
 
@@ -130,7 +130,7 @@ export function buildSetupSettingsSections({
 }: SettingsNavigationBuildOptions): SettingsNavSection[] {
   const showDesktopOnlySettings = !isWebClient
   return [
-    ...(showDesktopOnlySettings && isGlWorkClient() ? [glWorkAccountNavSection()] : []),
+    ...(showDesktopOnlySettings && isGlWorkClient() ? glWorkSettingsNavSections() : []),
     ...(showDesktopOnlySettings && !isGlWorkClient()
       ? [
           {

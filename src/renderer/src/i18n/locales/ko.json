@@ -18459,6 +18459,34 @@
       "sourceHint": "새 세션에 사용할 모델 출처",
       "sourceOwnClaude": "내 Claude 구독",
       "sourceOwnQwen": "내 Qwen Code 설정"
+    },
+    "cli": {
+      "title": "코딩 도구",
+      "sectionDescription": "이 컴퓨터의 Claude Code, Codex, Qoder: 설치, 로그인 또는 사용 중지.",
+      "description": "각 구성원이 직접 설치하고 자신의 계정으로 로그인합니다. GL Work는 확인하고 시작을 도울 뿐입니다.",
+      "recheck": "다시 확인",
+      "notInstalled": "설치되지 않음",
+      "notSignedIn": "설치됨, 로그인 안 됨",
+      "signInUnknown": "설치됨. 처음 실행할 때 자체 화면에서 로그인합니다.",
+      "ready": "준비됨",
+      "install": "설치",
+      "installTitle": "{{name}}을(를) 설치할까요?",
+      "installDescription": "GL Work가 진행 과정을 볼 수 있는 터미널에서 공식 설치 명령을 실행합니다: {{command}}. 사용자 폴더에 설치되며 이 컴퓨터의 다른 부분은 바뀌지 않습니다.",
+      "signIn": "로그인",
+      "enabled": "사용 중",
+      "disabled": "사용 중지됨",
+      "toggle": "새 세션에서 {{name}} 사용",
+      "signedIn": "로그인됨"
+    },
+    "hooks": {
+      "title": "GL Work에서 에이전트 상태 표시",
+      "on": "켜짐: Claude Code와 Codex가 설정에 있는 GL Work 훅을 통해 작업 중, 대기 중, 완료를 보고합니다.",
+      "off": "꺼짐. 켜면 Claude Code와 Codex 자체 설정에 훅을 추가합니다. GL Work가 먼저 물어봅니다.",
+      "turnOn": "켜기…",
+      "turnOff": "끄기",
+      "confirmTitle": "GL Work에서 에이전트 상태를 표시할까요?",
+      "confirmDescription": "GL Work가 코딩 도구 자체 설정에 상태 훅을 추가합니다: ~/.claude/settings.json(Claude Code)과 ~/.codex/config.toml(Codex). 훅은 작업 중, 대기 중, 완료만 GL Work에 보고합니다. 나중에 끄면 제거됩니다.",
+      "agree": "동의하고 켜기"
     }
   }
 }

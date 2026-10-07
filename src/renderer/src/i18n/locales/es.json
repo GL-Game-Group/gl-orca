@@ -15334,6 +15334,34 @@
       "sourceHint": "Origen del modelo para las sesiones nuevas",
       "sourceOwnClaude": "Mi propia suscripción de Claude",
       "sourceOwnQwen": "Mi propia configuración de Qwen Code"
+    },
+    "cli": {
+      "title": "Herramientas de programación",
+      "sectionDescription": "Claude Code, Codex y Qoder en este equipo: instalar, iniciar sesión o desactivar.",
+      "description": "Cada miembro instala estas herramientas e inicia sesión con su propia cuenta; GL Work solo comprueba y te ayuda a empezar.",
+      "recheck": "Comprobar de nuevo",
+      "notInstalled": "No instalado",
+      "notSignedIn": "Instalado, sin iniciar sesión",
+      "signInUnknown": "Instalado. Inicia sesión desde su propia pantalla la primera vez.",
+      "ready": "Listo",
+      "install": "Instalar",
+      "installTitle": "¿Instalar {{name}}?",
+      "installDescription": "GL Work ejecutará el comando de instalación oficial en una terminal que puedes ver: {{command}}. Se instala en tu carpeta de usuario; nada más cambia en este equipo.",
+      "signIn": "Iniciar sesión",
+      "enabled": "En uso",
+      "disabled": "Desactivado",
+      "toggle": "Usar {{name}} en sesiones nuevas",
+      "signedIn": "Sesión iniciada"
+    },
+    "hooks": {
+      "title": "Estado de los agentes en GL Work",
+      "on": "Activado: Claude Code y Codex informan de trabajando, esperando y terminado mediante los hooks de GL Work en su configuración.",
+      "off": "Desactivado. Activarlo añade hooks a la configuración de Claude Code y Codex; GL Work pregunta antes.",
+      "turnOn": "Activar…",
+      "turnOff": "Desactivar",
+      "confirmTitle": "¿Mostrar el estado de los agentes en GL Work?",
+      "confirmDescription": "GL Work añadirá sus hooks de estado a la configuración de las propias herramientas: ~/.claude/settings.json (Claude Code) y ~/.codex/config.toml (Codex). Solo informan a GL Work de trabajando, esperando y terminado. Si lo desactivas más tarde, se eliminan.",
+      "agree": "Aceptar y activar"
     }
   }
 }

@@ -18459,6 +18459,34 @@
       "sourceHint": "Source du modèle pour les nouvelles sessions",
       "sourceOwnClaude": "Mon propre abonnement Claude",
       "sourceOwnQwen": "Mes propres réglages Qwen Code"
+    },
+    "cli": {
+      "title": "Outils de développement",
+      "sectionDescription": "Claude Code, Codex et Qoder sur cet ordinateur : installer, se connecter ou désactiver.",
+      "description": "Chaque membre installe ces outils et se connecte avec son propre compte ; GL Work vérifie seulement et vous aide à démarrer.",
+      "recheck": "Vérifier à nouveau",
+      "notInstalled": "Non installé",
+      "notSignedIn": "Installé, non connecté",
+      "signInUnknown": "Installé. Il se connecte depuis son propre écran au premier lancement.",
+      "ready": "Prêt",
+      "install": "Installer",
+      "installTitle": "Installer {{name}} ?",
+      "installDescription": "GL Work exécutera la commande d'installation officielle dans un terminal que vous pouvez suivre : {{command}}. L'installation se fait dans votre dossier utilisateur ; rien d'autre ne change sur cet ordinateur.",
+      "signIn": "Se connecter",
+      "enabled": "Utilisé",
+      "disabled": "Désactivé",
+      "toggle": "Utiliser {{name}} dans les nouvelles sessions",
+      "signedIn": "Connecté"
+    },
+    "hooks": {
+      "title": "État des agents dans GL Work",
+      "on": "Activé : Claude Code et Codex signalent en cours, en attente et terminé via les hooks de GL Work dans leurs réglages.",
+      "off": "Désactivé. L'activer ajoute des hooks aux réglages de Claude Code et de Codex ; GL Work demande d'abord.",
+      "turnOn": "Activer…",
+      "turnOff": "Désactiver",
+      "confirmTitle": "Afficher l'état des agents dans GL Work ?",
+      "confirmDescription": "GL Work ajoutera ses hooks d'état aux réglages des outils eux-mêmes : ~/.claude/settings.json (Claude Code) et ~/.codex/config.toml (Codex). Ils signalent seulement en cours, en attente et terminé à GL Work. Les désactiver plus tard les supprime.",
+      "agree": "Accepter et activer"
     }
   }
 }
