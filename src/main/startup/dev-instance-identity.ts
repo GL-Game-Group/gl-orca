@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto'
 import path from 'node:path'
 import type { AppIdentity } from '../../shared/app-identity'
+import { GLWORK_APP_ID, GLWORK_PRODUCT_NAME, isGlWorkBuild } from '../glwork/glwork-build'
 
 const BASE_APP_NAME = 'Orca'
 const BASE_APP_USER_MODEL_ID = 'com.stablyai.orca'
@@ -66,16 +67,18 @@ export function getDevInstanceIdentity(
   env: NodeJS.ProcessEnv = process.env
 ): DevInstanceIdentity {
   if (!isDev) {
+    // eva: GL Work names its menu, About panel and Windows app id itself.
+    const glwork = isGlWorkBuild()
     return {
-      name: BASE_APP_NAME,
-      appName: BASE_APP_NAME,
+      name: glwork ? GLWORK_PRODUCT_NAME : BASE_APP_NAME,
+      appName: glwork ? GLWORK_PRODUCT_NAME : BASE_APP_NAME,
       isDev: false,
       devLabel: null,
       devBranch: null,
       devWorktreeName: null,
       devRepoRoot: null,
       dockBadgeLabel: null,
-      appUserModelId: BASE_APP_USER_MODEL_ID
+      appUserModelId: glwork ? GLWORK_APP_ID : BASE_APP_USER_MODEL_ID
     }
   }
 

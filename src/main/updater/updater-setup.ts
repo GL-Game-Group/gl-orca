@@ -20,6 +20,7 @@ import { getServeUpdateHandoffFailure } from '../serve-update-handoff'
 import { recordUpdaterLifecycle } from '../updater-lifecycle-diagnostics'
 import { AUTO_UPDATE_CHECK_INTERVAL_MS } from './updater-state'
 import { UpdaterDownloadInstall } from './updater-download-install'
+import { isGlWorkBuild } from '../glwork/glwork-build'
 import type { PreQuitCleanupFailureMode, UpdateInstallMode } from './updater-state'
 
 export type UpdaterSetupOptions = {
@@ -138,7 +139,8 @@ export class UpdaterSetup extends UpdaterDownloadInstall {
     if (!app.isPackaged && !is.dev) {
       return
     }
-    if (is.dev) {
+    // eva: GL Work has no release feed yet; Orca's would offer to replace it with Orca.
+    if (is.dev || isGlWorkBuild()) {
       return
     }
 

@@ -61,7 +61,7 @@ pnpm test <各功能记录里列出的测试>
 
 - **新代码放新文件**。官方文件里只加最少的接入点，通常是一两行 import 或调用。
 - 自研代码集中放在：
-  - 服务端：`src/main/runtime/github-auth/` 这类按功能命名的新目录
+  - 服务端：`src/main/runtime/github-auth/` 这类按功能命名的新目录；GL Work 专属的放 `src/main/glwork/`
   - 手机端：`mobile/src/eva/`
   - 共用协议：`src/shared/` 下按功能命名的新文件
 - 仓库规则仍然适用（见 `AGENTS.md`）：
@@ -79,3 +79,4 @@ pnpm test <各功能记录里列出的测试>
 | 功能 | 记录 | 分支 |
 | --- | --- | --- |
 | GitHub 组织登录（服务端、手机端、CLI、桌面端） | [changes/github-device-login.md](./changes/github-device-login.md) | `my/github-device-login` |
+| GL Work 品牌与打包（应用身份、独立数据目录、关闭 Orca 更新和云账号） | [changes/glwork-brand.md](./changes/glwork-brand.md) | `my/glwork-brand` |
