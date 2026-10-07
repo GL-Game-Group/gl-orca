@@ -24,6 +24,10 @@ import {
   UserCog
 } from 'lucide-react'
 import type { SettingsNavigationBuildOptions } from './settings-navigation-build-options'
+import {
+  glWorkAccountNavSection,
+  isGlWorkClient
+} from '@/components/settings/glwork/glwork-account-settings-section'
 
 export function buildCapabilitySettingsSections({
   isLocalWindowsHost,
@@ -126,7 +130,8 @@ export function buildSetupSettingsSections({
 }: SettingsNavigationBuildOptions): SettingsNavSection[] {
   const showDesktopOnlySettings = !isWebClient
   return [
-    ...(showDesktopOnlySettings
+    ...(showDesktopOnlySettings && isGlWorkClient() ? [glWorkAccountNavSection()] : []),
+    ...(showDesktopOnlySettings && !isGlWorkClient()
       ? [
           {
             id: 'orca-account',

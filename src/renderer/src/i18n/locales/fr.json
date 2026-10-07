@@ -18436,5 +18436,24 @@
   },
   "common": {
     "retry": "Réessayer"
+  },
+  "glwork": {
+    "account": {
+      "title": "Compte de l'entreprise",
+      "description": "Votre connexion à GL Work : les modèles de l'entreprise pour vos outils de développement, et l'accès à cet ordinateur depuis votre téléphone.",
+      "checking": "Vérification de la connexion de l'entreprise…",
+      "waiting": "Terminez la connexion GitHub dans votre navigateur, puis revenez ici.",
+      "signedInAs": "Connecté en tant que {{member}} sur {{server}}",
+      "signedOut": "Connectez-vous avec votre compte GitHub pour utiliser les modèles de l'entreprise et accéder à cet ordinateur depuis GL Work sur votre téléphone.",
+      "modelsTitle": "Modèles de l'entreprise",
+      "modelsLoading": "Chargement des modèles de l'entreprise…",
+      "modelsNone": "Aucun modèle de l'entreprise ne vous est encore attribué. Contactez un administrateur.",
+      "protocolAnthropic": "pour Claude Code",
+      "protocolOpenai": "pour Qwen Code",
+      "connected": "Connecté",
+      "cancel": "Annuler",
+      "signOut": "Se déconnecter",
+      "signIn": "Se connecter avec GitHub"
+    }
   }
 }

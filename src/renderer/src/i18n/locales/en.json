@@ -18436,5 +18436,24 @@
   },
   "common": {
     "retry": "Retry"
+  },
+  "glwork": {
+    "account": {
+      "title": "Company account",
+      "description": "Your GL Work sign-in: company models for your coding tools, and your phone reaching this computer.",
+      "checking": "Checking the company sign-in…",
+      "waiting": "Finish signing in with GitHub in your browser, then come back here.",
+      "signedInAs": "Signed in as {{member}} at {{server}}",
+      "signedOut": "Sign in with your GitHub account to use the company models and reach this computer from GL Work on your phone.",
+      "modelsTitle": "Company models",
+      "modelsLoading": "Loading the company models…",
+      "modelsNone": "No company models are assigned to you yet. Ask an administrator.",
+      "protocolAnthropic": "for Claude Code",
+      "protocolOpenai": "for Qwen Code",
+      "connected": "Signed in",
+      "cancel": "Cancel",
+      "signOut": "Sign out",
+      "signIn": "Sign in with GitHub"
+    }
   }
 }

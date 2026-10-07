@@ -3,8 +3,10 @@ import { recoverLegacyWorkerTerminalsForRendererStartup } from './legacy-worker-
 import { logStartupMilestone } from './startup-diagnostics'
 import { mainProcessState as state } from './main-process-state'
 import { resolveOpenedMarkdownDocuments } from './os-opened-markdown-files'
+import { registerGlWorkAccountIpcHandlers } from '../glwork/glwork-account-ipc'
 
 export function registerMainProcessIpcHandlers(): void {
+  registerGlWorkAccountIpcHandlers()
   ipcMain.handle('app:awaitFirstWindowStartupServices', async () => {
     await Promise.all([
       state.firstWindowStartupServicesReady,

@@ -18436,5 +18436,24 @@
   },
   "common": {
     "retry": "다시 시도"
+  },
+  "glwork": {
+    "account": {
+      "title": "회사 계정",
+      "description": "GL Work 로그인: 코딩 도구에서 쓰는 회사 모델과 휴대폰에서 이 컴퓨터로의 연결.",
+      "checking": "회사 계정 로그인 상태를 확인하는 중…",
+      "waiting": "브라우저에서 GitHub 로그인을 마친 뒤 여기로 돌아오세요.",
+      "signedInAs": "{{member}}(으)로 로그인됨 ({{server}})",
+      "signedOut": "GitHub 계정으로 로그인하면 회사 모델을 사용하고 휴대폰의 GL Work에서 이 컴퓨터에 연결할 수 있습니다.",
+      "modelsTitle": "회사 모델",
+      "modelsLoading": "회사 모델을 불러오는 중…",
+      "modelsNone": "아직 배정된 회사 모델이 없습니다. 관리자에게 문의하세요.",
+      "protocolAnthropic": "Claude Code용",
+      "protocolOpenai": "Qwen Code용",
+      "connected": "로그인됨",
+      "cancel": "취소",
+      "signOut": "로그아웃",
+      "signIn": "GitHub로 로그인"
+    }
   }
 }

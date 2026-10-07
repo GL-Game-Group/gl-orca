@@ -15311,5 +15311,24 @@
       "settingsLink": "Ajustes → Búsqueda de sesiones de agentes",
       "startSearching": "Empezar a buscar"
     }
+  },
+  "glwork": {
+    "account": {
+      "title": "Cuenta de la empresa",
+      "description": "Tu inicio de sesión en GL Work: modelos de la empresa para tus herramientas de programación y acceso a este equipo desde el teléfono.",
+      "checking": "Comprobando el inicio de sesión de la empresa…",
+      "waiting": "Termina de iniciar sesión con GitHub en el navegador y vuelve aquí.",
+      "signedInAs": "Sesión iniciada como {{member}} en {{server}}",
+      "signedOut": "Inicia sesión con tu cuenta de GitHub para usar los modelos de la empresa y acceder a este equipo desde GL Work en tu teléfono.",
+      "modelsTitle": "Modelos de la empresa",
+      "modelsLoading": "Cargando los modelos de la empresa…",
+      "modelsNone": "Todavía no tienes modelos de la empresa asignados. Pídeselo a un administrador.",
+      "protocolAnthropic": "para Claude Code",
+      "protocolOpenai": "para Qwen Code",
+      "connected": "Sesión iniciada",
+      "cancel": "Cancelar",
+      "signOut": "Cerrar sesión",
+      "signIn": "Iniciar sesión con GitHub"
+    }
   }
 }
