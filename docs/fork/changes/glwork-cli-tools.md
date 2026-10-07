@@ -13,6 +13,7 @@ GL Work 的成员用自己的订阅登录 Claude Code、Codex、Qoder（公司�
 
 - **代理状态钩子先关闭**：Orca 会往 `~/.claude/settings.json`、`~/.codex/config.toml` 里写入自己的钩子来显示“工作中、等待中、已完成”。公司规则要求修改其他工具的配置前先征得同意，所以 GL Work 首次启动时把 `agentStatusHooksEnabled` 设为关闭，成员在「命令行工具」页点「开启…」、看过要改的文件并确认后才打开（走 Orca 原有的开关，关闭时 Orca 会移除钩子）。
 - **只启用 GL Work 的工具**：首次启动时把 Claude Code、Codex、Qwen Code、Qoder 以外的 Orca 代理设为停用，成员可以在「智能体」里自己再打开。
+- **代理先问再动手**：Orca 默认让每个代理跳过所有权限确认（Claude Code `--dangerously-skip-permissions`、Codex `--dangerously-bypass-approvals-and-sandbox` 等，见 `tui-agent-permissions.ts`）。GL Work 首次启动时用 Orca 的 `applyAgentPermissionMode({ mode: 'manual' })` 改成手动：代理执行命令、改文件前先问成员；成员自己加的其他参数保留。成员可以在「智能体」里改回全部允许。
 
 两项都只在某个数据目录第一次以 GL Work 启动时执行一次（`<userData>/glwork-first-run.json`），之后完全按成员自己的设置。
 
@@ -33,7 +34,7 @@ GL Work 的成员用自己的订阅登录 Claude Code、Codex、Qoder（公司�
 | 位置 | 内容 |
 | --- | --- |
 | `src/main/glwork/glwork-cli-tools.ts` | 三个工具的官方命令、检测 |
-| `src/main/glwork/glwork-first-run.ts` | 首次启动的默认（钩子关闭、只启用 GL Work 的工具） |
+| `src/main/glwork/glwork-first-run.ts` | 首次启动的默认（钩子关闭、只启用 GL Work 的工具、代理权限改为手动） |
 | `src/main/glwork/glwork-cli-tools.test.ts` | 检测（只跑状态命令、未安装不跑任何命令）、首次启动只执行一次、Orca 构建不受影响 |
 | `src/renderer/src/components/settings/glwork/GlWorkCliTools.tsx` | 工具卡片：状态、安装（确认对话框）、登录、停用开关 |
 | `src/renderer/src/components/settings/glwork/GlWorkAgentHooksConsent.tsx` | 代理状态钩子的说明和同意 |
