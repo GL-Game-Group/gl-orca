@@ -18453,7 +18453,12 @@
       "connected": "已登录",
       "cancel": "取消",
       "signOut": "退出登录",
-      "signIn": "用 GitHub 登录"
+      "signIn": "用 GitHub 登录",
+      "sourcesTitle": "模型来源",
+      "sourcesDescription": "选择公司模型后，GL Work 启动该工具时会使用公司网关，并以你的公司账号登录作为 Key；你自己的订阅不受影响。",
+      "sourceHint": "新会话使用的模型来源",
+      "sourceOwnClaude": "我自己的 Claude 订阅",
+      "sourceOwnQwen": "我自己的 Qwen Code 设置"
     }
   }
 }

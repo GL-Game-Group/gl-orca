@@ -18453,7 +18453,12 @@
       "connected": "로그인됨",
       "cancel": "취소",
       "signOut": "로그아웃",
-      "signIn": "GitHub로 로그인"
+      "signIn": "GitHub로 로그인",
+      "sourcesTitle": "모델 출처",
+      "sourcesDescription": "회사 모델을 선택하면 GL Work가 회사 게이트웨이와 회사 계정 로그인을 키로 사용해 도구를 시작합니다. 본인의 구독은 그대로 유지됩니다.",
+      "sourceHint": "새 세션에 사용할 모델 출처",
+      "sourceOwnClaude": "내 Claude 구독",
+      "sourceOwnQwen": "내 Qwen Code 설정"
     }
   }
 }

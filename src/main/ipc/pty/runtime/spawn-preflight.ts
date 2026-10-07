@@ -44,6 +44,7 @@ import { ensureCodexStateDbBackfillRecoveryStarted } from '../../../codex/codex-
 import { clearProviderPtyState } from '../provider/state-cleanup'
 import { awaitExplicitPiOmpGuestReadiness } from '../../../agent-hooks/wsl-pi-omp-guest-readiness'
 import type { RuntimePtySpawnState } from './spawn-state'
+import { applyGlWorkCompanyModel } from '../../../glwork/glwork-model-sources'
 
 export async function prepareRuntimePtySpawn(
   ctx: RuntimePtySpawnState
@@ -148,7 +149,7 @@ export async function prepareRuntimePtySpawn(
   // notifyResumeUnavailable — runtime/relay panes start fresh without the notice.
   ctx.launchCommand = codexResumeLaunch.command
   ctx.claudeAuth =
-    ctx.isClaudeLaunch && ctx.deps.prepareClaudeAuth
+    !applyGlWorkCompanyModel(args) && ctx.isClaudeLaunch && ctx.deps.prepareClaudeAuth
       ? await ctx.deps.prepareClaudeAuth(ctx.codexSelectionTarget)
       : null
   if (ctx.isClaudeLaunch && isClaudeAuthSwitchInProgress()) {

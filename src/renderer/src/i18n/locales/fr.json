@@ -18453,7 +18453,12 @@
       "connected": "Connecté",
       "cancel": "Annuler",
       "signOut": "Se déconnecter",
-      "signIn": "Se connecter avec GitHub"
+      "signIn": "Se connecter avec GitHub",
+      "sourcesTitle": "Source du modèle",
+      "sourcesDescription": "Avec un modèle de l'entreprise, GL Work lance l'outil avec la passerelle de l'entreprise et votre connexion à l'entreprise comme clé ; votre propre abonnement n'est pas modifié.",
+      "sourceHint": "Source du modèle pour les nouvelles sessions",
+      "sourceOwnClaude": "Mon propre abonnement Claude",
+      "sourceOwnQwen": "Mes propres réglages Qwen Code"
     }
   }
 }

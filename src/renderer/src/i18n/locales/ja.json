@@ -18453,7 +18453,12 @@
       "connected": "サインイン済み",
       "cancel": "キャンセル",
       "signOut": "サインアウト",
-      "signIn": "GitHub でサインイン"
+      "signIn": "GitHub でサインイン",
+      "sourcesTitle": "モデルの提供元",
+      "sourcesDescription": "会社のモデルを選ぶと、GL Work はツールを会社のゲートウェイで起動し、会社アカウントのサインインをキーとして使います。ご自身のサブスクリプションには影響しません。",
+      "sourceHint": "新しいセッションで使うモデルの提供元",
+      "sourceOwnClaude": "自分の Claude サブスクリプション",
+      "sourceOwnQwen": "自分の Qwen Code の設定"
     }
   }
 }

@@ -18,6 +18,7 @@ import {
 } from '../host-env/fresh-spawn-routing'
 import { getAppPtyId, getProvider, getRelayPtyId } from '../provider/registry'
 import type { PtyIpcSpawnState } from './spawn-state'
+import { applyGlWorkCompanyModel } from '../../../glwork/glwork-model-sources'
 
 export async function preparePtyIpcSpawnPreflight(ctx: PtyIpcSpawnState): Promise<void> {
   const args = ctx.args
@@ -228,7 +229,7 @@ export async function preparePtyIpcSpawnPreflight(ctx: PtyIpcSpawnState): Promis
     ctx.expectedWslDistro
   )
   ctx.claudeAuth =
-    ctx.isClaudeLaunch && ctx.deps.prepareClaudeAuth
+    !applyGlWorkCompanyModel(args) && ctx.isClaudeLaunch && ctx.deps.prepareClaudeAuth
       ? await ctx.deps.prepareClaudeAuth(initialSelectionTarget)
       : null
   ctx.spawnTiming.mark('auth')

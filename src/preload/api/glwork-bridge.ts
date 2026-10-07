@@ -1,5 +1,14 @@
 import { ipcRenderer } from 'electron'
-import type { GlWorkAccountStatus, GlWorkModelsResult } from '../../shared/glwork-account-types'
+import type {
+  GlWorkAccountStatus,
+  GlWorkModelSources,
+  GlWorkModelSourceTool,
+  GlWorkModelsResult
+} from '../../shared/glwork-account-types'
+
+export type GlWorkModelSourceResult =
+  | { ok: true; sources: GlWorkModelSources }
+  | { ok: false; error: string }
 
 /** GL Work's company account (src/main/glwork/glwork-account-ipc.ts). */
 export type GlWorkApi = {
@@ -11,6 +20,12 @@ export type GlWorkApi = {
   cancelSignIn: () => Promise<GlWorkAccountStatus>
   signOut: () => Promise<GlWorkAccountStatus>
   models: () => Promise<GlWorkModelsResult>
+  /** Which company model each CLI runs on (null: the member's own sign-in). */
+  modelSources: () => Promise<GlWorkModelSources>
+  setModelSource: (
+    tool: GlWorkModelSourceTool,
+    choice: { vendor: string; model: string } | null
+  ) => Promise<GlWorkModelSourceResult>
 }
 
 function readIsBuild(): boolean {
@@ -27,5 +42,7 @@ export const glworkApi: GlWorkApi = {
   signIn: () => ipcRenderer.invoke('glwork:signIn'),
   cancelSignIn: () => ipcRenderer.invoke('glwork:cancelSignIn'),
   signOut: () => ipcRenderer.invoke('glwork:signOut'),
-  models: () => ipcRenderer.invoke('glwork:models')
+  models: () => ipcRenderer.invoke('glwork:models'),
+  modelSources: () => ipcRenderer.invoke('glwork:modelSources'),
+  setModelSource: (tool, choice) => ipcRenderer.invoke('glwork:setModelSource', tool, choice)
 }

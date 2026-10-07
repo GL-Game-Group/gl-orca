@@ -15328,7 +15328,12 @@
       "connected": "Sesión iniciada",
       "cancel": "Cancelar",
       "signOut": "Cerrar sesión",
-      "signIn": "Iniciar sesión con GitHub"
+      "signIn": "Iniciar sesión con GitHub",
+      "sourcesTitle": "Origen del modelo",
+      "sourcesDescription": "Con un modelo de la empresa, GL Work inicia la herramienta con la pasarela de la empresa y tu inicio de sesión de la empresa como clave; tu propia suscripción no cambia.",
+      "sourceHint": "Origen del modelo para las sesiones nuevas",
+      "sourceOwnClaude": "Mi propia suscripción de Claude",
+      "sourceOwnQwen": "Mi propia configuración de Qwen Code"
     }
   }
 }
