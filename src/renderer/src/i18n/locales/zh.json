@@ -18459,6 +18459,34 @@
       "sourceHint": "新会话使用的模型来源",
       "sourceOwnClaude": "我自己的 Claude 订阅",
       "sourceOwnQwen": "我自己的 Qwen Code 设置"
+    },
+    "cli": {
+      "title": "命令行工具",
+      "sectionDescription": "本机的 Claude Code、Codex 和 Qoder：安装、登录或停用。",
+      "description": "这些工具由每位成员自己安装、用自己的账号登录；GL Work 只负责检测，并帮你开始。",
+      "recheck": "重新检测",
+      "notInstalled": "未安装",
+      "notSignedIn": "已安装，未登录",
+      "signInUnknown": "已安装。首次运行时在它自己的界面里登录。",
+      "ready": "已就绪",
+      "install": "安装",
+      "installTitle": "安装 {{name}}？",
+      "installDescription": "GL Work 会在终端里运行官方安装命令，你可以看到整个过程：{{command}}。它安装在你的用户目录下，不会改动这台电脑上的其他东西。",
+      "signIn": "登录",
+      "enabled": "使用中",
+      "disabled": "已停用",
+      "toggle": "新会话中使用 {{name}}",
+      "signedIn": "已登录"
+    },
+    "hooks": {
+      "title": "在 GL Work 里显示代理状态",
+      "on": "已开启：Claude Code 和 Codex 通过它们设置里的 GL Work 钩子报告“工作中、等待中、已完成”。",
+      "off": "未开启。开启后会在 Claude Code 和 Codex 自己的设置里加入钩子；GL Work 会先征得你的同意。",
+      "turnOn": "开启…",
+      "turnOff": "关闭",
+      "confirmTitle": "在 GL Work 里显示代理状态？",
+      "confirmDescription": "GL Work 会在这些编程工具自己的设置里加入状态钩子：~/.claude/settings.json（Claude Code）和 ~/.codex/config.toml（Codex）。钩子只向 GL Work 报告“工作中、等待中、已完成”。以后关闭时会移除它们。",
+      "agree": "同意并开启"
     }
   }
 }

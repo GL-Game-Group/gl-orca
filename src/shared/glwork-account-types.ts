@@ -42,3 +42,20 @@ export type GlWorkModelSource = {
 }
 
 export type GlWorkModelSources = Record<GlWorkModelSourceTool, GlWorkModelSource | null>
+
+/** A coding CLI GL Work looks after: members install it and sign in themselves (docs/fork/changes/glwork-cli-tools.md). */
+export type GlWorkCliToolId = 'claude' | 'codex' | 'qoder'
+
+export type GlWorkCliToolStatus = {
+  id: GlWorkCliToolId
+  name: string
+  installed: boolean
+  /** null: the CLI has no way to tell without reading its credentials, so GL Work does not guess. */
+  signedIn: boolean | null
+  /** The official install command, run in a terminal the member watches after confirming. */
+  installCommand: string
+  /** The official sign-in command; the member signs in through the vendor's own flow. */
+  signInCommand: string
+  /** Orca's agent id, for switching the CLI off in new sessions; null until Orca knows the CLI. */
+  agent: 'claude' | 'codex' | null
+}

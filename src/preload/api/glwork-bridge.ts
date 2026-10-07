@@ -1,6 +1,7 @@
 import { ipcRenderer } from 'electron'
 import type {
   GlWorkAccountStatus,
+  GlWorkCliToolStatus,
   GlWorkModelSources,
   GlWorkModelSourceTool,
   GlWorkModelsResult
@@ -22,6 +23,8 @@ export type GlWorkApi = {
   models: () => Promise<GlWorkModelsResult>
   /** Which company model each CLI runs on (null: the member's own sign-in). */
   modelSources: () => Promise<GlWorkModelSources>
+  /** Claude Code, Codex and Qoder: installed, signed in (by their own status commands). */
+  cliTools: () => Promise<GlWorkCliToolStatus[]>
   setModelSource: (
     tool: GlWorkModelSourceTool,
     choice: { vendor: string; model: string } | null
@@ -44,5 +47,6 @@ export const glworkApi: GlWorkApi = {
   signOut: () => ipcRenderer.invoke('glwork:signOut'),
   models: () => ipcRenderer.invoke('glwork:models'),
   modelSources: () => ipcRenderer.invoke('glwork:modelSources'),
+  cliTools: () => ipcRenderer.invoke('glwork:cliTools'),
   setModelSource: (tool, choice) => ipcRenderer.invoke('glwork:setModelSource', tool, choice)
 }
