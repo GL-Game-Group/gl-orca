@@ -22,9 +22,9 @@ GL Work 的成员用自己的订阅登录 Claude Code、Codex、Qoder（公司�
 | --- | --- | --- | --- | --- |
 | Claude Code | `claude` 在成员的 shell PATH 上 | `claude auth status` 退出码（0 已登录，1 未登录） | `curl -fsSL https://claude.ai/install.sh \| bash` | `claude auth login` |
 | Codex | `codex` | `codex login status` 退出码 | `npm install -g @openai/codex` | `codex login` |
-| Qoder | `qoder` | 不判断（官方没有状态命令，GL Work 不去读它的凭据文件） | `curl -fsSL https://qoder.com/install \| bash` | `qoder`（首次运行时在它自己的界面里 `/login`） |
+| Qoder | `qodercli` 或 `qoder` | 不判断（官方没有状态命令，GL Work 不去读它的凭据文件） | `curl -fsSL https://qoder.com/install \| bash` | `qodercli`（首次运行时在它自己的界面里 `/login`） |
 
-退出码是用临时的空配置目录实测过的（Claude Code 2.1.293、Codex 0.157.1）。状态命令的输出不读取、不保存。PATH 用 Orca 的 `hydrateShellPathForAgentDetection` 和 `isCommandOnPath`，和 Orca 自己的代理检测一致。
+退出码是用临时的空配置目录实测过的（Claude Code 2.1.293、Codex 0.157.1）。Qoder 的安装器装两个命令：`~/.local/bin/qodercli`，以及写进 `~/.zshrc`、`~/.zprofile` 的 `~/.qoder/entry/qoder`，所以两个名字都认，登录用一定在 PATH 上的 `qodercli`。「重新检测」会强制重新读取登录 shell 的 PATH（同 Orca「智能体」页的刷新），刚装完的工具不用重启 GL Work 就能检测到。状态命令的输出不读取、不保存。PATH 用 Orca 的 `hydrateShellPathForAgentDetection` 和 `isCommandOnPath`，和 Orca 自己的代理检测一致。
 
 ## 代码位置
 

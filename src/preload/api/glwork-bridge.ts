@@ -24,7 +24,7 @@ export type GlWorkApi = {
   /** Which company model each CLI runs on (null: the member's own sign-in). */
   modelSources: () => Promise<GlWorkModelSources>
   /** Claude Code, Codex and Qoder: installed, signed in (by their own status commands). */
-  cliTools: () => Promise<GlWorkCliToolStatus[]>
+  cliTools: (refresh?: boolean) => Promise<GlWorkCliToolStatus[]>
   setModelSource: (
     tool: GlWorkModelSourceTool,
     choice: { vendor: string; model: string } | null
@@ -47,6 +47,6 @@ export const glworkApi: GlWorkApi = {
   signOut: () => ipcRenderer.invoke('glwork:signOut'),
   models: () => ipcRenderer.invoke('glwork:models'),
   modelSources: () => ipcRenderer.invoke('glwork:modelSources'),
-  cliTools: () => ipcRenderer.invoke('glwork:cliTools'),
+  cliTools: (refresh) => ipcRenderer.invoke('glwork:cliTools', refresh === true),
   setModelSource: (tool, choice) => ipcRenderer.invoke('glwork:setModelSource', tool, choice)
 }
