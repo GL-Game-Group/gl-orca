@@ -44,7 +44,6 @@ export const MOBILE_TUI_AGENT_FAVICON_DOMAINS: Partial<Record<TuiAgent, string>>
   'mistral-vibe': 'mistral.ai',
   'qwen-code': 'qwenlm.github.io',
   rovo: 'atlassian.com',
-  qoder: 'qoder.com',
   hermes: 'nousresearch.com',
   devin: 'devin.ai',
   openclaw: 'openclaw.ai'

@@ -40,12 +40,8 @@ const NODE_PACKAGE_SCRIPT_ENTRYPOINTS: Record<string, readonly string[]> = {
   gemini: ['node_modules/@google/gemini-cli/'],
   // Why: ZCode's npm bin is `dist/zcode.cjs`, so a package install runs as `node …zcode.cjs`
   // and never shows `zcode` as the foreground name (a SEA build still matches by name).
-  zcode: ['node_modules/@zcode/cli/'],
-  qodercli: ['node_modules/@qoder-ai/qodercli/']
+  zcode: ['node_modules/@zcode/cli/']
 }
-// Why: ~/.local/bin/qodercli links to a versioned `qodercli-<version>` binary, and macOS
-// reports that target name (`qodercli-1.1.65`) as the foreground process.
-const QODERCLI_VERSIONED_BINARY_RE = /^qodercli-\d/
 const PYTHON_SCRIPT_ENTRYPOINT_DIRECTORIES = ['/bin/', '/scripts/', '/site-packages/']
 
 const PROCESS_TO_AGENT = new Map<string, TuiAgent>()
@@ -91,9 +87,6 @@ function agentForNormalizedProcess(normalized: string): TuiAgent | undefined {
   // comm-truncated rows (`muse-bin-1.0.3-R`) without matching unrelated `muse-*` tools.
   if (normalized.startsWith('muse-bin-')) {
     return PROCESS_TO_AGENT.get('muse')
-  }
-  if (QODERCLI_VERSIONED_BINARY_RE.test(normalized)) {
-    return PROCESS_TO_AGENT.get('qodercli')
   }
   return undefined
 }
@@ -171,8 +164,7 @@ export function isExpectedAgentProcess(
   return (
     normalizedProcess === normalizedExpected ||
     normalizedProcess.startsWith(`${normalizedExpected}.`) ||
-    (normalizedExpected === 'muse' && normalizedProcess.startsWith('muse-bin-')) ||
-    (normalizedExpected === 'qodercli' && QODERCLI_VERSIONED_BINARY_RE.test(normalizedProcess))
+    (normalizedExpected === 'muse' && normalizedProcess.startsWith('muse-bin-'))
   )
 }
 

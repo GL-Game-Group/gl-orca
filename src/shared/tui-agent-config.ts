@@ -286,14 +286,6 @@ const TUI_AGENT_CONFIG_SOURCE: Record<TuiAgent, TuiAgentConfigSource> = {
     detectCmd: 'rovo',
     promptInjectionMode: 'stdin-after-start'
   },
-  qoder: {
-    // Why: the installer ships `qodercli` plus a `qoder` dispatcher that execs it.
-    detectCmd: 'qodercli',
-    detectCmdAliases: ['qoder'],
-    // Why: not argv — its Commander parser dispatches a subcommand-named prompt
-    // (`login`, `update`, `commit`) even after `--`; `-i/--prompt-interactive` stays interactive.
-    promptInjectionMode: 'flag-prompt-interactive'
-  },
   hermes: {
     detectCmd: 'hermes',
     // Why: bare `hermes` opens the classic REPL; `--tui` starts the full-screen agent UI Orca hosts.

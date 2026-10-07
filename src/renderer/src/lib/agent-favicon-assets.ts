@@ -21,7 +21,6 @@ import kimiUrl from '../../../shared/agent-icons/kimi.png?url'
 import mistralVibeUrl from '../../../shared/agent-icons/mistral-vibe.png?url'
 import qwenCodeUrl from '../../../shared/agent-icons/qwen-code.png?url'
 import rovoUrl from '../../../shared/agent-icons/rovo.png?url'
-import qoderUrl from '../../../shared/agent-icons/qoder.png?url'
 import hermesUrl from '../../../shared/agent-icons/hermes.png?url'
 import devinUrl from '../../../shared/agent-icons/devin.png?url'
 import museUrl from '../../../shared/agent-icons/muse.png?url'
@@ -58,7 +57,6 @@ export const AGENT_FAVICON_ASSETS: Partial<Record<TuiAgent, string>> = {
   'mistral-vibe': mistralVibeUrl,
   'qwen-code': qwenCodeUrl,
   rovo: rovoUrl,
-  qoder: qoderUrl,
   hermes: hermesUrl,
   devin: devinUrl,
   muse: museUrl,

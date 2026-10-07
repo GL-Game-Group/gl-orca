@@ -26,7 +26,6 @@ export const YOLO_TUI_AGENT_ARGS: Partial<Record<TuiAgent, string>> = {
   'mistral-vibe': '--agent auto-approve',
   'qwen-code': '--approval-mode yolo',
   rovo: '--yolo',
-  qoder: '--dangerously-skip-permissions',
   hermes: '--yolo',
   copilot: '--yolo',
   grok: '--permission-mode bypassPermissions',
