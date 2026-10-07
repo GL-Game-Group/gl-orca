@@ -4,6 +4,7 @@ import {
   cleanCloudServiceOrigin as cleanOrigin
 } from '../../shared/cloud-service-url'
 import { resolvePushGatewayOrigin } from '../runtime/push/push-gateway-origin'
+import { isGlWorkBuild } from '../glwork/glwork-build'
 
 export type OrcaCloudAuthConfig = {
   apiBaseUrl: string
@@ -57,7 +58,8 @@ export function getOrcaCloudAuthConfig(
       ? PRODUCTION_API_BASE_URL
       : null
   const clientId = env.ORCA_CLOUD_CLIENT_ID?.trim() || (packaged ? PRODUCTION_CLIENT_ID : undefined)
-  if (!apiBaseUrl || !clientId) {
+  // eva: GL Work members sign in to the company service, never to Orca Cloud.
+  if (!apiBaseUrl || !clientId || isGlWorkBuild()) {
     return {
       configured: false,
       setupMessage: 'Orca Cloud sign-in is not configured for this build.'

@@ -4,6 +4,11 @@ import { homedir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { getVersionManagerBinPaths } from '../codex-cli/command'
 import { getMainE2EConfig } from '../e2e-config'
+import {
+  GLWORK_DEV_USER_DATA_DIR,
+  GLWORK_USER_DATA_DIR,
+  isGlWorkBuild
+} from '../glwork/glwork-build'
 import { DISABLED_CHROMIUM_FEATURES } from './disabled-chromium-features'
 import { readHttp1CompatibilityMarker } from './http1-compatibility-marker'
 import {
@@ -209,6 +214,10 @@ export function configureDevUserDataPath(isDev: boolean): void {
   }
 
   if (!isDev) {
+    // eva: GL Work keeps its own profile, apart from the earlier GL Work's "GL Work" directory.
+    if (isGlWorkBuild()) {
+      app.setPath('userData', join(app.getPath('appData'), GLWORK_USER_DATA_DIR))
+    }
     return
   }
   const overrideUserDataPath = process.env.ORCA_DEV_USER_DATA_PATH
@@ -218,7 +227,10 @@ export function configureDevUserDataPath(isDev: boolean): void {
     return
   }
   // Why: without a dev-only path, pnpm dev overwrites the packaged app's runtime pointer under userData and breaks the orca CLI.
-  app.setPath('userData', join(app.getPath('appData'), 'orca-dev'))
+  app.setPath(
+    'userData',
+    join(app.getPath('appData'), isGlWorkBuild() ? GLWORK_DEV_USER_DATA_DIR : 'orca-dev')
+  )
 }
 
 function areSameE2EHomePath(left: string, right: string): boolean {
