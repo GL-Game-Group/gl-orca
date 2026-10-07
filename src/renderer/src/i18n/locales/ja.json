@@ -18480,12 +18480,12 @@
       "signedIn": "サインイン済み"
     },
     "hooks": {
-      "title": "GL Work でエージェントの状態を表示",
+      "title": "GL Work で Agent の状態を表示",
       "on": "オン：Claude Code と Codex は設定内の GL Work のフックを通じて作業中・待機中・完了を報告します。",
       "off": "オフ。オンにすると Claude Code と Codex 自身の設定にフックを追加します。GL Work が先に確認します。",
       "turnOn": "オンにする…",
       "turnOff": "オフにする",
-      "confirmTitle": "GL Work でエージェントの状態を表示しますか？",
+      "confirmTitle": "GL Work で Agent の状態を表示しますか？",
       "confirmDescription": "GL Work はコーディングツール自身の設定に状態フックを追加します：~/.claude/settings.json（Claude Code）と ~/.codex/config.toml（Codex）。フックは作業中・待機中・完了を GL Work に報告するだけです。後でオフにすると削除されます。",
       "agree": "同意してオンにする"
     }
