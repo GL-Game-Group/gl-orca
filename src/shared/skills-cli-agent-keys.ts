@@ -43,6 +43,8 @@ export const SKILLS_CLI_AGENT_KEY_BY_TUI_AGENT = {
   'mistral-vibe': 'mistral-vibe',
   'qwen-code': 'qwen-code',
   rovo: 'rovodev',
+  // Why: the skills CLI splits `qoder` and `qoder-cn`, and both editions ship `qodercli`.
+  qoder: null,
   hermes: 'hermes-agent',
   openclaw: 'openclaw',
   copilot: 'github-copilot',
