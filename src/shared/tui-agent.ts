@@ -30,6 +30,7 @@ export type TuiAgent =
   | 'mistral-vibe' // Mistral Vibe
   | 'qwen-code' // Qwen Code
   | 'rovo' // Rovo Dev
+  | 'qoder' // Qoder CLI (`qodercli`)
   | 'hermes' // Hermes Agent
   | 'openclaw' // OpenClaw
   | 'copilot' // GitHub Copilot CLI

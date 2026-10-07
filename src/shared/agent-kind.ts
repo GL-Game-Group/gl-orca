@@ -44,6 +44,7 @@ const TUI_AGENT_KIND_BY_AGENT = {
   'mistral-vibe': 'mistral-vibe',
   'qwen-code': 'qwen-code',
   rovo: 'rovo',
+  qoder: 'qoder',
   hermes: 'hermes',
   openclaw: 'openclaw',
   copilot: 'copilot',

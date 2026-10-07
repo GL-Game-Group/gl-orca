@@ -76,7 +76,9 @@ describe('coding tools', () => {
     expect(tools.find((t) => t.id === 'qoder')).toMatchObject({
       installed: true,
       signedIn: false,
-      signInCommand: 'qodercli login'
+      signInCommand: 'qodercli login',
+      // Orca's agent id, so the card's switch-off toggle covers Qoder too.
+      agent: 'qoder'
     })
     expect(host.ran).toEqual(['reread PATH', 'qodercli status -o json'])
   })
@@ -92,7 +94,16 @@ describe('coding tools', () => {
 })
 
 describe('GL Work first run', () => {
-  let settings: Pick<GlobalSettings, 'agentStatusHooksEnabled' | 'disabledTuiAgents'>
+  let settings: Pick<
+    GlobalSettings,
+    'agentStatusHooksEnabled' | 'disabledTuiAgents' | 'agentDefaultArgs' | 'agentDefaultEnv'
+  >
+  const orcaDefaults = (): typeof settings => ({
+    agentStatusHooksEnabled: true,
+    disabledTuiAgents: [],
+    agentDefaultArgs: { claude: '--dangerously-skip-permissions', codex: '--model gpt-5' },
+    agentDefaultEnv: { goose: { GOOSE_MODE: 'auto' } }
+  })
   const store = {
     getSettings: () => settings,
     updateSettings: (updates: typeof settings) => {
@@ -102,7 +113,7 @@ describe('GL Work first run', () => {
 
   beforeEach(() => {
     host.userData = mkdtempSync(join(tmpdir(), 'glwork-first-run-'))
-    settings = { agentStatusHooksEnabled: true, disabledTuiAgents: [] }
+    settings = orcaDefaults()
     resetGlWorkBuildForTests()
   })
 
@@ -119,15 +130,19 @@ describe('GL Work first run', () => {
     expect(settings.disabledTuiAgents).not.toContain('claude')
     expect(settings.disabledTuiAgents).not.toContain('codex')
     expect(settings.disabledTuiAgents).not.toContain('qwen-code')
+    expect(settings.disabledTuiAgents).not.toContain('qoder')
     expect(settings.disabledTuiAgents).toContain('gemini')
+    // Agents ask first; a member's own extra arguments stay.
+    expect(settings.agentDefaultArgs).toMatchObject({ claude: '', codex: '--model gpt-5' })
+    expect(settings.agentDefaultEnv).toMatchObject({ goose: {} })
     // The member's later choices stay.
-    settings = { agentStatusHooksEnabled: true, disabledTuiAgents: [] }
+    settings = orcaDefaults()
     applyGlWorkFirstRunSettings(store)
-    expect(settings).toEqual({ agentStatusHooksEnabled: true, disabledTuiAgents: [] })
+    expect(settings).toEqual(orcaDefaults())
   })
 
   it('leaves Orca builds alone', () => {
     applyGlWorkFirstRunSettings(store)
-    expect(settings).toEqual({ agentStatusHooksEnabled: true, disabledTuiAgents: [] })
+    expect(settings).toEqual(orcaDefaults())
   })
 })

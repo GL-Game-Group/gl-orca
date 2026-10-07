@@ -309,6 +309,14 @@ export const getAgentCatalog = createLocalizedCatalog((): AgentCatalogEntry[] =>
       'https://support.atlassian.com/rovo/docs/install-and-run-rovo-dev-cli-on-your-device/'
   },
   {
+    id: 'qoder',
+    label: translate('auto.lib.agent.catalog.c633d4dd92', 'Qoder'),
+    // Why: the CLI binary is `qodercli`; `qoder` is the installer's dispatcher that also opens the IDE.
+    cmd: 'qodercli',
+    faviconDomain: 'qoder.com',
+    homepageUrl: 'https://docs.qoder.com/cli/quick-start'
+  },
+  {
     id: 'hermes',
     label: translate('auto.lib.agent.catalog.8a9ba743cc', 'Hermes'),
     cmd: 'hermes',
