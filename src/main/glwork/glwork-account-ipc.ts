@@ -143,7 +143,9 @@ export function registerGlWorkAccountIpcHandlers(): void {
   ipcMain.handle('glwork:signOut', () => signOut())
   ipcMain.handle('glwork:models', () => models())
   ipcMain.handle('glwork:modelSources', () => readGlWorkModelSources())
-  ipcMain.handle('glwork:cliTools', () => readGlWorkCliToolStatuses())
+  ipcMain.handle('glwork:cliTools', (_event, refresh: unknown) =>
+    readGlWorkCliToolStatuses(refresh === true)
+  )
   ipcMain.handle('glwork:setModelSource', (_event, tool: unknown, choice: unknown) =>
     setModelSource(tool, choice)
   )

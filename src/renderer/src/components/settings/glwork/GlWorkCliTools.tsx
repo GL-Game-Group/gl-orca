@@ -39,17 +39,20 @@ export function GlWorkCliTools(): React.JSX.Element | null {
   const [tools, setTools] = useState<GlWorkCliToolStatus[] | null>(null)
   const [checking, setChecking] = useState(false)
 
-  const refresh = useCallback(async (): Promise<void> => {
-    if (!api) {
-      return
-    }
-    setChecking(true)
-    try {
-      setTools(await api.cliTools())
-    } finally {
-      setChecking(false)
-    }
-  }, [api])
+  const refresh = useCallback(
+    async (rereadPath = false): Promise<void> => {
+      if (!api) {
+        return
+      }
+      setChecking(true)
+      try {
+        setTools(await api.cliTools(rereadPath))
+      } finally {
+        setChecking(false)
+      }
+    },
+    [api]
+  )
 
   useEffect(() => {
     void refresh()
@@ -97,7 +100,7 @@ export function GlWorkCliTools(): React.JSX.Element | null {
           variant="ghost"
           size="sm"
           disabled={checking}
-          onClick={() => void refresh()}
+          onClick={() => void refresh(true)}
         >
           <RefreshCw />
           {translate('glwork.cli.recheck', 'Check again')}

@@ -18,6 +18,13 @@ vi.mock('electron', () => ({
 vi.mock('../ipc/agent-detection-shell-path', () => ({
   hydrateShellPathForAgentDetection: async () => {}
 }))
+vi.mock('../startup/hydrate-shell-path', () => ({
+  hydrateShellPath: async () => {
+    host.ran.push('reread PATH')
+    return { ok: true, segments: [] }
+  },
+  mergePathSegments: () => []
+}))
 vi.mock('../ipc/preflight-command-exec', () => ({
   isCommandOnPath: async (command: string) => host.onPath.has(command),
   execLocalPreflightCommandOrThrow: async (command: string, args: string[]) => {
@@ -51,6 +58,17 @@ describe('coding tools', () => {
       ['qoder', true, null]
     ])
     expect(host.ran).toEqual(['claude auth status', 'codex login status'])
+  })
+
+  it('finds Qoder under either name, and re-reads the shell PATH when asked to check again', async () => {
+    host.onPath = new Set(['qodercli'])
+    const tools = await readGlWorkCliToolStatuses(true)
+    expect(tools.find((t) => t.id === 'qoder')).toMatchObject({
+      installed: true,
+      signedIn: null,
+      signInCommand: 'qodercli'
+    })
+    expect(host.ran).toEqual(['reread PATH'])
   })
 
   it('offers the official install command for a CLI that is missing, and runs nothing for it', async () => {
