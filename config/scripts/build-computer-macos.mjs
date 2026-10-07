@@ -29,8 +29,23 @@ createHelperApp()
 
 function buildUniversalBinary() {
   const builtBinaries = universalTriples.map((triple) => {
-    run('swift', ['build', '-c', 'release', '--package-path', packagePath, '--triple', triple])
-    return path.join(packagePath, '.build', triple, 'release', 'orca-computer-use-macos')
+    const args = ['build', '-c', 'release', '--package-path', packagePath, '--triple', triple]
+    run('swift', args)
+    // Why: Swift 6.4 (Xcode 27) builds into .build/out/Products/Release for every triple, so ask
+    // SwiftPM where this one went and keep a copy before the next triple overwrites it.
+    const binDir = spawnSync('swift', [...args, '--show-bin-path'], {
+      encoding: 'utf8'
+    }).stdout.trim()
+    const kept = path.join(
+      packagePath,
+      '.build',
+      'universal-inputs',
+      triple,
+      'orca-computer-use-macos'
+    )
+    mkdirSync(path.dirname(kept), { recursive: true })
+    copyFileSync(path.join(binDir, 'orca-computer-use-macos'), kept)
+    return kept
   })
   mkdirSync(path.dirname(binaryPath), { recursive: true })
   run('lipo', ['-create', ...builtBinaries, '-output', binaryPath])
