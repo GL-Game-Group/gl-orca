@@ -29,6 +29,11 @@ vi.mock('../ipc/preflight-command-exec', () => ({
   isCommandOnPath: async (command: string) => host.onPath.has(command),
   execLocalPreflightCommandOrThrow: async (command: string, args: string[]) => {
     host.ran.push([command, ...args].join(' '))
+    // Like qodercli 1.1.65: its status exits 0 either way and says which in JSON.
+    if (command === 'qodercli') {
+      const loggedIn = host.signedIn.has(command)
+      return { stdout: JSON.stringify({ logged_in: loggedIn, email: 'x@y.z' }), stderr: '' }
+    }
     if (!host.signedIn.has(command)) {
       throw new Error('exit 1')
     }
@@ -48,16 +53,21 @@ describe('coding tools', () => {
   })
 
   it('reports installed and signed in from the CLIs’ own status commands only', async () => {
-    host.onPath = new Set(['claude', 'codex', 'qoder'])
-    host.signedIn = new Set(['claude'])
+    host.onPath = new Set(['claude', 'codex', 'qodercli'])
+    host.signedIn = new Set(['claude', 'qodercli'])
     const tools = await readGlWorkCliToolStatuses()
     expect(tools.map((t) => [t.id, t.installed, t.signedIn])).toEqual([
       ['claude', true, true],
       ['codex', true, false],
-      // Qoder has no status command: GL Work does not guess.
-      ['qoder', true, null]
+      ['qoder', true, true]
     ])
-    expect(host.ran).toEqual(['claude auth status', 'codex login status'])
+    expect(host.ran).toEqual([
+      'claude auth status',
+      'codex login status',
+      'qodercli status -o json'
+    ])
+    // Only logged_in is taken from Qoder's status; account details never come back.
+    expect(JSON.stringify(tools)).not.toContain('x@y.z')
   })
 
   it('finds Qoder under either name, and re-reads the shell PATH when asked to check again', async () => {
@@ -65,10 +75,10 @@ describe('coding tools', () => {
     const tools = await readGlWorkCliToolStatuses(true)
     expect(tools.find((t) => t.id === 'qoder')).toMatchObject({
       installed: true,
-      signedIn: null,
-      signInCommand: 'qodercli'
+      signedIn: false,
+      signInCommand: 'qodercli login'
     })
-    expect(host.ran).toEqual(['reread PATH'])
+    expect(host.ran).toEqual(['reread PATH', 'qodercli status -o json'])
   })
 
   it('offers the official install command for a CLI that is missing, and runs nothing for it', async () => {

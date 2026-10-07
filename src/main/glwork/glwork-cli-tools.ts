@@ -6,8 +6,11 @@ import { hydrateShellPath, mergePathSegments } from '../startup/hydrate-shell-pa
 type CliTool = Omit<GlWorkCliToolStatus, 'installed' | 'signedIn'> & {
   /** Names the CLI is installed under; the first is the one status checks run. */
   commands: readonly string[]
-  /** An official command that exits 0 when signed in and non-zero when not, printing no secret. */
-  statusArgs: string[] | null
+  /**
+   * An official status command: by exit code (0 signed in), or by the boolean `logged_in` of its
+   * JSON output (every other field, account details included, is dropped unread).
+   */
+  status: { args: string[]; read: 'exit-code' | 'json-logged-in' } | null
 }
 
 /** The CLIs and their official commands (vendor docs, checked 2026-10). */
@@ -18,7 +21,7 @@ export const GLWORK_CLI_TOOLS: readonly CliTool[] = [
     commands: ['claude'],
     installCommand: 'curl -fsSL https://claude.ai/install.sh | bash',
     signInCommand: 'claude auth login',
-    statusArgs: ['auth', 'status'],
+    status: { args: ['auth', 'status'], read: 'exit-code' },
     agent: 'claude'
   },
   {
@@ -27,7 +30,7 @@ export const GLWORK_CLI_TOOLS: readonly CliTool[] = [
     commands: ['codex'],
     installCommand: 'npm install -g @openai/codex',
     signInCommand: 'codex login',
-    statusArgs: ['login', 'status'],
+    status: { args: ['login', 'status'], read: 'exit-code' },
     agent: 'codex'
   },
   {
@@ -36,20 +39,37 @@ export const GLWORK_CLI_TOOLS: readonly CliTool[] = [
     // Why: its installer puts qodercli in ~/.local/bin and a `qoder` dispatcher in ~/.qoder/entry.
     commands: ['qodercli', 'qoder'],
     installCommand: 'curl -fsSL https://qoder.com/install | bash',
-    // Why: Qoder CLI signs in from its own TUI (/login) on first run; it has no status command.
-    signInCommand: 'qodercli',
-    statusArgs: null,
+    signInCommand: 'qodercli login',
+    // Why: `qodercli status` exits 0 signed in or not (1.1.65); its JSON says which.
+    status: { args: ['status', '-o', 'json'], read: 'json-logged-in' },
     agent: null
   }
 ]
 
+function jsonSaysLoggedIn(stdout: string): boolean {
+  try {
+    const parsed: unknown = JSON.parse(stdout)
+    return (
+      typeof parsed === 'object' &&
+      parsed !== null &&
+      'logged_in' in parsed &&
+      parsed.logged_in === true
+    )
+  } catch {
+    return false
+  }
+}
+
 async function signedIn(tool: CliTool): Promise<boolean | null> {
-  if (!tool.statusArgs) {
+  if (!tool.status) {
     return null
   }
   try {
-    await execLocalPreflightCommandOrThrow(tool.commands[0] ?? '', tool.statusArgs)
-    return true
+    const { stdout } = await execLocalPreflightCommandOrThrow(
+      tool.commands[0] ?? '',
+      tool.status.args
+    )
+    return tool.status.read === 'exit-code' || jsonSaysLoggedIn(stdout)
   } catch {
     return false
   }
@@ -73,7 +93,7 @@ export async function readGlWorkCliToolStatuses(refresh = false): Promise<GlWork
     GLWORK_CLI_TOOLS.map(async (tool) => {
       const found = await Promise.all(tool.commands.map((command) => isCommandOnPath(command)))
       const installed = found.some(Boolean)
-      const { commands: _commands, statusArgs: _statusArgs, ...shown } = tool
+      const { commands: _commands, status: _status, ...shown } = tool
       return { ...shown, installed, signedIn: installed ? await signedIn(tool) : false }
     })
   )
