@@ -22,7 +22,7 @@ export function buildRecoveryCrashProcess(directory: string): string {
     stdin: {
       contents: `
         export { acquireProfileStateMaintenance } from './src/main/persistence/profile-state/profile-state-access'
-        export { restoreProfileStateJsonExport } from './src/main/persistence/profile-state/profile-state-recovery'
+        export { restoreProfileStateJsonExport } from './src/main/persistence/profile-state/legacy-json/profile-state-recovery'
         export { restoreProfileStateDatabaseBackup } from './src/main/persistence/profile-state/profile-state-database-recovery'
         export { openProfileStateDatabase } from './src/main/persistence/profile-state/profile-state-database'
         export { importProfileStateJson } from './src/main/persistence/profile-state/profile-state-documents'
@@ -62,10 +62,12 @@ fs.renameSync = (from, to) => {
   if (to === options.dataFile) barrier('json-publish:before')
   if (to === options.databasePath) barrier('sqlite-publish:before')
   if (to === options.markerPath) barrier('marker-publish:before')
+  if (to === options.databasePath + '.authority') barrier('authority-publish:before')
   rename(from, to)
   if (to === options.dataFile) barrier('json-publish:after')
   if (to === options.databasePath) barrier('sqlite-publish:after')
   if (to === options.markerPath) barrier('marker-publish:after')
+  if (to === options.databasePath + '.authority') barrier('authority-publish:after')
 }
 const rm = fs.rmSync
 fs.rmSync = (target, ...rest) => {

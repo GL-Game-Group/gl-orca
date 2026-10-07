@@ -73,12 +73,12 @@ export function GlWorkCliTools(): React.JSX.Element | null {
       confirmLabel: translate('glwork.cli.install', 'Install')
     })
     if (confirmed) {
-      await runGlWorkCommandInTerminal(`install-${tool.id}`, tool.name, tool.installCommand)
+      runGlWorkCommandInTerminal(`install-${tool.id}`, tool.name, tool.installCommand)
     }
   }
 
   const signIn = (tool: GlWorkCliToolStatus): void => {
-    void runGlWorkCommandInTerminal(`sign-in-${tool.id}`, tool.name, tool.signInCommand)
+    runGlWorkCommandInTerminal(`sign-in-${tool.id}`, tool.name, tool.signInCommand)
   }
 
   const setEnabled = (agent: TuiAgent, enabled: boolean): void => {

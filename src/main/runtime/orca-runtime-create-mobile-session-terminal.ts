@@ -1,5 +1,5 @@
 // @ts-nocheck -- mechanically split from OrcaRuntimeService; behavior is covered by AST equivalence and characterization tests.
-import { OrcaRuntimeWithCreateTerminal } from './orca-runtime-create-terminal'
+import { OrcaRuntimeWithGithubCallerTerminal as OrcaRuntimeWithCreateTerminal } from './github-auth/orca-runtime-github-caller-terminal'
 import type { WorktreeStartupLaunch } from '../../shared/worktree/launch-types'
 import type { TuiAgent } from '../../shared/tui-agent'
 import type { SleepingAgentLaunchConfig } from '../../shared/agent-session-resume'

@@ -32,8 +32,11 @@ type SettingsStore = {
  * commands or edit files (Orca starts them skipping every permission prompt).
  */
 export function applyGlWorkFirstRunSettings(store: SettingsStore): void {
+  if (!isGlWorkBuild()) {
+    return
+  }
   const marker = join(app.getPath('userData'), MARKER)
-  if (!isGlWorkBuild() || existsSync(marker)) {
+  if (existsSync(marker)) {
     return
   }
   const current = store.getSettings()

@@ -2,7 +2,7 @@ import { build } from 'esbuild'
 import { mkdtempSync, readFileSync, rmSync, writeFileSync, existsSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
-import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { ProfileStateSqliteAuthority } from './profile-state-sqlite-authority'
 import { ProfileStateRevisionConflictError } from './profile-state-document-validation'
 import { openProfileStateDatabase } from './profile-state-database'
@@ -105,9 +105,12 @@ describe('persistent profile state write worker', () => {
       ui: { note: 'hi \ud800' },
       automationRuns: [{ id: 'run-1', output: 'first' }]
     })
-    const compatibility = join(f.root, 'compatibility.json')
-    expect(await client.writeJsonCompatibilityExportAsync(compatibility)).toBe(3)
-    expect(readFileSync(compatibility, 'utf8')).toBe(readFileSync(exported, 'utf8'))
+    const dataFile = join(f.root, 'orca-data.json')
+    expect(await client.writeLatestJsonExport(dataFile)).toBe(3)
+    expect(readFileSync(`${dataFile}.sqlite-export.3.json`, 'utf8')).toBe(
+      readFileSync(exported, 'utf8')
+    )
+    expect(existsSync(dataFile)).toBe(false)
     expect(await client.writeSerializedState(Buffer.from('{"settings":{"theme":"light"}}'))).toBe(4)
     expect(await client.assertCurrentRevision()).toBe(4)
     await client.close()
@@ -266,12 +269,26 @@ describe('persistent profile state write worker', () => {
       })
     `
       )
-      const client = clientFor(f.initialization, broken, 150)
+      const client = clientFor(f.initialization, broken)
       await client.ready
-      const failure = await client
-        .writeSerializedDomains([{ domain: 'settings', payload: '{}' }])
-        .catch((error: unknown) => error)
-      expect(profileStateWriterFailureOutcome(failure)).toBe('indeterminate')
+      if (mode === 'timeout') {
+        vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+      }
+      try {
+        const failure = client
+          .writeSerializedDomains([{ domain: 'settings', payload: '{}' }])
+          .catch((error: unknown) => error)
+        if (mode === 'timeout') {
+          await vi.advanceTimersByTimeAsync(5000)
+        }
+        const observedFailure = await failure
+        expect(profileStateWriterFailureOutcome(observedFailure)).toBe('indeterminate')
+        if (mode === 'timeout') {
+          expect(observedFailure).toMatchObject({ code: 'profile-state-writer-timeout' })
+        }
+      } finally {
+        vi.useRealTimers()
+      }
       await client.close()
       expect(readState(f.path, f.profileId)).toEqual({ settings: { theme: 'dark' } })
       rmSync(f.root, { recursive: true })
