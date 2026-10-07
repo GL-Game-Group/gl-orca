@@ -51,7 +51,7 @@ git merge main                            # 统一用 merge，不用 rebase，�
 pnpm install && (cd mobile && pnpm install)
 pnpm tc                                   # 主进程 / CLI / 网页端类型检查
 pnpm run check:code-quality:changed       # 改动质量检查（样式规范、类型断言、lint）
-pnpm test <各功能记录里列出的测试>
+pnpm test <各功能记录里列出的测试>       # 官方改用 Bun 跑 Vitest；没装 Bun 时用 pnpm run test:node（agent-launch-*replay、instant-tab 在 Node 下官方代码也失败）
 (cd mobile && pnpm typecheck && pnpm test)
 ```
 
@@ -82,4 +82,4 @@ pnpm test <各功能记录里列出的测试>
 | GL Work 品牌与打包（应用身份、独立数据目录、关闭 Orca 更新和云账号） | [changes/glwork-brand.md](./changes/glwork-brand.md) | `my/glwork-brand` |
 | GL Work 公司账号（GitHub 登录公司服务、设备令牌、公司模型清单、命令行工具的模型来源） | [changes/glwork-account.md](./changes/glwork-account.md) | `my/glwork-account` |
 | GL Work 命令行工具（Claude Code、Codex、Qoder 的检测、安装、登录、停用；代理状态钩子先征得同意） | [changes/glwork-cli-tools.md](./changes/glwork-cli-tools.md) | `my/glwork-cli-tools` |
-| Qoder 代理（基础级别：检测、带提示启动、图标、停用、手机端列表） | [changes/qoder-agent.md](./changes/qoder-agent.md) | `my/qoder-agent` |
+| ~~Qoder 代理~~（已由官方 #23581 取代，2026-10-08 同步时撤回） | [changes/qoder-agent.md](./changes/qoder-agent.md) | — |

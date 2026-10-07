@@ -100,7 +100,7 @@
 | `src/main/runtime/runtime-rpc/runtime-rpc-lifecycle.ts` | 创建 WebSocket 传输时传入 `requestInterceptor` | 同上 |
 | `src/main/runtime/runtime-rpc.ts` | 新增 `setHttpRequestInterceptor()`、`setRequireGithubIdentity()` | 给接入逻辑调用 |
 | `src/main/runtime/runtime-rpc/runtime-rpc-websocket-dispatch.ts` | 设备令牌校验之后，拒绝没有 GitHub 身份的设备；把 `dispatchStreaming` 用 `bindGithubCaller` 包一层（只改一行调用） | 准入控制（**这是安全边界**）和身份传递 |
-| `src/main/runtime/orca-runtime-create-terminal.ts` | 函数开头合并调用者的环境变量，4 行 | 终端和 Agent 按人注入身份 |
+| `src/main/runtime/orca-runtime-create-mobile-session-terminal.ts` | 父类的 import 改为我们的 `github-auth/orca-runtime-github-caller-terminal.ts`（`OrcaRuntimeWithGithubCallerTerminal as OrcaRuntimeWithCreateTerminal`），一行 | 终端和 Agent 按人注入身份：我们的子类覆盖 `createTerminal`，合并调用者的环境变量后调用父类。官方的 `orca-runtime-create-terminal.ts` 已经顶到 300 行上限，接入点不能放在里面（2026-10-08 同步时挪出） |
 | `src/main/git/command-runner/git-exec-file.ts` | `gitExecFileAsync` 里合并调用者的环境变量（跳过 WSL） | 界面上的提交、推送按人注入身份 |
 | `src/main/startup/main-process-runtime-launch.ts` | 调用 `installGithubDeviceLogin()`，一行 | 启动时接入 |
 | `src/main/ipc/runtime-environment-connectivity-handlers.ts` | 把“验证并添加服务器”提取成函数 `verifyAndAdd`，并注册 GitHub 登录的 IPC 通道 | 两种添加方式走同一套逻辑 |
@@ -120,7 +120,7 @@
 ## 同步后重点检查
 
 - **`runtime-rpc-websocket-dispatch.ts`**：官方如果调整了设备令牌校验或手机权限检查的顺序，我们的 GitHub 身份检查必须仍然在“设备令牌校验通过”之后、“开始执行方法”之前。对应的测试是 `runtime-rpc-github-identity-gate.test.ts`。
-- **`orca-runtime-create-terminal.ts`、`git-exec-file.ts`**：官方如果把创建终端或执行 git 的逻辑换到别的函数，身份注入要跟着挪过去。`github-caller-git-env.test.ts` 用真实的 git 验证了提交作者和凭证助手，可以用它确认。
+- **运行时的类继承链、`git-exec-file.ts`**：`OrcaRuntimeWithGithubCallerTerminal` 必须直接接在 `OrcaRuntimeWithCreateTerminal` 后面（官方如果在两者之间插了新类，或改了 `createTerminal` 的参数，要跟着调整）；官方如果把执行 git 的逻辑换到别的函数，身份注入要跟着挪过去。`orca-runtime-github-caller-terminal.test.ts` 检查终端拿到调用者的身份，`github-caller-git-env.test.ts` 用真实的 git 验证了提交作者和凭证助手，可以用它确认。
 - **`device-registry.ts`**：官方如果改了注册表的读取或持久化方式，要确认 `githubIdentity` 仍然能保存下来，重启后也不会丢。
 - **`ws-transport.ts`、`static-web-client-handler.ts`**：官方如果改了 HTTP 请求的处理方式，要确认 `/auth/github/*` 仍然能访问到。
 - **配对信息格式**（`src/shared/pairing.ts` 的 `PairingOfferSchema`）：官方如果加了必填字段，`github-bound-pairing-offer.ts` 要跟着补上。
