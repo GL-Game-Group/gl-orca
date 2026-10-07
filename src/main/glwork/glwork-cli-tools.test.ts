@@ -76,7 +76,9 @@ describe('coding tools', () => {
     expect(tools.find((t) => t.id === 'qoder')).toMatchObject({
       installed: true,
       signedIn: false,
-      signInCommand: 'qodercli login'
+      signInCommand: 'qodercli login',
+      // Orca's agent id, so the card's switch-off toggle covers Qoder too.
+      agent: 'qoder'
     })
     expect(host.ran).toEqual(['reread PATH', 'qodercli status -o json'])
   })
@@ -119,6 +121,7 @@ describe('GL Work first run', () => {
     expect(settings.disabledTuiAgents).not.toContain('claude')
     expect(settings.disabledTuiAgents).not.toContain('codex')
     expect(settings.disabledTuiAgents).not.toContain('qwen-code')
+    expect(settings.disabledTuiAgents).not.toContain('qoder')
     expect(settings.disabledTuiAgents).toContain('gemini')
     // The member's later choices stay.
     settings = { agentStatusHooksEnabled: true, disabledTuiAgents: [] }

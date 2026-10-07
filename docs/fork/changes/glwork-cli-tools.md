@@ -12,7 +12,7 @@ GL Work 的成员用自己的订阅登录 Claude Code、Codex、Qoder（公司�
 另外两项 GL Work 的默认：
 
 - **代理状态钩子先关闭**：Orca 会往 `~/.claude/settings.json`、`~/.codex/config.toml` 里写入自己的钩子来显示“工作中、等待中、已完成”。公司规则要求修改其他工具的配置前先征得同意，所以 GL Work 首次启动时把 `agentStatusHooksEnabled` 设为关闭，成员在「命令行工具」页点「开启…」、看过要改的文件并确认后才打开（走 Orca 原有的开关，关闭时 Orca 会移除钩子）。
-- **只启用 GL Work 的工具**：首次启动时把 Claude Code、Codex、Qwen Code 以外的 Orca 代理设为停用，成员可以在「智能体」里自己再打开。
+- **只启用 GL Work 的工具**：首次启动时把 Claude Code、Codex、Qwen Code、Qoder 以外的 Orca 代理设为停用，成员可以在「智能体」里自己再打开。
 
 两项都只在某个数据目录第一次以 GL Work 启动时执行一次（`<userData>/glwork-first-run.json`），之后完全按成员自己的设置。
 
@@ -51,7 +51,7 @@ GL Work 的成员用自己的订阅登录 Claude Code、Codex、Qoder（公司�
 
 ## 已知限制
 
-- Qoder 还不是 Orca 的代理：能检测、安装、打开它的登录，但不能在 Orca 里作为代理新建会话，也没有停用开关。把 Qoder 加进 Orca 的代理目录要改约 31 个按代理逐一列举的官方文件，计划作为通用改动提交给官方。
+- Qoder 作为 Orca 代理是基础级别（能新建会话、带初始提示、停用），没有状态钩子和会话恢复，见 [qoder-agent.md](./qoder-agent.md)。卡片的停用开关对 Qoder 也生效（`agent: 'qoder'`）。
 - `glwork-cli-tools` 不在 Orca 的设置跳转名单（`SETTINGS_NAV_TARGETS`）里：侧边导航能到达，但 `openSettingsTarget({ pane: 'glwork-cli-tools' })` 会被拒绝，要跳转请用 `pane: 'orca-account'`。
 - Codex 的安装命令需要 Node.js（npm）。
 - 安装、登录是否成功以终端里的输出为准；完成后点「重新检测」。
@@ -59,5 +59,5 @@ GL Work 的成员用自己的订阅登录 Claude Code、Codex、Qoder（公司�
 ## 同步后重点检查
 
 - `pnpm test src/main/glwork`
-- 后台启动开发版（`GLWORK_BUILD=1 ORCA_BACKGROUND_LAUNCH=1 REMOTE_DEBUGGING_PORT=9333 pnpm dev`），用 CDP 打开设置的「命令行工具」：三张卡片的状态正确；新数据目录第一次启动后 `agentStatusHooksEnabled` 为 false、除 Claude Code/Codex/Qwen Code 外都停用。
+- 后台启动开发版（`GLWORK_BUILD=1 ORCA_BACKGROUND_LAUNCH=1 REMOTE_DEBUGGING_PORT=9333 pnpm dev`），用 CDP 打开设置的「命令行工具」：三张卡片的状态正确；新数据目录第一次启动后 `agentStatusHooksEnabled` 为 false、除 Claude Code/Codex/Qwen Code/Qoder 外都停用。
 - 官方如果改了 `initializeReadyRuntimeServices` 里安装钩子的时机（比如提前到这之前），首次启动的默认要跟着提前，否则会先写入钩子。

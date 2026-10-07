@@ -57,5 +57,5 @@ export type GlWorkCliToolStatus = {
   /** The official sign-in command; the member signs in through the vendor's own flow. */
   signInCommand: string
   /** Orca's agent id, for switching the CLI off in new sessions; null until Orca knows the CLI. */
-  agent: 'claude' | 'codex' | null
+  agent: 'claude' | 'codex' | 'qoder' | null
 }

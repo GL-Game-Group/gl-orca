@@ -81,7 +81,7 @@ export function GlWorkCliTools(): React.JSX.Element | null {
     void runGlWorkCommandInTerminal(`sign-in-${tool.id}`, tool.name, tool.signInCommand)
   }
 
-  const setEnabled = (agent: 'claude' | 'codex', enabled: boolean): void => {
+  const setEnabled = (agent: TuiAgent, enabled: boolean): void => {
     const others = disabledAgents.filter((id) => id !== agent)
     void updateSettings({ disabledTuiAgents: enabled ? others : [...others, agent] })
   }

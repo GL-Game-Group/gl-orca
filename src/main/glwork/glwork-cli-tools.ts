@@ -42,7 +42,7 @@ export const GLWORK_CLI_TOOLS: readonly CliTool[] = [
     signInCommand: 'qodercli login',
     // Why: `qodercli status` exits 0 signed in or not (1.1.65); its JSON says which.
     status: { args: ['status', '-o', 'json'], read: 'json-logged-in' },
-    agent: null
+    agent: 'qoder'
   }
 ]
 

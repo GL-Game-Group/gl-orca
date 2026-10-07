@@ -7,7 +7,7 @@ import { ALL_TUI_AGENTS } from '../../shared/tui-agent-display-names'
 import { isGlWorkBuild } from './glwork-build'
 
 /** The coding CLIs GL Work offers; Orca's other agents start out switched off (members may turn them on). */
-export const GLWORK_AGENTS: readonly TuiAgent[] = ['claude', 'codex', 'qwen-code']
+export const GLWORK_AGENTS: readonly TuiAgent[] = ['claude', 'codex', 'qwen-code', 'qoder']
 
 const MARKER = 'glwork-first-run.json'
 
