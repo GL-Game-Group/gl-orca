@@ -28,3 +28,17 @@ export type GlWorkModelVendor = {
 export type GlWorkModelsResult =
   | { ok: true; vendors: GlWorkModelVendor[] }
   | { ok: false; error: string }
+
+/** Which CLI a company model can drive: Claude Code speaks Anthropic, Qwen Code OpenAI-compatible. */
+export type GlWorkModelSourceTool = 'claude' | 'qwen'
+
+/** A company model chosen for a CLI; null keeps the CLI on the member's own sign-in. */
+export type GlWorkModelSource = {
+  vendor: string
+  vendorName: string
+  model: string
+  modelName: string
+  baseUrl: string
+}
+
+export type GlWorkModelSources = Record<GlWorkModelSourceTool, GlWorkModelSource | null>

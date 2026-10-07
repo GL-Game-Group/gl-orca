@@ -3,6 +3,7 @@ import { Check, CircleUserRound, Cpu } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { translate } from '@/i18n/i18n'
+import { GlWorkModelSources } from './GlWorkModelSources'
 import type {
   GlWorkAccountStatus,
   GlWorkModelsResult
@@ -177,6 +178,23 @@ export function GlWorkAccountPane(): React.JSX.Element {
             {translate('glwork.account.modelsTitle', 'Company models')}
           </p>
           <CompanyModels result={models} />
+        </div>
+      ) : null}
+
+      {status?.signedIn && models?.ok && models.vendors.length > 0 ? (
+        <div className="space-y-4 border-t border-border/60 pt-5">
+          <div className="space-y-1">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
+              {translate('glwork.account.sourcesTitle', 'Model source')}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {translate(
+                'glwork.account.sourcesDescription',
+                'On a company model, GL Work starts the tool with the company gateway and your company sign-in as its key; your own subscription is left as it is.'
+              )}
+            </p>
+          </div>
+          <GlWorkModelSources vendors={models.vendors} />
         </div>
       ) : null}
     </div>

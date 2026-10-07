@@ -1,5 +1,10 @@
 import { ipcMain } from 'electron'
-import type { GlWorkAccountStatus, GlWorkModelsResult } from '../../shared/glwork-account-types'
+import type {
+  GlWorkAccountStatus,
+  GlWorkModelSources,
+  GlWorkModelSourceTool,
+  GlWorkModelsResult
+} from '../../shared/glwork-account-types'
 import { clearGlWorkAccount, readGlWorkAccount, writeGlWorkAccount } from './glwork-account-store'
 import { isGlWorkBuild } from './glwork-build'
 import {
@@ -9,6 +14,7 @@ import {
   revokeDeviceToken
 } from './glwork-company-client'
 import { startCompanySignIn, type PendingSignIn } from './glwork-sign-in'
+import { readGlWorkModelSources, writeGlWorkModelSource } from './glwork-model-sources'
 
 let pending: PendingSignIn | null = null
 let lastError: string | null = null
@@ -77,6 +83,50 @@ async function models(): Promise<GlWorkModelsResult> {
   }
 }
 
+const PROTOCOL_FOR: Record<GlWorkModelSourceTool, 'anthropic' | 'openai'> = {
+  claude: 'anthropic',
+  qwen: 'openai'
+}
+
+/**
+ * Point a CLI at a company model (or back at the member's own sign-in with null). The model is
+ * looked up in the company's current list, so its gateway address comes from the company service.
+ */
+async function setModelSource(
+  tool: unknown,
+  choice: unknown
+): Promise<{ ok: true; sources: GlWorkModelSources } | { ok: false; error: string }> {
+  if (tool !== 'claude' && tool !== 'qwen') {
+    return { ok: false, error: 'Unknown tool.' }
+  }
+  if (choice === null) {
+    return { ok: true, sources: writeGlWorkModelSource(tool, null) }
+  }
+  const wanted: Record<string, unknown> =
+    typeof choice === 'object' && choice !== null ? { ...choice } : {}
+  const listed = await models()
+  if (!listed.ok) {
+    return listed
+  }
+  const vendor = listed.vendors.find(
+    (entry) => entry.vendor === wanted.vendor && entry.protocol === PROTOCOL_FOR[tool]
+  )
+  const model = vendor?.models.find((entry) => entry.id === wanted.model)
+  if (!vendor || !model) {
+    return { ok: false, error: 'That company model is not available to you.' }
+  }
+  return {
+    ok: true,
+    sources: writeGlWorkModelSource(tool, {
+      vendor: vendor.vendor,
+      vendorName: vendor.name,
+      model: model.id,
+      modelName: model.name,
+      baseUrl: vendor.baseUrl
+    })
+  }
+}
+
 /** The company account's IPC; registered in every build, inert in Orca's (isGlWork false). */
 export function registerGlWorkAccountIpcHandlers(): void {
   // Why sync: the settings navigation is built synchronously and must know which account pane to show.
@@ -91,4 +141,8 @@ export function registerGlWorkAccountIpcHandlers(): void {
   })
   ipcMain.handle('glwork:signOut', () => signOut())
   ipcMain.handle('glwork:models', () => models())
+  ipcMain.handle('glwork:modelSources', () => readGlWorkModelSources())
+  ipcMain.handle('glwork:setModelSource', (_event, tool: unknown, choice: unknown) =>
+    setModelSource(tool, choice)
+  )
 }

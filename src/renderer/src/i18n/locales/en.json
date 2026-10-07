@@ -18453,7 +18453,12 @@
       "connected": "Signed in",
       "cancel": "Cancel",
       "signOut": "Sign out",
-      "signIn": "Sign in with GitHub"
+      "signIn": "Sign in with GitHub",
+      "sourcesTitle": "Model source",
+      "sourcesDescription": "On a company model, GL Work starts the tool with the company gateway and your company sign-in as its key; your own subscription is left as it is.",
+      "sourceHint": "Model source for new sessions",
+      "sourceOwnClaude": "My own Claude subscription",
+      "sourceOwnQwen": "My own Qwen Code settings"
     }
   }
 }
