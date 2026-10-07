@@ -18436,5 +18436,24 @@
   },
   "common": {
     "retry": "再試行"
+  },
+  "glwork": {
+    "account": {
+      "title": "会社アカウント",
+      "description": "GL Work へのサインイン：コーディングツールで使う会社のモデルと、スマートフォンからこのコンピューターへの接続。",
+      "checking": "会社アカウントのサインイン状態を確認しています…",
+      "waiting": "ブラウザーで GitHub へのサインインを完了してから、ここに戻ってください。",
+      "signedInAs": "{{member}} としてサインイン中（{{server}}）",
+      "signedOut": "GitHub アカウントでサインインすると、会社のモデルを使い、スマートフォンの GL Work からこのコンピューターに接続できます。",
+      "modelsTitle": "会社のモデル",
+      "modelsLoading": "会社のモデルを読み込んでいます…",
+      "modelsNone": "まだ会社のモデルが割り当てられていません。管理者に連絡してください。",
+      "protocolAnthropic": "Claude Code 用",
+      "protocolOpenai": "Qwen Code 用",
+      "connected": "サインイン済み",
+      "cancel": "キャンセル",
+      "signOut": "サインアウト",
+      "signIn": "GitHub でサインイン"
+    }
   }
 }

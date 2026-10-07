@@ -80,3 +80,4 @@ pnpm test <各功能记录里列出的测试>
 | --- | --- | --- |
 | GitHub 组织登录（服务端、手机端、CLI、桌面端） | [changes/github-device-login.md](./changes/github-device-login.md) | `my/github-device-login` |
 | GL Work 品牌与打包（应用身份、独立数据目录、关闭 Orca 更新和云账号） | [changes/glwork-brand.md](./changes/glwork-brand.md) | `my/glwork-brand` |
+| GL Work 公司账号（GitHub 登录公司服务、设备令牌、公司模型清单） | [changes/glwork-account.md](./changes/glwork-account.md) | `my/glwork-account` |

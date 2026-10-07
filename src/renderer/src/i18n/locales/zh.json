@@ -18436,5 +18436,24 @@
   },
   "common": {
     "retry": "重试"
+  },
+  "glwork": {
+    "account": {
+      "title": "公司账号",
+      "description": "你的 GL Work 登录：编程工具可用的公司模型，以及手机连接这台电脑。",
+      "checking": "正在检查公司账号登录状态…",
+      "waiting": "请在浏览器里完成 GitHub 登录，然后回到这里。",
+      "signedInAs": "已登录：{{member}}（{{server}}）",
+      "signedOut": "用你的 GitHub 账号登录，就可以使用公司模型，并用手机上的 GL Work 连接这台电脑。",
+      "modelsTitle": "公司模型",
+      "modelsLoading": "正在读取公司模型…",
+      "modelsNone": "还没有给你分配公司模型，请联系管理员。",
+      "protocolAnthropic": "用于 Claude Code",
+      "protocolOpenai": "用于 Qwen Code",
+      "connected": "已登录",
+      "cancel": "取消",
+      "signOut": "退出登录",
+      "signIn": "用 GitHub 登录"
+    }
   }
 }

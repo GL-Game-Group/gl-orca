@@ -5,6 +5,10 @@ import { GeneralPane } from './GeneralPane'
 import { IntegrationsPane } from './IntegrationsPane'
 import { MobileSettingsPane } from './MobileSettingsPane'
 import { OrcaAccountSettingsPane } from './OrcaAccountSettingsPane'
+import {
+  isGlWorkClient,
+  renderGlWorkAccountSettingsSection
+} from './glwork/glwork-account-settings-section'
 import { SettingsSetupGuidePane } from './SettingsSetupGuidePane'
 import { ShareSkillsSettingsPane } from './ShareSkillsSettingsPane'
 import { SettingsSection } from './SettingsSection'
@@ -15,6 +19,10 @@ export function renderOrcaAccountSettingsSection(
   context: SettingsRenderContext
 ): React.JSX.Element | null {
   const { model, navigation, view } = context
+  // eva: GL Work shows the company account in Orca Account's place.
+  if (model.showDesktopOnlySettings && isGlWorkClient()) {
+    return renderGlWorkAccountSettingsSection(context)
+  }
   return model.showDesktopOnlySettings ? (
     <SettingsSection
       id="orca-account"
