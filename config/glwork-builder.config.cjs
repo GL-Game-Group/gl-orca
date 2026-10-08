@@ -26,6 +26,11 @@ module.exports = {
       Object.entries(base.mac?.extendInfo ?? {}).map(([key, value]) => [key, rebrand(value)])
     )
   },
+  // Why: frpc runs as its own process, so it ships outside app.asar (src/main/glwork/glwork-frpc-process.ts).
+  extraResources: [
+    ...(base.extraResources ?? []),
+    { from: 'resources/glwork/frpc/darwin-${arch}', to: 'glwork/frpc', filter: ['frpc', 'VERSION'] }
+  ],
   // Why: GL Work has no release feed yet; without this the packager writes Orca's GitHub feed.
   publish: null
 }

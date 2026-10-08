@@ -19276,6 +19276,17 @@
       "confirmTitle": "GL Work で Agent の状態を表示しますか？",
       "confirmDescription": "GL Work はコーディングツール自身の設定に状態フックを追加します：有効にしているツールの ~/.claude/settings.json（Claude Code）、~/.codex/config.toml（Codex）、~/.qwen/settings.json（Qwen Code）、~/.qoder/settings.json（Qoder）。フックは作業中・待機中・完了を GL Work に報告するだけです。後でオフにすると削除されます。",
       "agree": "同意してオンにする"
+    },
+    "remote": {
+      "title": "スマホからのリモートアクセス",
+      "online": "オン：GL Work を開いている間、スマホからこのコンピュータに接続できます。",
+      "starting": "会社のサービスに接続しています…",
+      "reconnecting": "会社のサービスに再接続しています…",
+      "unavailable": "現在は利用できません。",
+      "off": "オフ。オンにすると、同じ GitHub アカウントでサインインしたスマホの GL Work からこのコンピュータに接続できます。",
+      "confirmTitle": "スマホからこのコンピュータに接続しますか？",
+      "confirmDescription": "GL Work を開いている間、会社のサービスへの接続（frpc）を維持し、同じ GitHub アカウントでサインインしたスマホの GL Work がこのコンピュータのワークスペース、ターミナル、Agent を開けるようにします。通信はエンドツーエンドで暗号化され、会社のサービスは中継するだけです。ペアリングしたスマホは「設定 → モバイル」に表示され、そこで削除できます。",
+      "agree": "オンにする"
     }
   }
 }

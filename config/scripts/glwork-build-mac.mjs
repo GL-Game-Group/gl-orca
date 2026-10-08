@@ -11,6 +11,14 @@ import { getLocalBuildIdentity } from './build-mac-local.mjs'
 const dirOnly = process.argv.includes('--dir')
 const pnpm = (args, env = process.env) => execFileSync('pnpm', args, { env, stdio: 'inherit' })
 
+// Why: a full build covers arm64 and x64, so both need their frpc (glwork-remote).
+execFileSync(
+  'node',
+  ['config/scripts/glwork-fetch-frpc.mjs', ...(dirOnly ? [] : ['arm64', 'x64'])],
+  {
+    stdio: 'inherit'
+  }
+)
 for (const step of [
   'build:desktop',
   'build:computer-macos',

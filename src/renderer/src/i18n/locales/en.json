@@ -19524,6 +19524,17 @@
       "confirmTitle": "Show agent status in GL Work?",
       "confirmDescription": "GL Work will add its status hooks to the coding tools’ own settings: ~/.claude/settings.json (Claude Code), ~/.codex/config.toml (Codex), ~/.qwen/settings.json (Qwen Code), ~/.qoder/settings.json (Qoder), for the tools you have enabled. They only report working, waiting and done to GL Work. Turning this off later removes them.",
       "agree": "Agree and turn on"
+    },
+    "remote": {
+      "title": "Remote access from your phone",
+      "online": "On: your phone can reach this computer while GL Work is open.",
+      "starting": "Connecting to the company service…",
+      "reconnecting": "Reconnecting to the company service…",
+      "unavailable": "Not available right now.",
+      "off": "Off. Turn it on to reach this computer from GL Work on your phone, signed in with the same GitHub account.",
+      "confirmTitle": "Reach this computer from your phone?",
+      "confirmDescription": "GL Work will keep a connection to the company service (frpc) while it is open, so GL Work on your phone, signed in with the same GitHub account, can open this computer’s workspaces, terminals and agents. The traffic is end-to-end encrypted; the company service only passes it on. Paired phones are listed under Settings → Mobile, where you can remove them.",
+      "agree": "Turn on"
     }
   }
 }

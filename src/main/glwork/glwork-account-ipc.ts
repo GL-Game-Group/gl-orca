@@ -16,6 +16,7 @@ import {
 import { startCompanySignIn, type PendingSignIn } from './glwork-sign-in'
 import { readGlWorkModelSources, writeGlWorkModelSource } from './glwork-model-sources'
 import { readGlWorkCliToolStatuses } from './glwork-cli-tools'
+import { reconcileGlWorkRemote, registerGlWorkRemoteIpcHandlers } from './glwork-remote'
 
 let pending: PendingSignIn | null = null
 let lastError: string | null = null
@@ -47,6 +48,7 @@ async function signIn(): Promise<GlWorkAccountStatus> {
   try {
     const signedIn = await attempt.done
     writeGlWorkAccount({ server, ...signedIn })
+    void reconcileGlWorkRemote()
   } catch (error) {
     lastError = errorText(error)
   } finally {
@@ -61,6 +63,8 @@ async function signOut(): Promise<GlWorkAccountStatus> {
   const account = readGlWorkAccount()
   clearGlWorkAccount()
   lastError = null
+  // Why first: the device token is about to be revoked, so frpc must not keep the tunnel.
+  await reconcileGlWorkRemote()
   if (account) {
     await revokeDeviceToken(account.server, account.token)
   }
@@ -149,4 +153,5 @@ export function registerGlWorkAccountIpcHandlers(): void {
   ipcMain.handle('glwork:setModelSource', (_event, tool: unknown, choice: unknown) =>
     setModelSource(tool, choice)
   )
+  registerGlWorkRemoteIpcHandlers()
 }

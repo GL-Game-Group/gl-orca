@@ -319,6 +319,13 @@ export default function PairScanScreen() {
             <GithubIcon size={16} color={colors.textSecondary} />
             <Text style={styles.pasteButtonText}>Or sign in with GitHub</Text>
           </Pressable>
+          <Pressable
+            style={({ pressed }) => [styles.pasteButton, pressed && styles.pasteButtonPressed]}
+            onPress={() => router.push('/glwork')}
+          >
+            <GithubIcon size={16} color={colors.textSecondary} />
+            <Text style={styles.pasteButtonText}>Or use your GL Work company account</Text>
+          </Pressable>
         </>
       )}
 

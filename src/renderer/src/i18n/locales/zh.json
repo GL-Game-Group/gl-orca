@@ -19276,6 +19276,17 @@
       "confirmTitle": "在 GL Work 里显示代理状态？",
       "confirmDescription": "GL Work 会在这些编程工具自己的设置里加入状态钩子：已启用的工具中的 ~/.claude/settings.json（Claude Code）、~/.codex/config.toml（Codex）、~/.qwen/settings.json（Qwen Code）、~/.qoder/settings.json（Qoder）。钩子只向 GL Work 报告“工作中、等待中、已完成”。以后关闭时会移除它们。",
       "agree": "同意并开启"
+    },
+    "remote": {
+      "title": "手机远程",
+      "online": "已开启：GL Work 开着时，你的手机可以连到这台电脑。",
+      "starting": "正在连接公司服务…",
+      "reconnecting": "正在重新连接公司服务…",
+      "unavailable": "暂时不可用。",
+      "off": "未开启。开启后，手机上用同一个 GitHub 账号登录的 GL Work 可以连到这台电脑。",
+      "confirmTitle": "允许从手机连到这台电脑？",
+      "confirmDescription": "GL Work 开着时会和公司服务保持一条连接（frpc），让你手机上用同一个 GitHub 账号登录的 GL Work 打开这台电脑的工作区、终端和智能体。内容端到端加密，公司服务只负责转发。配对过的手机列在「设置 → 移动端」里，可以随时移除。",
+      "agree": "开启"
     }
   }
 }

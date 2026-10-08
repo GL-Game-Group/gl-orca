@@ -25,6 +25,7 @@ import { loadHostCatalog } from '../src/transport/host-store'
 import { extractPairingCodeFromUrl } from '../src/transport/pairing'
 import { recoverMobileRelayPairing } from '../src/transport/mobile-relay-pairing-recovery'
 import { appUpdateChecker } from '../src/app-update/app-update-runtime'
+import '../src/eva/glwork/company-session'
 
 // Why: keeps the native splash screen visible until the React tree is mounted
 // and ready to render. Without this the user sees a blank white/black frame
@@ -221,6 +222,7 @@ export default function RootLayout() {
           <Stack.Screen name="pair" options={{ headerShown: false }} />
           <Stack.Screen name="pair-confirm" options={{ headerShown: false }} />
           <Stack.Screen name="github-login" options={{ headerShown: false }} />
+          <Stack.Screen name="glwork" options={{ headerShown: false }} />
           <Stack.Screen
             name="mobile-onboarding"
             options={{ headerShown: false, presentation: 'modal', gestureEnabled: false }}
