@@ -108,7 +108,9 @@ export function GlWorkVoiceBar(props: GlWorkVoiceBarProps) {
 
   return (
     <View style={styles.inset}>
-      {holding ? <HoldCard zone={zone} text={talk.text} state={talk.state} /> : null}
+      {holding ? (
+        <HoldCard zone={zone} text={talk.text} state={talk.state} live={talk.live} />
+      ) : null}
       {notice ? <Text style={styles.notice}>{notice}</Text> : null}
       {props.attachmentCount > 0 && !holding ? (
         <Text style={styles.notice}>已添加 {props.attachmentCount} 张图片，会和语音一起发送</Text>
@@ -156,12 +158,29 @@ export function GlWorkVoiceBar(props: GlWorkVoiceBarProps) {
   )
 }
 
-function HoldCard({ zone, text, state }: { zone: HoldToTalkZone; text: string; state: string }) {
+function HoldCard({
+  zone,
+  text,
+  state,
+  live
+}: {
+  zone: HoldToTalkZone
+  text: string
+  state: string
+  live: boolean
+}) {
   const hint = zone === 'cancel' ? '松开 取消' : zone === 'edit' ? '松开 编辑文字' : '松开 发送'
   return (
     <View style={styles.card} pointerEvents="none">
       <Text style={styles.cardText}>
-        {text || (state === 'starting' ? '正在连接…' : '正在听…')}
+        {text ||
+          (state === 'starting'
+            ? '正在连接…'
+            : state === 'finishing'
+              ? '正在识别…'
+              : live
+                ? '正在听…'
+                : '正在听…（松开后识别）')}
       </Text>
       <View style={styles.zones}>
         <Text style={[styles.zone, zone === 'cancel' && styles.zoneCancel]}>← 取消</Text>

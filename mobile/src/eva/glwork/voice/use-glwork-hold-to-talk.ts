@@ -3,25 +3,28 @@ import { useDictationCapture } from '../../../platform/dictation-capture'
 import type { CloudAsrSession } from './cloud-asr'
 import { stopGlWorkSpeech } from './glwork-speech-state'
 import { loadVoiceVendors, startCloudAsr } from './glwork-voice-lazy'
+import { recognitionOptions } from './glwork-voice-options'
 import { loadGlWorkVoicePrefs } from './glwork-voice-prefs'
 
 export type HoldToTalkState = 'idle' | 'starting' | 'recording' | 'finishing'
 
 /**
- * The recognizer hold-to-talk uses: the one picked in Settings → Voice, else the first the company
- * opens — the desktop's dictation only answers after the speaker stops, so it cannot show live text.
+ * The recognizer hold-to-talk uses: the one picked in 语音设置 (实时 or 识别), else the company's
+ * first — the desktop's dictation goes through Orca's composer, not this bar.
  */
-async function pickAsrVendor(): Promise<string> {
+async function pickAsr(): Promise<{ vendor: string; kind: 'realtime' | 'file' }> {
   const [prefs, loaded] = await Promise.all([loadGlWorkVoicePrefs(), loadVoiceVendors()])
   if (loaded.state === 'signed-out') {
     throw new Error('请先在 GL Work 里登录公司账号，才能按住说话。')
   }
-  const asr = loaded.vendors.filter((vendor) => vendor.asr)
-  const vendor = asr.find((entry) => entry.id === prefs.asrVendor) ?? asr[0]
-  if (!vendor) {
+  const options = recognitionOptions(loaded.vendors)
+  const option =
+    options.find((entry) => entry.vendor.id === prefs.asrVendor && entry.kind === prefs.asrKind) ??
+    options[0]
+  if (!option) {
     throw new Error('管理员还没有为你开放语音识别（千问或火山）。')
   }
-  return vendor.id
+  return { vendor: option.vendor.id, kind: option.kind }
 }
 
 /**
@@ -33,6 +36,8 @@ export function useGlWorkHoldToTalk(onError: (error: Error) => void) {
   const capture = useDictationCapture()
   const [state, setState] = useState<HoldToTalkState>('idle')
   const [text, setText] = useState('')
+  /** Words show while speaking (实时); 识别 answers after the release. */
+  const [live, setLive] = useState(true)
   const textRef = useRef('')
   const sessionRef = useRef<CloudAsrSession | null>(null)
   const generationRef = useRef(0)
@@ -82,8 +87,9 @@ export function useGlWorkHoldToTalk(onError: (error: Error) => void) {
     setText('')
     setState('starting')
     try {
-      const vendor = await pickAsrVendor()
-      const session = await startCloudAsr(vendor, {
+      const picked = await pickAsr()
+      setLive(picked.kind === 'realtime')
+      const session = await startCloudAsr(picked.vendor, picked.kind, {
         onText: (heard) => {
           if (current()) {
             textRef.current = heard
@@ -160,5 +166,5 @@ export function useGlWorkHoldToTalk(onError: (error: Error) => void) {
     [reset]
   )
 
-  return { state, text, start, finish, cancel: reset }
+  return { state, text, live, start, finish, cancel: reset }
 }

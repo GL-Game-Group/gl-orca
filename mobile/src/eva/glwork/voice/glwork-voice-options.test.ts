@@ -32,10 +32,10 @@ describe('voice options', () => {
     ])
   })
 
-  it('lists recognition with 识别 shown but not yet available', () => {
-    expect(recognitionOptions([qwen]).map((o) => [o.label, o.available])).toEqual([
-      ['千问实时', true],
-      ['千问识别', false]
+  it('lists recognition as 实时 then 识别 per vendor', () => {
+    expect(recognitionOptions([qwen]).map((o) => [o.label, o.kind, o.model])).toEqual([
+      ['千问实时', 'realtime', 'qwen3-asr-flash-realtime'],
+      ['千问识别', 'file', 'qwen3-asr-flash']
     ])
   })
 

@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
  */
 export type GlWorkVoicePrefs = {
   asrVendor: string | null
+  /** With `asrVendor`: words as they are spoken (实时), or the whole recording at the end (识别). */
+  asrKind: 'realtime' | 'file'
   /** How the chat composer takes input: the keyboard (Orca's), or hold-to-talk. */
   inputMode: 'keyboard' | 'voice'
   tts: {
@@ -22,6 +24,7 @@ export type GlWorkVoicePrefs = {
 const KEY = 'glwork:voice-prefs'
 const DEFAULTS: GlWorkVoicePrefs = {
   asrVendor: null,
+  asrKind: 'realtime',
   inputMode: 'keyboard',
   tts: { autoRead: false, vendor: null, kind: null, voice: null, rate: 0 }
 }
@@ -41,6 +44,7 @@ function read(raw: string | null): GlWorkVoicePrefs {
       typeof fields.tts === 'object' && fields.tts !== null ? { ...fields.tts } : {}
     return {
       asrVendor: typeof fields.asrVendor === 'string' ? fields.asrVendor : null,
+      asrKind: fields.asrKind === 'file' ? 'file' : 'realtime',
       inputMode: fields.inputMode === 'voice' ? 'voice' : 'keyboard',
       tts: {
         autoRead: tts.autoRead === true,

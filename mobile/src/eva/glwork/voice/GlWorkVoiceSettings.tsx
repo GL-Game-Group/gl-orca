@@ -51,8 +51,8 @@ function SelectRow(props: {
 }
 
 /**
- * The recognizers: 千问实时, 千问识别, 火山实时, 火山识别 as the company opens them (识别 listed
- * but not wired yet), and with `desktop` the desktop's own dictation first.
+ * The recognizers: 千问实时, 千问识别, 火山实时, 火山识别 as the company opens them, and with
+ * `desktop` Orca's own (the desktop's dictation model) first.
  */
 export function GlWorkRecognitionRows({
   desktop,
@@ -65,8 +65,8 @@ export function GlWorkRecognitionRows({
   const vendors = useGlWorkVoiceVendors()
   const note = vendorsNote(vendors)
   const options = vendors.state === 'ready' ? recognitionOptions(vendors.vendors) : []
-  const pick = (asrVendor: string | null): void => {
-    void saveGlWorkVoicePrefs((p) => ({ ...p, asrVendor }))
+  const pick = (asrVendor: string | null, asrKind: 'realtime' | 'file' = 'realtime'): void => {
+    void saveGlWorkVoicePrefs((p) => ({ ...p, asrVendor, asrKind }))
     onPicked?.()
   }
   return (
@@ -74,7 +74,7 @@ export function GlWorkRecognitionRows({
       {desktop ? (
         <SelectRow
           label="电脑上的模型"
-          sublabel="由电脑识别，说完才出字"
+          sublabel="Orca 原有方式：电脑识别，说完才出字（键盘模式的麦克风；按住说话用云端识别）"
           selected={prefs.asrVendor === null}
           onPress={() => pick(null)}
         />
@@ -84,10 +84,9 @@ export function GlWorkRecognitionRows({
         <SelectRow
           key={`${option.vendor.id}-${option.kind}`}
           label={option.label}
-          sublabel={option.available ? option.model : `${option.model} · 暂未接入`}
-          disabled={!option.available}
-          selected={option.available && prefs.asrVendor === option.vendor.id}
-          onPress={() => pick(option.vendor.id)}
+          sublabel={`${option.kind === 'realtime' ? '边说边出字' : '说完后整段识别'} · ${option.model}`}
+          selected={prefs.asrVendor === option.vendor.id && prefs.asrKind === option.kind}
+          onPress={() => pick(option.vendor.id, option.kind)}
         />
       ))}
     </View>
