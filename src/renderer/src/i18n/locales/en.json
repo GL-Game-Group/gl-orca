@@ -19499,7 +19499,7 @@
     },
     "cli": {
       "title": "Coding tools",
-      "sectionDescription": "Claude Code, Codex and Qoder on this computer: install, sign in, or switch off.",
+      "sectionDescription": "Claude Code, Codex and Qoder CN on this computer: install, sign in, or switch off.",
       "description": "Each member installs these tools and signs in with their own account; GL Work only checks and helps you start.",
       "recheck": "Check again",
       "notInstalled": "Not installed",
@@ -19522,7 +19522,7 @@
       "turnOn": "Turn on…",
       "turnOff": "Turn off",
       "confirmTitle": "Show agent status in GL Work?",
-      "confirmDescription": "GL Work will add its status hooks to the coding tools’ own settings: ~/.claude/settings.json (Claude Code), ~/.codex/config.toml (Codex), ~/.qwen/settings.json (Qwen Code), ~/.qoder/settings.json (Qoder), for the tools you have enabled. They only report working, waiting and done to GL Work. Turning this off later removes them.",
+      "confirmDescription": "GL Work will add its status hooks to the coding tools’ own settings: ~/.claude/settings.json (Claude Code), ~/.codex/config.toml (Codex), ~/.qwen/settings.json (Qwen Code), ~/.qoder-cn/settings.json (Qoder CN), for the tools you have enabled. They only report working, waiting and done to GL Work. Turning this off later removes them.",
       "agree": "Agree and turn on"
     },
     "remote": {

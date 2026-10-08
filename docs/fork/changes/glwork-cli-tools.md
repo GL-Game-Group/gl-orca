@@ -11,8 +11,8 @@ GL Work 的成员用自己的订阅登录 Claude Code、Codex、Qoder（公司�
 
 另外两项 GL Work 的默认：
 
-- **代理状态钩子默认开启**（负责人 2026-10-08 决定，和官方 Orca 一致）：Orca 会往已启用代理自己的配置里写入钩子来显示“工作中、等待中、已完成”，手机的聊天视图、工作状态和权限确认也靠它（GL Work 默认启用的四个：`~/.claude/settings.json`、`~/.codex/config.toml`、`~/.qwen/settings.json`、`~/.qoder/settings.json`）。新数据目录首次启动、以及之前默认关闭的数据目录在更新后各开启一次（`<userData>/glwork-hooks-default`）；成员可以在「设置 → 命令行工具 → 代理状态」随时关闭或再打开（打开时仍会列出要改的文件并确认），关闭后保持关闭。
-- **只启用 GL Work 的工具**：首次启动时把 Claude Code、Codex、Qwen Code、Qoder 以外的 Orca 代理设为停用，成员可以在「智能体」里自己再打开。
+- **代理状态钩子默认开启**（负责人 2026-10-08 决定，和官方 Orca 一致）：Orca 会往已启用代理自己的配置里写入钩子来显示“工作中、等待中、已完成”，手机的聊天视图、工作状态和权限确认也靠它（GL Work 默认启用的四个：`~/.claude/settings.json`、`~/.codex/config.toml`、`~/.qwen/settings.json`、`~/.qoder-cn/settings.json`）。新数据目录首次启动、以及之前默认关闭的数据目录在更新后各开启一次（`<userData>/glwork-hooks-default`）；成员可以在「设置 → 命令行工具 → 代理状态」随时关闭或再打开（打开时仍会列出要改的文件并确认），关闭后保持关闭。
+- **只启用 GL Work 的工具**：首次启动时把 Claude Code、Codex、Qwen Code、Qoder 中国版（`qoder-cn`）以外的 Orca 代理设为停用，成员可以在「智能体」里自己再打开。2026-10-08 从国际版 Qoder 换成中国版：之前已经初始化过的数据目录启动时切换一次（启用 `qoder-cn`、停用 `qoder`，`<userData>/glwork-qoder-cn`），之后按成员自己的设置。
 - **代理先问再动手**：Orca 默认让每个代理跳过所有权限确认（Claude Code `--dangerously-skip-permissions`、Codex `--dangerously-bypass-approvals-and-sandbox` 等，见 `tui-agent-permissions.ts`）。GL Work 首次启动时用 Orca 的 `applyAgentPermissionMode({ mode: 'manual' })` 改成手动：代理执行命令、改文件前先问成员；成员自己加的其他参数保留。成员可以在「智能体」里改回全部允许。
 
 两项都只在某个数据目录第一次以 GL Work 启动时执行一次（`<userData>/glwork-first-run.json`），之后完全按成员自己的设置。
@@ -23,7 +23,7 @@ GL Work 的成员用自己的订阅登录 Claude Code、Codex、Qoder（公司�
 | --- | --- | --- | --- | --- |
 | Claude Code | `claude` 在成员的 shell PATH 上 | `claude auth status` 退出码（0 已登录，1 未登录） | `curl -fsSL https://claude.ai/install.sh \| bash` | `claude auth login` |
 | Codex | `codex` | `codex login status` 退出码 | `npm install -g @openai/codex` | `codex login` |
-| Qoder | `qodercli` 或 `qoder` | `qodercli status -o json` 的 `logged_in` 字段（它的退出码登没登录都是 0；其余字段包括账号、邮箱直接丢弃） | `curl -fsSL https://qoder.com/install \| bash` | `qodercli login` |
+| Qoder 中国版（2026-10-08 起替换国际版） | `qoderclicn` 或 `qodercn` | 先试 `qoderclicn status -o json` 的 `logged_in`（国际版有这个命令，中国版文档没写）；命令失败或没有这个字段就显示“首次运行时在它自己的界面登录”，不当作未登录 | `curl -fsSL https://qoder.com.cn/install \| bash` | `qoderclicn`（中国版文档的登录方式是在它自己的界面里 `/login`，第一次运行会自己提示） |
 
 退出码和 `logged_in` 都是用临时的空配置目录实测过的（Claude Code 2.1.293、Codex 0.157.1、qodercli 1.1.65；官方文档没写 qodercli 的 `status`、`login` 子命令，是 `qodercli --help` 里有的）。Qoder 的安装器装两个命令：`~/.local/bin/qodercli`，以及写进 `~/.zshrc`、`~/.zprofile` 的 `~/.qoder/entry/qoder`，所以两个名字都认，登录用一定在 PATH 上的 `qodercli`。「重新检测」会强制重新读取登录 shell 的 PATH（同 Orca「智能体」页的刷新），刚装完的工具不用重启 GL Work 就能检测到。状态命令的输出不读取、不保存。PATH 用 Orca 的 `hydrateShellPathForAgentDetection` 和 `isCommandOnPath`，和 Orca 自己的代理检测一致。
 

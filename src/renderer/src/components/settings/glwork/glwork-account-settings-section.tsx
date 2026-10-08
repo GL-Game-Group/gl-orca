@@ -16,7 +16,7 @@ function cliToolsTitle(): string {
 function cliToolsDescription(): string {
   return translate(
     'glwork.cli.sectionDescription',
-    'Claude Code, Codex and Qoder on this computer: install, sign in, or switch off.'
+    'Claude Code, Codex and Qoder CN on this computer: install, sign in, or switch off.'
   )
 }
 

@@ -19251,7 +19251,7 @@
     },
     "cli": {
       "title": "命令行工具",
-      "sectionDescription": "本机的 Claude Code、Codex 和 Qoder：安装、登录或停用。",
+      "sectionDescription": "本机的 Claude Code、Codex 和 Qoder 中国版：安装、登录或停用。",
       "description": "这些工具由每位成员自己安装、用自己的账号登录；GL Work 只负责检测，并帮你开始。",
       "recheck": "重新检测",
       "notInstalled": "未安装",
@@ -19274,7 +19274,7 @@
       "turnOn": "开启…",
       "turnOff": "关闭",
       "confirmTitle": "在 GL Work 里显示代理状态？",
-      "confirmDescription": "GL Work 会在这些编程工具自己的设置里加入状态钩子：已启用的工具中的 ~/.claude/settings.json（Claude Code）、~/.codex/config.toml（Codex）、~/.qwen/settings.json（Qwen Code）、~/.qoder/settings.json（Qoder）。钩子只向 GL Work 报告“工作中、等待中、已完成”。以后关闭时会移除它们。",
+      "confirmDescription": "GL Work 会在这些编程工具自己的设置里加入状态钩子：已启用的工具中的 ~/.claude/settings.json（Claude Code）、~/.codex/config.toml（Codex）、~/.qwen/settings.json（Qwen Code）、~/.qoder-cn/settings.json（Qoder 中国版）。钩子只向 GL Work 报告“工作中、等待中、已完成”。以后关闭时会移除它们。",
       "agree": "同意并开启"
     },
     "remote": {
