@@ -67,14 +67,43 @@ export class PcmPacker {
   }
 }
 
-/** Opens a WebSocket and resolves once it is open; `open` is what both vendors wait for before talking. */
-export function whenOpen(socket: WebSocket, vendor: string): Promise<void> {
+/** Why a vendor refused the WebSocket handshake, from the status React Native reports. */
+export function describeAsrHandshakeFailure(vendor: string, model: string, detail: string): string {
+  const status = /\b([45]\d\d)\b/.exec(detail)?.[1]
+  switch (status) {
+    case '401':
+      return `${vendor}拒绝了语音 Key（401）：Key 无效、过期或已删除，请管理员在后台检查${vendor}的语音 Key。`
+    case '403':
+      return `${vendor}的语音 Key 没有开通识别资源 ${model}（403）：请管理员在${vendor}控制台为这个 Key 开通它，或在后台「AI 管理 → 语音」换一个识别模型。`
+    case '429':
+      return `${vendor}的语音识别额度或并发用完了（429），请稍后再试或联系管理员。`
+    case undefined:
+      return `连不上${vendor}的语音识别${detail ? `（${detail}）` : ''}，请检查网络。`
+    default:
+      return `${vendor}的语音识别拒绝了连接（${status}）${detail ? `：${detail}` : ''}`
+  }
+}
+
+/** Resolves once the WebSocket is open, or rejects with why the vendor would not take it. */
+export function whenOpen(socket: WebSocket, vendor: string, model: string): Promise<void> {
   return new Promise((resolve, reject) => {
+    let detail = ''
     socket.onopen = () => resolve()
-    socket.onerror = () => reject(new Error(`连不上${vendor}的语音识别，请检查网络。`))
+    socket.onerror = (event) => {
+      // Why: React Native puts the handshake's failure (e.g. "bad response code 403") on the event.
+      const message = 'message' in event ? event.message : undefined
+      detail = typeof message === 'string' ? message : ''
+      reject(new Error(describeAsrHandshakeFailure(vendor, model, detail)))
+    }
     socket.onclose = (event) =>
       reject(
-        new Error(`${vendor}的语音识别拒绝了连接（${event.code} ${event.reason || ''}）。`.trim())
+        new Error(
+          describeAsrHandshakeFailure(
+            vendor,
+            model,
+            `${event.code} ${event.reason || detail}`.trim()
+          )
+        )
       )
   })
 }

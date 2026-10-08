@@ -22,7 +22,7 @@ export async function startQwenAsr(options: CloudAsrOptions): Promise<CloudAsrSe
       Authorization: `Bearer ${options.token}`
     }
   )
-  await whenOpen(socket, '千问')
+  await whenOpen(socket, '千问', options.model)
   const done: string[] = []
   let live = ''
   let finished: (() => void) | null = null

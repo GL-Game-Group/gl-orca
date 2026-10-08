@@ -23,7 +23,7 @@ export async function startVolcAsr(options: CloudAsrOptions): Promise<CloudAsrSe
     'X-Api-Connect-Id': ExpoCrypto.randomUUID()
   })
   socket.binaryType = 'arraybuffer'
-  await whenOpen(socket, '火山')
+  await whenOpen(socket, '火山', options.model)
   let text = ''
   let finished: (() => void) | null = null
   let closed = false
