@@ -85,4 +85,5 @@ pnpm test <各功能记录里列出的测试>       # 官方改用 Bun 跑 Vites
 | GL Work 手机远程（手机用 GitHub 登录公司服务，经公司中转和 frp 连到自己的电脑；电脑端开关、frpc，手机端登录和电脑列表） | [changes/glwork-remote.md](./changes/glwork-remote.md) | `my/glwork-remote` |
 | GL Work 手机 App（Orca 手机端的 GL Work 版：名称、图标、`com.glgwork.work`、首页即公司登录、去掉推送） | [changes/glwork-mobile-brand.md](./changes/glwork-mobile-brand.md) | `my/glwork-mobile-brand` |
 | GL Work 先登录再使用（未登录时只显示公司登录页） | [changes/glwork-sign-in-gate.md](./changes/glwork-sign-in-gate.md) | `my/glwork-sign-in-gate` |
+| GL Work 手机语音（千问、火山的识别和播报，在「设置 → 语音」） | [changes/glwork-voice.md](./changes/glwork-voice.md) | `my/glwork-voice` |
 | ~~Qoder 代理~~（已由官方 #23581 取代，2026-10-08 同步时撤回） | [changes/qoder-agent.md](./changes/qoder-agent.md) | — |
