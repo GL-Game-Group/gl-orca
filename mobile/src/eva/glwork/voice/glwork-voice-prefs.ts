@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
  */
 export type GlWorkVoicePrefs = {
   asrVendor: string | null
+  /** How the chat composer takes input: the keyboard (Orca's), or hold-to-talk. */
+  inputMode: 'keyboard' | 'voice'
   tts: {
     autoRead: boolean
     vendor: string | null
@@ -18,6 +20,7 @@ export type GlWorkVoicePrefs = {
 const KEY = 'glwork:voice-prefs'
 const DEFAULTS: GlWorkVoicePrefs = {
   asrVendor: null,
+  inputMode: 'keyboard',
   tts: { autoRead: false, vendor: null, voice: null, rate: 0 }
 }
 
@@ -36,6 +39,7 @@ function read(raw: string | null): GlWorkVoicePrefs {
       typeof fields.tts === 'object' && fields.tts !== null ? { ...fields.tts } : {}
     return {
       asrVendor: typeof fields.asrVendor === 'string' ? fields.asrVendor : null,
+      inputMode: fields.inputMode === 'voice' ? 'voice' : 'keyboard',
       tts: {
         autoRead: tts.autoRead === true,
         vendor: typeof tts.vendor === 'string' ? tts.vendor : null,
