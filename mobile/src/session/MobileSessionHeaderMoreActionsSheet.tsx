@@ -2,6 +2,7 @@ import { ListChecks } from 'lucide-react-native'
 import { MobileAgentSessionHistoryIcon } from '../agent-history/MobileAgentSessionHistoryIcon'
 import { ActionSheetModal } from '../components/ActionSheetModal'
 import { colors } from '../theme/mobile-theme'
+import { glWorkVoiceSheetActions } from '../eva/glwork/voice/glwork-voice-sheet-actions'
 
 type Props = {
   visible: boolean
@@ -49,7 +50,8 @@ export function MobileSessionHeaderMoreActionsSheet({
                 onPress: onOpenChecks
               }
             ]
-          : [])
+          : []),
+        ...glWorkVoiceSheetActions()
       ]}
       onClose={onClose}
     />

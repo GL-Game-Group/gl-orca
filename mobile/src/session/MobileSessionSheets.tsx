@@ -2,6 +2,7 @@ import { Platform } from 'react-native'
 import { useClipboardWriter } from '../platform/clipboard'
 import { Copy, FileText, Globe, RefreshCw, SquareTerminal } from 'lucide-react-native'
 import { MobileSessionHeaderMoreActionsSheet } from './MobileSessionHeaderMoreActionsSheet'
+import { GlWorkVoiceQuickSheet } from '../eva/glwork/voice/GlWorkVoiceQuickSheet'
 import { QuickCommandsSheet } from './QuickCommandsSheet'
 import { triggerSuccess, triggerError } from '../platform/haptics'
 import { ActionSheetModal } from '../components/ActionSheetModal'
@@ -93,6 +94,7 @@ export function MobileSessionSheets({ controller }: { controller: MobileSessionC
   const clipboard = useClipboardWriter()
   return (
     <>
+      <GlWorkVoiceQuickSheet />
       <MobileSessionHeaderMoreActionsSheet
         visible={showHeaderMoreActions}
         showAgentSessionHistory={showAgentSessionHistoryAction}

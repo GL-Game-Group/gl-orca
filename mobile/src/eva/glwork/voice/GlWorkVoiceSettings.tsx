@@ -5,6 +5,7 @@ import { colors } from '../../../theme/mobile-theme'
 import { isGlWorkApp } from '../glwork-app'
 import { stopGlWorkSpeech } from './glwork-speech-state'
 import { alertSpeechFailure } from './glwork-speech-alert'
+import { effectiveSpeechChoice, speechChoiceProblem } from './glwork-speech-choice'
 import { previewVoice, speakWith } from './glwork-voice-lazy'
 import { saveGlWorkVoicePrefs } from './glwork-voice-prefs'
 import {
@@ -76,8 +77,11 @@ export function GlWorkSpeechSettings() {
     return null
   }
   const note = vendorsNote(vendors)
-  const tts = vendors.state === 'ready' ? vendors.vendors.filter((vendor) => vendor.tts) : []
-  const vendor = tts.find((entry) => entry.id === prefs.tts.vendor) ?? null
+  const all = vendors.state === 'ready' ? vendors.vendors : []
+  const tts = all.filter((entry) => entry.tts)
+  const choice = effectiveSpeechChoice(prefs, all)
+  const vendor = choice.vendor
+  const problem = vendors.state === 'ready' && !note ? speechChoiceProblem(choice, all) : null
   const save = (change: Partial<typeof prefs.tts>): void => {
     void saveGlWorkVoicePrefs((p) => ({ ...p, tts: { ...p.tts, ...change } }))
   }
@@ -110,7 +114,7 @@ export function GlWorkSpeechSettings() {
           />
         </View>
         <View style={styles.separator} />
-        {note ? <Text style={styles.emptyText}>{note}</Text> : null}
+        {note || problem ? <Text style={styles.emptyText}>{note ?? problem}</Text> : null}
         {tts.length > 0 ? (
           <View style={styles.row}>
             <Text style={[styles.rowLabel, styles.rowContent]}>播报厂商</Text>
@@ -180,7 +184,7 @@ export function GlWorkSpeechSettings() {
             >
               <Play size={18} color={colors.textSecondary} />
             </Pressable>
-            {prefs.tts.voice === voice.id ? <Check size={18} color={colors.textPrimary} /> : null}
+            {choice.voice?.id === voice.id ? <Check size={18} color={colors.textPrimary} /> : null}
           </Pressable>
         ))}
       </View>
