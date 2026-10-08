@@ -8,6 +8,7 @@ import {
   fetchCompanyVoiceVendors,
   type CompanyVoiceVendor
 } from './company-voice'
+import { effectiveSpeechChoice, speechChoiceProblem } from './glwork-speech-choice'
 import { speechPieces, speechText } from './glwork-speech-text'
 import { loadGlWorkVoicePrefs } from './glwork-voice-prefs'
 import { registerGlWorkSpeechStopper, setGlWorkSpeaking } from './glwork-speech-state'
@@ -211,20 +212,20 @@ export async function speakWith(choice: SpeechVoice, markdown: string): Promise<
   }
 }
 
-/** Reads a reply with the voice chosen in Settings → Voice; does nothing when none is chosen. */
+/** Reads a reply with the voice from Settings → Voice (or the first one open to the member). */
 export async function speakGlWorkReply(markdown: string): Promise<void> {
   const prefs = await loadGlWorkVoicePrefs()
   const session = await loadCompanySession()
-  if (!prefs.tts.vendor || !prefs.tts.voice || !session) {
-    throw new Error('请先在「设置 → 语音」选好播报的厂商和音色。')
+  if (!session) {
+    throw new Error('请先在 GL Work 里登录公司账号，才能用语音播报。')
   }
-  const vendor = (await fetchCompanyVoiceVendors(session)).find(
-    (entry) => entry.id === prefs.tts.vendor
-  )
-  if (!vendor?.tts) {
-    throw new Error('管理员没有为你开放这个语音播报，请在「设置 → 语音」换一个。')
+  const vendors = await fetchCompanyVoiceVendors(session)
+  const choice = effectiveSpeechChoice(prefs, vendors)
+  const problem = speechChoiceProblem(choice, vendors)
+  if (problem || !choice.vendor || !choice.voice) {
+    throw new Error(problem ?? '没有可用的音色。')
   }
-  await speakWith({ vendor, voice: prefs.tts.voice, rate: prefs.tts.rate }, markdown)
+  await speakWith({ vendor: choice.vendor, voice: choice.voice.id, rate: prefs.tts.rate }, markdown)
 }
 
 /** Plays a vendor's own recording of a voice (Settings → Voice previews). */

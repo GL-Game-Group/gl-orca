@@ -51,3 +51,12 @@
 
 - 千问合成返回的音频地址是 `http://`（阿里云 OSS），手机 App 只允许访问本地网络的 http 地址，iOS 会直接拦掉，表现为没有声音、也不报错。现在先把地址改成 https 下载到缓存，再播放本地文件；试听的样音地址也同样改成 https。`pnpm voice:test` 能播出来，是因为它在电脑上的测试服务里下载音频，不受这个限制。
 - 播放没有开始时原来会一直显示“正在朗读”。现在 20 秒内没开始就报错；试听、自动朗读、长按“朗读”出错都会弹出“无法朗读”和原因（`glwork-speech-alert.ts`）。播放前把音频会话设为只播放（`allowsRecording: false`），免得刚识别完时声音走听筒。
+
+## 默认音色和对话页的“语音”（2026-10-08）
+
+- 播报默认用第一个开放了播报的厂商和它的第一个音色（`glwork-speech-choice.ts`）。设置页显示的选中项和实际朗读用的是同一套规则。原来必须先点选厂商才会出现音色列表，没选时自动朗读也不会播报。
+- 厂商没有可用音色时，设置页和朗读都会提示“请管理员在后台「AI 管理 → 语音」把音色加入音色库”：公司服务只下发已加入音色库、并且适用于当前播报模型的音色。
+- 对话页右上角的“…”在 GL Work 里一直显示，里面多一项“语音”，点开是简易设置：识别用电脑上的模型还是千问、火山，以及播报设置（`GlWorkVoiceQuickSheet.tsx`）。「设置 → 语音」保留不变。接入点：
+  - `MobileSessionHeaderMoreActionsSheet.tsx`：加入 `glWorkVoiceSheetActions()`。
+  - `use-mobile-session-panel-route-actions.tsx`：`showHeaderMoreButton` 加上 `glWorkShowsHeaderMoreButton()`。
+  - `MobileSessionSheets.tsx`：渲染 `<GlWorkVoiceQuickSheet />`。
