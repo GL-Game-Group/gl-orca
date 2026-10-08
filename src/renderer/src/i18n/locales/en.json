@@ -19535,6 +19535,12 @@
       "confirmTitle": "Reach this computer from your phone?",
       "confirmDescription": "GL Work will keep a connection to the company service (frpc) while it is open, so GL Work on your phone, signed in with the same GitHub account, can open this computer’s workspaces, terminals and agents. The traffic is end-to-end encrypted; the company service only passes it on. Paired phones are listed under Settings → Mobile, where you can remove them.",
       "agree": "Turn on"
+    },
+    "gate": {
+      "title": "Sign in to GL Work",
+      "description": "GL Work is the company’s AI workspace. Sign in with your company GitHub account to continue.",
+      "waiting": "Finish signing in in your browser, then come back here.",
+      "server": "Company service: {{server}}"
     }
   }
 }

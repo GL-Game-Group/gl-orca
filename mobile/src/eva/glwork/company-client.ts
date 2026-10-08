@@ -7,7 +7,26 @@ import type { CompanySession } from './company-session'
 const CALLBACK = 'glwork://auth'
 const TIMEOUT_MS = 15_000
 
-export type CompanyHost = { id: string; label: string; online: boolean; closed: boolean }
+/** `dsh`: the earlier GL Work desktop, which this app cannot reach. */
+export type CompanyHost = {
+  id: string
+  label: string
+  client: 'orca' | 'dsh'
+  online: boolean
+  closed: boolean
+}
+
+/** The company service's error codes, as a member reads them; its refusals are already in Chinese. */
+const ERROR_TEXT: Record<string, string> = {
+  phone_not_allowed: '公司服务还没有更新到支持新版手机 App 的版本，请联系管理员。',
+  unauthenticated: '公司账号的登录已失效，请重新登录。',
+  not_found: '公司服务找不到这个功能或这台电脑。',
+  invalid_request: '请求无效，请重试。',
+  invalid_grant: '登录已过期，请重新登录。',
+  access_denied: '这个 GitHub 账号不是公司成员，或已被停用。',
+  pairing_unavailable: '这台电脑暂时无法配对，请确认它开着 GL Work。',
+  forbidden: '这台电脑拒绝了配对请求。'
+}
 
 function base64url(bytes: Uint8Array): string {
   let binary = ''
@@ -46,7 +65,8 @@ async function call(
     clearTimeout(timer)
   }
   if (!response.ok) {
-    const reason = typeof body.error === 'string' ? body.error : `HTTP ${response.status}`
+    const code = typeof body.error === 'string' ? body.error : ''
+    const reason = ERROR_TEXT[code] ?? (code || `公司服务返回了错误（HTTP ${response.status}）。`)
     throw new CompanyRequestFailed(reason, response.status)
   }
   return body
@@ -114,6 +134,7 @@ export async function listCompanyHosts(session: CompanySession): Promise<Company
           {
             id: host.id,
             label: host.label,
+            client: host.client === 'orca' ? ('orca' as const) : ('dsh' as const),
             online: host.online === true,
             closed: host.closed === true
           }
