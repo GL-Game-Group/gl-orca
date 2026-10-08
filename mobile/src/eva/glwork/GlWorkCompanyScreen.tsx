@@ -45,9 +45,17 @@ function errorText(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
 }
 
+/** Online, open to the phone, and running GL Work on Orca (the earlier desktop speaks another protocol). */
+function reachable(host: CompanyHost): boolean {
+  return host.online && !host.closed && host.client === 'orca'
+}
+
 function hostState(host: CompanyHost): string {
   if (host.closed) {
     return '管理员已关闭这台电脑的手机远程'
+  }
+  if (host.client !== 'orca') {
+    return '旧版 GL Work：在这台电脑上换用新版 GL Work 后才能连接'
   }
   return host.online ? '在线' : '离线：在这台电脑上打开 GL Work'
 }
@@ -213,7 +221,7 @@ export function GlWorkCompanyScreen({ embedded = false }: { embedded?: boolean }
                 <Pressable
                   key={host.id}
                   style={({ pressed }) => [styles.host, pressed && styles.hostPressed]}
-                  disabled={busy !== null || !host.online || host.closed}
+                  disabled={busy !== null || !reachable(host)}
                   onPress={() => void connect(host)}
                 >
                   <Monitor size={20} color={colors.textSecondary} />
@@ -224,12 +232,7 @@ export function GlWorkCompanyScreen({ embedded = false }: { embedded?: boolean }
                   {busy === host.id ? (
                     <ActivityIndicator size="small" color={colors.textSecondary} />
                   ) : (
-                    <View
-                      style={[
-                        styles.dot,
-                        host.online && !host.closed ? styles.online : styles.offline
-                      ]}
-                    />
+                    <View style={[styles.dot, reachable(host) ? styles.online : styles.offline]} />
                   )}
                 </Pressable>
               ))
