@@ -21,6 +21,7 @@ import {
   wslCodexSessionsDirs
 } from './host-readable-transcript-path'
 import { findWslCodexSessionPath } from './wsl-codex-session-path-scan'
+import { withQoderProjectsDir } from './qoder-projects-dir'
 import { wslTranscriptFsRefusal, type WslTranscriptFsError } from './wsl-transcript-fs-gate'
 
 // Why: these mirror the path constants in ai-vault/session-scanner.ts. Reads
@@ -149,7 +150,8 @@ export async function resolveSessionFilePath(
     return null
   }
 
-  const resolved = await resolveSessionFileById(transcriptAgent, sessionId, options, signal)
+  const idOptions = withQoderProjectsDir(agent, options)
+  const resolved = await resolveSessionFileById(transcriptAgent, sessionId, idOptions, signal)
   if (!resolved && unavailable) {
     throw unavailable
   }

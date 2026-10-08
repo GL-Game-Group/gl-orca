@@ -86,4 +86,5 @@ pnpm test <各功能记录里列出的测试>       # 官方改用 Bun 跑 Vites
 | GL Work 手机 App（Orca 手机端的 GL Work 版：名称、图标、`com.glgwork.work`、首页即公司登录、去掉推送） | [changes/glwork-mobile-brand.md](./changes/glwork-mobile-brand.md) | `my/glwork-mobile-brand` |
 | GL Work 先登录再使用（未登录时只显示公司登录页） | [changes/glwork-sign-in-gate.md](./changes/glwork-sign-in-gate.md) | `my/glwork-sign-in-gate` |
 | GL Work 手机语音（千问、火山的识别和播报，在「设置 → 语音」） | [changes/glwork-voice.md](./changes/glwork-voice.md) | `my/glwork-voice` |
+| Qoder 对话视图（Qoder CLI、Qoder 中国版用 Claude 的会话记录解析器，桌面和手机都能看对话） | [changes/glwork-qoder-chat.md](./changes/glwork-qoder-chat.md) | `my/glwork-qoder-chat` |
 | ~~Qoder 代理~~（已由官方 #23581 取代，2026-10-08 同步时撤回） | [changes/qoder-agent.md](./changes/qoder-agent.md) | — |
