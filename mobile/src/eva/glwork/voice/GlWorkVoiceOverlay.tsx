@@ -6,6 +6,7 @@ import { nativeChatMessagePlainText } from '../../../session/mobile-native-chat-
 import { isGlWorkApp } from '../glwork-app'
 import { glWorkDictationLive, subscribeGlWorkDictationLive } from './glwork-dictation-live'
 import { isGlWorkSpeaking, stopGlWorkSpeech, subscribeGlWorkSpeaking } from './glwork-speech-state'
+import { alertSpeechFailure } from './glwork-speech-alert'
 import { speakGlWorkReply } from './glwork-voice-lazy'
 import { currentGlWorkVoicePrefs, loadGlWorkVoicePrefs } from './glwork-voice-prefs'
 
@@ -29,7 +30,7 @@ function useAutoRead(chat: MobileNativeChatController): void {
       return
     }
     lastRead.current = reply.id
-    void speakGlWorkReply(nativeChatMessagePlainText(reply)).catch(() => undefined)
+    void speakGlWorkReply(nativeChatMessagePlainText(reply)).catch(alertSpeechFailure)
   }, [chat.nativeChatAgentWorking, chat.showNativeChat, chat.nativeChatSession.messages])
 }
 
