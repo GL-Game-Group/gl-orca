@@ -4,7 +4,8 @@ import type {
   GlWorkCliToolStatus,
   GlWorkModelSources,
   GlWorkModelSourceTool,
-  GlWorkModelsResult
+  GlWorkModelsResult,
+  GlWorkRemoteStatus
 } from '../../shared/glwork-account-types'
 
 export type GlWorkModelSourceResult =
@@ -29,6 +30,9 @@ export type GlWorkApi = {
     tool: GlWorkModelSourceTool,
     choice: { vendor: string; model: string } | null
   ) => Promise<GlWorkModelSourceResult>
+  /** Remote access from the phone through the company's relay (src/main/glwork/glwork-remote.ts). */
+  remoteStatus: () => Promise<GlWorkRemoteStatus>
+  setRemote: (enabled: boolean) => Promise<GlWorkRemoteStatus>
 }
 
 function readIsBuild(): boolean {
@@ -48,5 +52,7 @@ export const glworkApi: GlWorkApi = {
   models: () => ipcRenderer.invoke('glwork:models'),
   modelSources: () => ipcRenderer.invoke('glwork:modelSources'),
   cliTools: (refresh) => ipcRenderer.invoke('glwork:cliTools', refresh === true),
-  setModelSource: (tool, choice) => ipcRenderer.invoke('glwork:setModelSource', tool, choice)
+  setModelSource: (tool, choice) => ipcRenderer.invoke('glwork:setModelSource', tool, choice),
+  remoteStatus: () => ipcRenderer.invoke('glwork:remoteStatus'),
+  setRemote: (enabled) => ipcRenderer.invoke('glwork:setRemote', enabled)
 }

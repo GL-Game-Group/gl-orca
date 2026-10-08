@@ -59,3 +59,15 @@ export type GlWorkCliToolStatus = {
   /** Orca's agent id, for switching the CLI off in new sessions; null until Orca knows the CLI. */
   agent: 'claude' | 'codex' | 'qoder' | null
 }
+
+/** Remote access from the phone through the company's relay (docs/fork/changes/glwork-remote.md). */
+export type GlWorkRemoteStatus = {
+  /** The member turned it on for this computer. */
+  enabled: boolean
+  /**
+   * off: turned off or not signed in; unavailable: the company will not run it (see message);
+   * starting/reconnecting: frpc is on its way; online: the phone can reach this computer.
+   */
+  state: 'off' | 'unavailable' | 'starting' | 'reconnecting' | 'online'
+  message: string | null
+}

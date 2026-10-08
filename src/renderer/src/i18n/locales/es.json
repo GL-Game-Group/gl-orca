@@ -19275,6 +19275,17 @@
       "confirmTitle": "¿Mostrar el estado de los agentes en GL Work?",
       "confirmDescription": "GL Work añadirá sus hooks de estado a la configuración de las propias herramientas: ~/.claude/settings.json (Claude Code), ~/.codex/config.toml (Codex), ~/.qwen/settings.json (Qwen Code), ~/.qoder/settings.json (Qoder), de las herramientas que tengas activadas. Solo informan a GL Work de trabajando, esperando y terminado. Si lo desactivas más tarde, se eliminan.",
       "agree": "Aceptar y activar"
+    },
+    "remote": {
+      "title": "Acceso remoto desde el teléfono",
+      "online": "Activado: tu teléfono puede conectarse a este ordenador mientras GL Work está abierto.",
+      "starting": "Conectando con el servicio de la empresa…",
+      "reconnecting": "Reconectando con el servicio de la empresa…",
+      "unavailable": "No disponible en este momento.",
+      "off": "Desactivado. Actívalo para conectarte a este ordenador desde GL Work en tu teléfono, con la misma cuenta de GitHub.",
+      "confirmTitle": "¿Conectarte a este ordenador desde tu teléfono?",
+      "confirmDescription": "Mientras esté abierto, GL Work mantendrá una conexión con el servicio de la empresa (frpc) para que GL Work en tu teléfono, con la misma cuenta de GitHub, pueda abrir los espacios de trabajo, terminales y agentes de este ordenador. El tráfico va cifrado de extremo a extremo; el servicio de la empresa solo lo reenvía. Los teléfonos emparejados aparecen en Ajustes → Móvil, donde puedes quitarlos.",
+      "agree": "Activar"
     }
   }
 }

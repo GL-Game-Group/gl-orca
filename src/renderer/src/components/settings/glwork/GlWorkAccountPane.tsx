@@ -3,6 +3,7 @@ import { Check, CircleUserRound, Cpu } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { translate } from '@/i18n/i18n'
+import { GlWorkRemoteAccess } from './GlWorkRemoteAccess'
 import { GlWorkModelSources } from './GlWorkModelSources'
 import type {
   GlWorkAccountStatus,
@@ -171,6 +172,12 @@ export function GlWorkAccountPane(): React.JSX.Element {
           </Button>
         )}
       </div>
+
+      {status?.signedIn ? (
+        <div className="border-t border-border/60 pt-5">
+          <GlWorkRemoteAccess />
+        </div>
+      ) : null}
 
       {status?.signedIn ? (
         <div className="space-y-4 border-t border-border/60 pt-5">
