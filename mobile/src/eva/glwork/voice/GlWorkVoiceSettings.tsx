@@ -6,7 +6,7 @@ import { isGlWorkApp } from '../glwork-app'
 import { alertSpeechFailure } from './glwork-speech-alert'
 import { effectiveSpeechChoice, speechChoiceProblem } from './glwork-speech-choice'
 import { stopGlWorkSpeech } from './glwork-speech-state'
-import { recognitionOptions, speechOptions } from './glwork-voice-options'
+import { isSameSpeechOption, recognitionOptions, speechOptions } from './glwork-voice-options'
 import { previewVoice, speakWith } from './glwork-voice-lazy'
 import { saveGlWorkVoicePrefs } from './glwork-voice-prefs'
 import {
@@ -163,7 +163,7 @@ export function GlWorkSpeechSettings() {
             key={`${entry.vendor.id}-${entry.kind}`}
             label={entry.label}
             sublabel={`${entry.kind === 'stream' ? '边合成边播，开口快' : '整段合成后播放'} · ${entry.model}`}
-            selected={option === entry}
+            selected={isSameSpeechOption(option, entry)}
             onPress={() =>
               save({
                 vendor: entry.vendor.id,
@@ -213,6 +213,12 @@ export function GlWorkSpeechSettings() {
                   </Text>
                 ) : null}
               </View>
+              {/* A fixed slot, so the play buttons stay in one column whichever voice is picked. */}
+              <View style={local.checkSlot}>
+                {choice.voice?.id === voice.id ? (
+                  <Check size={18} color={colors.textPrimary} />
+                ) : null}
+              </View>
               <Pressable
                 hitSlop={10}
                 onPress={() => preview(voice)}
@@ -220,9 +226,6 @@ export function GlWorkSpeechSettings() {
               >
                 <Play size={18} color={colors.textSecondary} />
               </Pressable>
-              {choice.voice?.id === voice.id ? (
-                <Check size={18} color={colors.textPrimary} />
-              ) : null}
             </Pressable>
           ))}
         </View>
@@ -232,5 +235,6 @@ export function GlWorkSpeechSettings() {
 }
 
 const local = StyleSheet.create({
-  muted: { color: colors.textMuted }
+  muted: { color: colors.textMuted },
+  checkSlot: { width: 18, marginRight: 12 }
 })

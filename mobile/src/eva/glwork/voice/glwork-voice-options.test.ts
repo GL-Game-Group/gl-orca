@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import type { CompanyVoiceVendor } from './company-voice'
-import { recognitionOptions, speechOptions, vendorShortName } from './glwork-voice-options'
+import {
+  isSameSpeechOption,
+  recognitionOptions,
+  speechOptions,
+  vendorShortName
+} from './glwork-voice-options'
 import { readVolcTtsMessage, VOLC_TTS_EVENT, volcTtsEvent } from './volc-tts-frames'
 import { utf8Decode, utf8Encode } from './cloud-asr'
 
@@ -37,6 +42,15 @@ describe('voice options', () => {
       ['千问实时', 'realtime', 'qwen3-asr-flash-realtime'],
       ['千问识别', 'file', 'qwen3-asr-flash']
     ])
+  })
+
+  it('matches a picked option across rebuilt lists', () => {
+    const [picked] = speechOptions([qwen])
+    const [stream, file] = speechOptions([qwen])
+    expect(picked === stream).toBe(false)
+    expect(isSameSpeechOption(picked ?? null, stream!)).toBe(true)
+    expect(isSameSpeechOption(picked ?? null, file!)).toBe(false)
+    expect(isSameSpeechOption(null, file!)).toBe(false)
   })
 
   it('shortens the vendor name', () => {

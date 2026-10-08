@@ -64,3 +64,8 @@ export function recognitionOptions(vendors: readonly CompanyVoiceVendor[]): Reco
     return options
   })
 }
+
+/** Options are rebuilt on every render, so "the same option" is the same vendor and kind. */
+export function isSameSpeechOption(a: SpeechOption | null, b: SpeechOption): boolean {
+  return a !== null && a.vendor.id === b.vendor.id && a.kind === b.kind
+}
