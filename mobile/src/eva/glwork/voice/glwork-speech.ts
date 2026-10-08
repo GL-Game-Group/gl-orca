@@ -1,3 +1,4 @@
+import { isRecording, tearDown } from '@orca/expo-two-way-audio'
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio'
 import { File, Paths } from 'expo-file-system'
 import * as ExpoCrypto from 'expo-crypto'
@@ -173,15 +174,24 @@ function play(source: string, mine: number): Promise<void> {
 }
 
 /**
- * Playback, not recording, so it uses the speaker and ignores the silent switch. Once dictation has
- * run, Orca's two-way audio engine keeps the session in play-and-record (speaker by default) and iOS
- * refuses the switch ('!pri', OSStatus 561017449); that session plays fine, so read on in it.
+ * Playback, not recording, so it uses the speaker and ignores the silent switch. Orca's two-way audio
+ * engine sets the session up once, when it is created, and reuses itself on every later dictation;
+ * left running under playback it hears nothing again. An idle engine is torn down first, so the
+ * switch succeeds and the next dictation builds a fresh engine and session. A busy one refuses the
+ * switch ('!pri', OSStatus 561017449); its play-and-record session plays through the speaker too.
  */
 async function speakerAudioMode(): Promise<void> {
   try {
+    if (!isRecording()) {
+      tearDown()
+    }
+  } catch {
+    // No engine yet.
+  }
+  try {
     await setAudioModeAsync({ playsInSilentMode: true, allowsRecording: false })
   } catch {
-    // Keep the session dictation left; see above.
+    // Keep the session dictation holds; see above.
   }
 }
 
