@@ -23,8 +23,6 @@ export type MobileNativeChatController = {
   /** Whether a tab's effective view is chat (per-tab override, else the default). */
   isTabChatView: (tabId: string) => boolean
   toggleTabChatView: (tabId: string) => void
-  /** The session tab the chat shows, if any. */
-  nativeChatTabId: string | null
   showNativeChat: boolean
   showNativeChatRef: MutableRefObject<boolean>
   /** Resolved agent for the active chat tab (names the empty-state copy). */

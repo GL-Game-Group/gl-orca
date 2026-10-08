@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { translate } from '@/i18n/i18n'
 import glworkIcon from '../../../../../resources/glwork/icon.png'
+import { GlWorkHooksFirstAsk } from './GlWorkHooksFirstAsk'
 import type { GlWorkAccountStatus } from '../../../../shared/glwork-account-types'
 
 // Why: the workspace's title bar is not mounted yet, so this strip lets the member move the window.
@@ -35,8 +36,16 @@ export function GlWorkSignInGate({ children }: { children: React.ReactNode }): R
     return api.onAccountChanged(() => void refresh())
   }, [api, gated, refresh])
 
-  if (!gated || signedIn) {
+  if (!gated) {
     return children
+  }
+  if (signedIn) {
+    return (
+      <>
+        {children}
+        <GlWorkHooksFirstAsk />
+      </>
+    )
   }
 
   const signIn = (): void => {

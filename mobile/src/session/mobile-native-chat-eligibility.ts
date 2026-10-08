@@ -1,6 +1,7 @@
 import { isAgentSessionHandleProvider } from '../../../src/shared/agent-session-provider-handle'
 import type { AgentStatusEntry } from '../../../src/shared/agent-status-types'
 import { isRuntimeOwnedSshTargetId } from '../../../src/shared/execution-host'
+import { glworkNeedsAgentStatusForChat } from '../eva/glwork/glwork-app'
 import {
   isNativeChatSupportedAgent,
   nativeChatRequiresLocalTranscript
@@ -65,6 +66,9 @@ export function resolveMobileNativeChat(
       : null
     : tab.launchAgent
   if (!agent || !isNativeChatSupportedAgent(agent)) {
+    return null
+  }
+  if (glworkNeedsAgentStatusForChat(tab.agentStatus)) {
     return null
   }
   if (nativeChatRequiresLocalTranscript(agent) && !nativeChatTranscriptIsLocalReadable) {

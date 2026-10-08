@@ -43,9 +43,18 @@ function readSettings(): RemoteSettings {
       }
     }
   } catch {
-    // A damaged file starts over, turned off.
+    // A damaged file starts over with the default.
   }
-  return { enabled: false, secret: randomBytes(32).toString('hex') }
+  // Why on: members reach their computers from GL Work on the phone by default; turning it off sticks.
+  const created: RemoteSettings = { enabled: true, secret: randomBytes(32).toString('hex') }
+  // Why persist now: frpc's header and the pairing check must read the same secret every time.
+  try {
+    writeSettings(created)
+  } catch {
+    // Unwritable profile: remote access stays off rather than run with a secret nobody keeps.
+    return { ...created, enabled: false }
+  }
+  return created
 }
 
 function writeSettings(settings: RemoteSettings): void {
