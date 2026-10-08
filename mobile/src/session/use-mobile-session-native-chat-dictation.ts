@@ -1,6 +1,7 @@
 import { useEffect, useCallback } from 'react'
 import { useFocusEffect } from 'expo-router'
 import { useMobileDictation } from '../hooks/use-mobile-dictation'
+import { useGlWorkCloudDictation } from '../eva/glwork/voice/use-glwork-cloud-dictation'
 import { triggerError } from '../platform/haptics'
 import {
   appendBufferedDictation,
@@ -111,7 +112,7 @@ export function useMobileSessionNativeChatDictation(
     [setShowDictationSetup, showToast]
   )
 
-  const dictation = useMobileDictation({
+  const dictationOptions: Parameters<typeof useMobileDictation>[0] = {
     client,
     enabled: canSend,
     onTranscript: (text) => {
@@ -154,7 +155,10 @@ export function useMobileSessionNativeChatDictation(
       dictationRouteContextRef.current = null
       reportDictationFailure(err)
     }
-  })
+  }
+  // GL Work: a company voice vendor recognizes speech from the phone when one is chosen.
+  const desktopDictation = useMobileDictation(dictationOptions)
+  const dictation = useGlWorkCloudDictation(dictationOptions) ?? desktopDictation
 
   const startDictation = useCallback(() => {
     const routeContext = activeHandle
