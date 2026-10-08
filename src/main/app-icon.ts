@@ -7,6 +7,7 @@ import { dirname, resolve } from 'node:path'
 import { app, BrowserWindow, nativeImage } from 'electron'
 import { is } from '@electron-toolkit/utils'
 import classicIcon from '../../resources/icon.png?asset'
+import { glworkAppIconPath } from './glwork/glwork-app-icon'
 import classicDevIcon from '../../resources/icon-dev.png?asset'
 import watercolorIcon from '../../resources/app-icons/orca-watercolor.png?asset'
 import watercolorMacDockIcon from '../../resources/app-icons/orca-watercolor.png?asset&asarUnpack'
@@ -74,7 +75,7 @@ let macDockIconPersistenceGeneration = 0
 let macDockIconPersistenceQueue = Promise.resolve()
 
 export function getAppIconPath(value: unknown): string {
-  return APP_ICON_PATHS[normalizeAppIconId(value)]
+  return glworkAppIconPath() ?? APP_ICON_PATHS[normalizeAppIconId(value)]
 }
 
 export function createAppIconImage(value: unknown): Electron.NativeImage {
@@ -270,7 +271,7 @@ export function persistMacDockIcon(value: unknown, options: PersistMacDockIconOp
     return
   }
   const execFile = options.execFile ?? defaultExecFile
-  const iconId = normalizeAppIconId(value)
+  const iconId = glworkAppIconPath() ? 'classic' : normalizeAppIconId(value)
   const generation = ++macDockIconPersistenceGeneration
   enqueueMacDockIconPersistence(async () => {
     // Why: stale queued writes must not reapply an older Dock pin icon.
