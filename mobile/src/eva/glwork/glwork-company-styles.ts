@@ -2,6 +2,10 @@ import { StyleSheet } from 'react-native'
 import { colors, radii, spacing, typography } from '../../theme/mobile-theme'
 
 export const glworkCompanyStyles = StyleSheet.create({
+  embedded: {
+    flex: 1,
+    paddingHorizontal: spacing.lg
+  },
   list: {
     alignSelf: 'stretch',
     gap: spacing.sm,

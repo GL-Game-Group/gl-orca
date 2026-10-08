@@ -14,6 +14,7 @@ import { getWorktreeStatus } from '../worktree/workspace-list-sections'
 import { repoColor } from '../worktree/repo-color'
 import { hostScreenStyles as styles } from './host-screen-styles'
 import type { HostScreenController } from './use-host-screen-controller'
+import { pairDesktopRoute } from '../eva/glwork/glwork-app'
 
 export function HostWorkspaceList({ controller }: { controller: HostScreenController }) {
   const {
@@ -49,7 +50,7 @@ export function HostWorkspaceList({ controller }: { controller: HostScreenContro
         <AuthFailedBanner
           canRetry={!!hostId && forceReconnectHost !== null}
           onRetry={() => hostId && forceReconnectHost && void forceReconnectHost(hostId)}
-          onRepair={() => router.push('/pair-scan')}
+          onRepair={() => router.push(pairDesktopRoute())}
           onRemove={() => state.setConfirmRemoveHost(true)}
         />
       )}

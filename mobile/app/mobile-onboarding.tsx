@@ -17,6 +17,7 @@ import {
   type MobileSessionView
 } from '../src/storage/session-view-preferences'
 import { setRemotePushEnabled } from '../src/notifications/push-registration'
+import { appDisplayName } from '../src/eva/glwork/glwork-app'
 
 const SLIDE_DURATION_MS = 280
 
@@ -138,7 +139,7 @@ function MobileOnboardingFlow({
     <SafeAreaView style={styles.container}>
       <View style={styles.brandRow}>
         <OrcaLogo size={22} />
-        <Text style={styles.brandName}>Orca</Text>
+        <Text style={styles.brandName}>{appDisplayName()}</Text>
         {steps.length > 1 ? (
           <View
             accessible

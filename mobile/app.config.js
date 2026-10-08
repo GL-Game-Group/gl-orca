@@ -30,3 +30,6 @@ module.exports = ({ config }) => ({
       : plugin
   )
 })
+
+// GL Work (docs/fork/changes/glwork-mobile-brand.md): rebrands only when EXPO_PUBLIC_GLWORK_BUILD=1.
+module.exports = require('./glwork.config').wrapExpoConfig(module.exports)

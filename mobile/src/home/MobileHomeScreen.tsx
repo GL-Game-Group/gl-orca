@@ -32,6 +32,8 @@ import { MobileHomeHostList } from './MobileHomeHostList'
 import { MobileHomeListFooter } from './MobileHomeListFooter'
 import { MobileHomeTopBar } from './MobileHomeTopBar'
 import { useMobileHomeData } from './use-mobile-home-data'
+import { isGlWorkApp, pairDesktopRoute } from '../eva/glwork/glwork-app'
+import { GlWorkCompanyScreen } from '../eva/glwork/GlWorkCompanyScreen'
 
 export function MobileHomeScreen() {
   const data = useMobileHomeData()
@@ -78,7 +80,7 @@ export function MobileHomeScreen() {
 
   function openHost(host: HostCatalogEntry): void {
     if (host.credentialStatus === 'missing') {
-      data.router.push('/pair-scan')
+      data.router.push(pairDesktopRoute())
     } else if (host.credentialStatus === 'temporarily-unavailable') {
       void loadHostCatalog()
         .then(data.setHostCatalog)
@@ -114,12 +116,14 @@ export function MobileHomeScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <MobileHomeTopBar onOpenSettings={() => data.router.push('/settings')} />
-      {data.hostCatalog.length === 0 ? (
+      {data.hostCatalog.length === 0 && isGlWorkApp() ? (
+        <GlWorkCompanyScreen embedded />
+      ) : data.hostCatalog.length === 0 ? (
         <MobileHomeEmptyState
           bottomInset={insets.bottom}
           contentMaxWidth={contentMaxWidth}
           isWideLayout={isWideLayout}
-          onPairDesktop={() => data.router.push('/pair-scan')}
+          onPairDesktop={() => data.router.push(pairDesktopRoute())}
         />
       ) : (
         <MobileHomeHostList
@@ -137,7 +141,7 @@ export function MobileHomeScreen() {
               onOpenAccounts={openMobileAccounts}
               onOpenResume={openResume}
               onOpenTasks={openTasks}
-              onPairDesktop={() => data.router.push('/pair-scan')}
+              onPairDesktop={() => data.router.push(pairDesktopRoute())}
             />
           }
           hostAttempts={data.hostAttempts}

@@ -6,6 +6,7 @@ import Svg, { Path } from 'react-native-svg'
 import { OrcaLogo } from '../components/OrcaLogo'
 import { GithubIcon } from '../components/GithubIcon'
 import { colors, spacing, typography } from '../theme/mobile-theme'
+import { appDisplayName } from '../eva/glwork/glwork-app'
 
 function XIcon({ size = 16, color = colors.textSecondary }) {
   return (
@@ -47,7 +48,7 @@ export default function AboutScreen({
 
       <View style={styles.brand}>
         <OrcaLogo size={28} />
-        <Text style={styles.brandName}>Orca</Text>
+        <Text style={styles.brandName}>{appDisplayName()}</Text>
         <Text style={styles.brandSub}>Open-source agent IDE for 100x builders</Text>
       </View>
 
