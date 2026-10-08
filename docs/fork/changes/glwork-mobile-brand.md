@@ -18,6 +18,10 @@ Orca 手机端构建出 GL Work 的手机 App：GL Work 的名称、图标、Bun
 
 图标、启动图和标志由 agent-work 的 `pnpm brand` 生成（`assets/glwork/icon.png` 不透明全幅 1024、`assets/glwork/splash-icon.png` 400×255、`src/eva/glwork/glwork-logo-mark.ts`），不手改。
 
+## iOS 27：UIScene 生命周期
+
+用 iOS 27 SDK（Xcode 27）编译、仍在 AppDelegate 里建窗口的 App，在 iOS 27 上一启动就被系统结束（`UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption`，EXC_BREAKPOINT），Expo 的模板正是这样；iOS 26 的模拟器上不会出现。`mobile/plugins/glwork-scene-lifecycle.js`（只在 GL Work 版启用）在生成工程时：Info.plist 声明 `UIApplicationSceneManifest`，新增 `SceneDelegate.swift`（在场景里建窗口、`startReactNative`，把 URL 和 Universal Link 转给 `RCTLinkingManager`），去掉 AppDelegate 里建窗口的那段（模板变了就报错，不会悄悄生成一个会闪退的 App）。2026-10-08 在 iPhone（iOS 27.0.1）上装 Release 版验证：之前一打开就闪退，现在正常运行。官方 Orca 换到 Xcode 27 时也会遇到，到时可以把这个插件提给官方。
+
 ## 装到 iPhone
 
 agent-work 的 `pnpm try:ios:orca`（`scripts/try-ios-orca.mjs`）：`EXPO_PUBLIC_GLWORK_BUILD=1 expo prebuild --platform ios --clean` 生成 `mobile/ios/`（不入库，需要 CocoaPods）→ `xcodebuild` Release（JS 打进 App，不需要 Metro），用原生 GL Work 工程的开发团队自动签名 → `devicectl` 装到数据线连着的 iPhone 并打开。Xcode 27 不接受低于 iOS 15 的部署版本，几个第三方 Pod 还写着 9.0/12.4/13.4，构建时统一指定 `IPHONEOS_DEPLOYMENT_TARGET=17.0`。
@@ -29,6 +33,7 @@ agent-work 的 `pnpm try:ios:orca`（`scripts/try-ios-orca.mjs`）：`EXPO_PUBLI
 | 位置 | 内容 |
 | --- | --- |
 | `mobile/glwork.config.js` | GL Work 版的 Expo 配置覆盖 |
+| `mobile/plugins/glwork-scene-lifecycle.js` | 采用 UIScene 生命周期（iOS 27） |
 | `mobile/assets/glwork/` | 图标、启动图（`pnpm brand` 生成） |
 | `mobile/src/eva/glwork/glwork-app.ts` | `isGlWorkApp`、`pairDesktopRoute`、`appDisplayName` |
 | `mobile/src/eva/glwork/GlWorkLogo.tsx`、`glwork-logo-mark.ts` | GL Work 标志（后者由 `pnpm brand` 生成） |

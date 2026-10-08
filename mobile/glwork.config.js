@@ -52,7 +52,7 @@ function withGlWork(config) {
       entitlements,
       infoPlist: rebrandAll(config.ios?.infoPlist)
     },
-    plugins: [...plugins, withoutPushEntitlement]
+    plugins: [...plugins, withoutPushEntitlement, require('./plugins/glwork-scene-lifecycle')]
   }
 }
 
