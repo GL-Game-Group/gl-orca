@@ -4,6 +4,7 @@ import { voiceSettingsStyles as styles } from '../../../settings/voice-settings-
 import { colors } from '../../../theme/mobile-theme'
 import { isGlWorkApp } from '../glwork-app'
 import { stopGlWorkSpeech } from './glwork-speech-state'
+import { alertSpeechFailure } from './glwork-speech-alert'
 import { previewVoice, speakWith } from './glwork-voice-lazy'
 import { saveGlWorkVoicePrefs } from './glwork-voice-prefs'
 import {
@@ -87,7 +88,7 @@ export function GlWorkSpeechSettings() {
       : vendor
         ? speakWith({ vendor, voice: voice.id, rate: prefs.tts.rate }, `你好，我是${voice.name}。`)
         : Promise.resolve()
-    void play.catch(() => undefined)
+    void play.catch(alertSpeechFailure)
   }
 
   return (

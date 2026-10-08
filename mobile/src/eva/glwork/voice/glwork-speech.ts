@@ -16,6 +16,8 @@ const QWEN_TTS =
   'https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation'
 const VOLC_TTS = 'https://openspeech.bytedance.com/api/v3/tts/unidirectional'
 const REQUEST_TIMEOUT_MS = 30_000
+/** A piece that has not started playing by then is reported, not left as "正在朗读" forever. */
+const LOAD_TIMEOUT_MS = 20_000
 
 let player: AudioPlayer | null = null
 /** Bumped by every speak and stop: a reading started earlier stops at its next piece. */
@@ -44,7 +46,10 @@ async function post(
   }
 }
 
-/** Qwen-TTS over HTTP: the reply names a WAV file the phone plays from its URL. */
+/**
+ * Qwen-TTS over HTTP: the reply names a WAV file on OSS. Its URL is http://, which iOS blocks (the
+ * app allows only local http), so it is fetched over https into the cache and played from there.
+ */
 async function qwenAudio(
   token: string,
   model: string,
@@ -69,7 +74,13 @@ async function qwenAudio(
       typeof body === 'object' && body !== null && 'message' in body ? String(body.message) : ''
     throw new Error(`千问语音合成失败（${response.status} ${message}）`.trim())
   }
-  return url
+  const file = new File(Paths.cache, `glwork-speech-${ExpoCrypto.randomUUID()}.wav`)
+  try {
+    await File.downloadFileAsync(url.replace(/^http:\/\//u, 'https://'), file)
+  } catch (error) {
+    throw new Error(`千问语音下载失败（${error instanceof Error ? error.message : String(error)}）`)
+  }
+  return file.uri
 }
 
 /** Volcengine's V3 HTTP synthesis: JSON objects carrying base64 MP3, written to a cache file. */
@@ -124,24 +135,45 @@ async function volcAudio(
   return file.uri
 }
 
-/** Plays one source to its end, or until a later speak or stop. */
+/** Plays one source to its end, or until a later speak or stop; fails if it never starts. */
 function play(source: string, mine: number): Promise<void> {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     if (mine !== generation) {
       resolve()
       return
     }
     player ??= createAudioPlayer(null)
     const current = player
-    const subscription = current.addListener('playbackStatusUpdate', (status) => {
-      if (status.didJustFinish || mine !== generation) {
-        subscription.remove()
+    let started = false
+    const finish = (error?: Error): void => {
+      clearTimeout(timer)
+      subscription.remove()
+      if (error) {
+        current.pause()
+        reject(error)
+      } else {
         resolve()
+      }
+    }
+    const timer = setTimeout(() => {
+      if (!started && mine === generation) {
+        finish(new Error('音频没有开始播放，请检查网络后再试。'))
+      }
+    }, LOAD_TIMEOUT_MS)
+    const subscription = current.addListener('playbackStatusUpdate', (status) => {
+      started ||= status.isLoaded && (status.playing || status.currentTime > 0)
+      if (status.didJustFinish || mine !== generation) {
+        finish()
       }
     })
     current.replace({ uri: source })
     current.play()
   })
+}
+
+/** Playback, not recording: dictation leaves the session in play-and-record, which routes to the earpiece. */
+function speakerAudioMode(): Promise<void> {
+  return setAudioModeAsync({ playsInSilentMode: true, allowsRecording: false })
 }
 
 export type SpeechVoice = { vendor: CompanyVoiceVendor; voice: string; rate: number }
@@ -160,7 +192,7 @@ export async function speakWith(choice: SpeechVoice, markdown: string): Promise<
     if (!session) {
       throw new Error('请先在 GL Work 里登录公司账号，才能用语音播报。')
     }
-    await setAudioModeAsync({ playsInSilentMode: true })
+    await speakerAudioMode()
     for (const piece of speechPieces(text)) {
       if (mine !== generation) {
         return
@@ -200,8 +232,8 @@ export async function previewVoice(sampleUrl: string): Promise<void> {
   const mine = ++generation
   setGlWorkSpeaking(true)
   try {
-    await setAudioModeAsync({ playsInSilentMode: true })
-    await play(sampleUrl, mine)
+    await speakerAudioMode()
+    await play(sampleUrl.replace(/^http:\/\//u, 'https://'), mine)
   } finally {
     if (mine === generation) {
       setGlWorkSpeaking(false)
