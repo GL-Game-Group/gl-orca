@@ -137,3 +137,20 @@ describe('Qwen realtime ASR', () => {
     expect(await finishing).toBe('今天天气，怎么样？')
   })
 })
+
+describe('handshake failures', () => {
+  it('says what a refused handshake means', async () => {
+    const { describeAsrHandshakeFailure } = await import('./cloud-asr')
+    expect(
+      describeAsrHandshakeFailure(
+        '火山',
+        'volc.seedasr.sauc.duration',
+        'Received bad response code from server: 403.'
+      )
+    ).toContain('没有开通识别资源 volc.seedasr.sauc.duration')
+    expect(
+      describeAsrHandshakeFailure('火山', 'm', 'Received bad response code from server: 401.')
+    ).toContain('Key 无效')
+    expect(describeAsrHandshakeFailure('千问', 'm', '')).toBe('连不上千问的语音识别，请检查网络。')
+  })
+})
