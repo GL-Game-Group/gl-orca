@@ -1,4 +1,5 @@
 import type { TuiAgent } from './tui-agent'
+import { isQoderNativeChatAgent, QODER_NATIVE_CHAT_AGENTS } from './qoder-native-chat'
 
 export type NativeChatTranscriptAgent = 'claude' | 'codex' | 'grok' | 'omp' | 'opencode'
 
@@ -11,7 +12,8 @@ export const NATIVE_CHAT_SUPPORTED_AGENT_LIST: readonly TuiAgent[] = [
   'grok',
   'omp',
   'opencode',
-  'opencode2'
+  'opencode2',
+  ...QODER_NATIVE_CHAT_AGENTS
 ]
 
 export const NATIVE_CHAT_SUPPORTED_AGENTS: ReadonlySet<string> = new Set(
@@ -42,7 +44,7 @@ export function resolveNativeChatTranscriptAgent(
 ): NativeChatTranscriptAgent | null {
   // Why: OpenClaude writes the Claude transcript format and layout even though
   // Orca preserves its distinct agent identity for launch and UI behavior.
-  if (agent === 'claude' || agent === 'openclaude') {
+  if (agent === 'claude' || agent === 'openclaude' || isQoderNativeChatAgent(agent)) {
     return 'claude'
   }
   if (agent === 'opencode' || agent === 'opencode2') {
