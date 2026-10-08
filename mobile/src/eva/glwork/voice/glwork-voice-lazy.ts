@@ -7,15 +7,17 @@ import type { CloudAsrOptions, CloudAsrSession } from './cloud-asr'
 import type { CompanyVoiceVendor } from './company-voice'
 import type { SpeechVoice } from './glwork-speech'
 
+/** The one dynamic import: the native-module half of GL Work voice. */
+function runtime(): Promise<typeof import('./glwork-voice-runtime')> {
+  return import('./glwork-voice-runtime')
+}
+
 export type LoadedVoiceVendors =
   | { state: 'signed-out' }
   | { state: 'ready'; vendors: CompanyVoiceVendor[] }
 
 export async function loadVoiceVendors(fresh = false): Promise<LoadedVoiceVendors> {
-  const [{ loadCompanySession }, { fetchCompanyVoiceVendors }] = await Promise.all([
-    import('../company-session'),
-    import('./company-voice')
-  ])
+  const { loadCompanySession, fetchCompanyVoiceVendors } = await runtime()
   const session = await loadCompanySession()
   if (!session) {
     return { state: 'signed-out' }
@@ -28,8 +30,13 @@ export async function startCloudAsr(
   vendorId: string,
   handlers: Pick<CloudAsrOptions, 'onText' | 'onError'>
 ): Promise<CloudAsrSession> {
-  const [{ loadCompanySession }, { companyVoiceToken, fetchCompanyVoiceVendors }] =
-    await Promise.all([import('../company-session'), import('./company-voice')])
+  const {
+    loadCompanySession,
+    companyVoiceToken,
+    fetchCompanyVoiceVendors,
+    startQwenAsr,
+    startVolcAsr
+  } = await runtime()
   const session = await loadCompanySession()
   if (!session) {
     throw new Error('请先在 GL Work 里登录公司账号，才能用千问或火山识别。')
@@ -40,25 +47,20 @@ export async function startCloudAsr(
   }
   const token = await companyVoiceToken(session, vendorId)
   const options = { token: token.token, model: vendor.asr.model, ...handlers }
-  if (vendor.protocol === 'dashscope') {
-    const { startQwenAsr } = await import('./qwen-asr')
-    return startQwenAsr(options)
-  }
-  const { startVolcAsr } = await import('./volc-asr')
-  return startVolcAsr(options)
+  return vendor.protocol === 'dashscope' ? startQwenAsr(options) : startVolcAsr(options)
 }
 
 export async function speakGlWorkReply(markdown: string): Promise<void> {
-  const speech = await import('./glwork-speech')
+  const speech = await runtime()
   await speech.speakGlWorkReply(markdown)
 }
 
 export async function speakWith(choice: SpeechVoice, markdown: string): Promise<void> {
-  const speech = await import('./glwork-speech')
+  const speech = await runtime()
   await speech.speakWith(choice, markdown)
 }
 
 export async function previewVoice(sampleUrl: string): Promise<void> {
-  const speech = await import('./glwork-speech')
+  const speech = await runtime()
   await speech.previewVoice(sampleUrl)
 }

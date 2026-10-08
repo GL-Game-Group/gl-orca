@@ -24,6 +24,8 @@
 
 厂商客户端、播放器、公司登录要用原生模块（`expo-audio`、`expo-crypto`、钥匙串）。Orca 的组件只引入 `glwork-voice-lazy.ts`、`glwork-speech-state.ts` 这类不依赖原生模块的文件，用到时再 `import()`，所以 Orca 的组件和测试不会因此加载原生模块。
 
+只有一处 `import()`，即 `glwork-voice-runtime.ts`，所以 GL Work 语音只多出一个分包。手机网页版（桌面端提供的 `out/mobile-web`）解析到 `glwork-voice-runtime.web.ts` 这个替身：它不加载厂商客户端，直接报“网页版不支持”。原因是 `verify-mobile-web-app-bundle` 按路由数和图片数限制资源总数（预算 128），之前多出的分包让桌面端打包失败。同步官方后如果又超出预算，先检查是否有新的 `import()` 或被多处共用的 GL Work 模块被切成了单独的分包。
+
 ## 代码位置
 
 新文件都在 `mobile/src/eva/glwork/voice/`。对官方文件的改动：
