@@ -85,3 +85,21 @@
 - 接入点：`MobileNativeChatView.tsx` 里把 `MobileNativeChatComposer` 换成 `GlWorkChatComposer`（属性完全相同，改一行 import 和一个标签名）。
   - 语音模式的组件按需加载（`lazy`）。键盘模式、官方 Orca 和对话视图的测试都不会加载麦克风、振动这些原生模块。
   - 手机网页版用 `GlWorkChatComposer.web.tsx`，直接用 Orca 的输入框（网页版没有语音；也不能多出分包，否则超出资源数上限）。
+
+## 四种识别、四种播报，实时播报，两级菜单（2026-10-09）
+
+- 公司服务的每个厂商有 4 组开关和模型（agent-work `gateway/src/voice.ts`）。原来的 `asr`、`tts` 字段保留，分别是“实时识别”和“整段播报”，旧版手机照常读取；新增 `asrFile`（整段识别）和 `ttsStream`（实时播报）。
+- 手机上的选项列表（`glwork-voice-options.ts`）：
+  - 播报：千问实时、千问语音、火山实时、火山语音；
+  - 识别：千问实时、千问识别、火山实时、火山识别。识别（整段）列出但标为“暂未接入”。
+- 实时播报：
+  - 千问用 `qwen-tts-stream.ts`（`qwen3-tts-flash-realtime`，server_commit 模式）；
+  - 火山用 `volc-tts-stream.ts`（`/api/v3/tts/bidirection`，帧格式见 `volc-tts-frames.ts`，带测试）；
+  - 两家都请求 16 kHz PCM，用 `expo-two-way-audio` 的 `playPCMData` 边收边播（`glwork-pcm-player.ts`）。这和按住说话用的是同一个引擎、同一个音频会话。
+  - 播放器会一直报告“正在播放”，所以按收到的音频时长推算什么时候播完。
+  - 没有麦克风权限时不启用这个引擎（它会占用麦克风），改成收齐后当作文件播放。
+- 整段播报的代码移到 `glwork-speech-file.ts`。
+- 两级菜单：
+  - 对话页的“…”里是“输入方式：语音 / 键盘”（点一下切换）和“语音设置”；
+  - “语音设置”是第二级（`GlWorkVoiceQuickSheet.tsx`）：识别列表（含电脑上的模型）、播报列表、语速、音色。
+- 语音模式输入栏右侧、模型选择上方有一个小按钮（`GlWorkSpeechControl.tsx`）：朗读时是“停止”，平时是“重播最近一次朗读”。

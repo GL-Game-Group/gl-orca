@@ -1,11 +1,12 @@
-import { Pressable, Switch, Text, View } from 'react-native'
+import { Pressable, StyleSheet, Switch, Text, View } from 'react-native'
 import { Check, Play } from 'lucide-react-native'
 import { voiceSettingsStyles as styles } from '../../../settings/voice-settings-styles'
 import { colors } from '../../../theme/mobile-theme'
 import { isGlWorkApp } from '../glwork-app'
-import { stopGlWorkSpeech } from './glwork-speech-state'
 import { alertSpeechFailure } from './glwork-speech-alert'
 import { effectiveSpeechChoice, speechChoiceProblem } from './glwork-speech-choice'
+import { stopGlWorkSpeech } from './glwork-speech-state'
+import { recognitionOptions, speechOptions } from './glwork-voice-options'
 import { previewVoice, speakWith } from './glwork-voice-lazy'
 import { saveGlWorkVoicePrefs } from './glwork-voice-prefs'
 import {
@@ -27,37 +28,81 @@ function vendorsNote(vendors: GlWorkVoiceVendors): string | null {
   }
 }
 
-/** Company cloud recognizers, listed above the desktop's models in the speech model drawer. */
-export function GlWorkCloudAsrList({ onPicked }: { onPicked: () => void }) {
+function SelectRow(props: {
+  label: string
+  sublabel?: string
+  selected: boolean
+  disabled?: boolean
+  onPress: () => void
+}) {
+  return (
+    <Pressable
+      disabled={props.disabled}
+      style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+      onPress={props.onPress}
+    >
+      <View style={styles.rowContent}>
+        <Text style={[styles.rowLabel, props.disabled && local.muted]}>{props.label}</Text>
+        {props.sublabel ? <Text style={styles.rowSublabel}>{props.sublabel}</Text> : null}
+      </View>
+      {props.selected ? <Check size={18} color={colors.textPrimary} /> : null}
+    </Pressable>
+  )
+}
+
+/**
+ * The recognizers: 千问实时, 千问识别, 火山实时, 火山识别 as the company opens them (识别 listed
+ * but not wired yet), and with `desktop` the desktop's own dictation first.
+ */
+export function GlWorkRecognitionRows({
+  desktop,
+  onPicked
+}: {
+  desktop?: boolean
+  onPicked?: () => void
+}) {
   const prefs = useGlWorkVoicePrefs()
   const vendors = useGlWorkVoiceVendors()
+  const note = vendorsNote(vendors)
+  const options = vendors.state === 'ready' ? recognitionOptions(vendors.vendors) : []
+  const pick = (asrVendor: string | null): void => {
+    void saveGlWorkVoicePrefs((p) => ({ ...p, asrVendor }))
+    onPicked?.()
+  }
+  return (
+    <View style={[styles.section, styles.sectionTopGap]}>
+      {desktop ? (
+        <SelectRow
+          label="电脑上的模型"
+          sublabel="由电脑识别，说完才出字"
+          selected={prefs.asrVendor === null}
+          onPress={() => pick(null)}
+        />
+      ) : null}
+      {note ? <Text style={styles.emptyText}>{note}</Text> : null}
+      {options.map((option) => (
+        <SelectRow
+          key={`${option.vendor.id}-${option.kind}`}
+          label={option.label}
+          sublabel={option.available ? option.model : `${option.model} · 暂未接入`}
+          disabled={!option.available}
+          selected={option.available && prefs.asrVendor === option.vendor.id}
+          onPress={() => pick(option.vendor.id)}
+        />
+      ))}
+    </View>
+  )
+}
+
+/** Company cloud recognizers, listed above the desktop's models in the speech model drawer. */
+export function GlWorkCloudAsrList({ onPicked }: { onPicked: () => void }) {
   if (!isGlWorkApp()) {
     return null
   }
-  const note = vendorsNote(vendors)
-  const asr = vendors.state === 'ready' ? vendors.vendors.filter((vendor) => vendor.asr) : []
   return (
     <View>
-      <Text style={styles.groupHeading}>公司云端（手机直连，边说边出字）</Text>
-      <View style={[styles.section, styles.sectionTopGap]}>
-        {note ? <Text style={styles.emptyText}>{note}</Text> : null}
-        {asr.map((vendor) => (
-          <Pressable
-            key={vendor.id}
-            style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
-            onPress={() => {
-              void saveGlWorkVoicePrefs((p) => ({ ...p, asrVendor: vendor.id }))
-              onPicked()
-            }}
-          >
-            <View style={styles.rowContent}>
-              <Text style={styles.rowLabel}>{vendor.name}</Text>
-              <Text style={styles.rowSublabel}>{vendor.asr?.model}</Text>
-            </View>
-            {prefs.asrVendor === vendor.id ? <Check size={18} color={colors.textPrimary} /> : null}
-          </Pressable>
-        ))}
-      </View>
+      <Text style={styles.groupHeading}>公司云端（手机直连）</Text>
+      <GlWorkRecognitionRows onPicked={onPicked} />
       <Text style={[styles.groupHeading, styles.inputGroupGap]}>电脑上的模型</Text>
     </View>
   )
@@ -69,7 +114,7 @@ const RATES = [
   { label: '快', value: 40 }
 ]
 
-/** 语音播报: read replies aloud with a company vendor's voice. */
+/** 语音播报: 千问实时, 千问语音, 火山实时, 火山语音, then the chosen one's voices. */
 export function GlWorkSpeechSettings() {
   const prefs = useGlWorkVoicePrefs()
   const vendors = useGlWorkVoiceVendors()
@@ -78,9 +123,9 @@ export function GlWorkSpeechSettings() {
   }
   const note = vendorsNote(vendors)
   const all = vendors.state === 'ready' ? vendors.vendors : []
-  const tts = all.filter((entry) => entry.tts)
+  const options = speechOptions(all)
   const choice = effectiveSpeechChoice(prefs, all)
-  const vendor = choice.vendor
+  const option = choice.option
   const problem = vendors.state === 'ready' && !note ? speechChoiceProblem(choice, all) : null
   const save = (change: Partial<typeof prefs.tts>): void => {
     void saveGlWorkVoicePrefs((p) => ({ ...p, tts: { ...p.tts, ...change } }))
@@ -89,8 +134,8 @@ export function GlWorkSpeechSettings() {
     stopGlWorkSpeech()
     const play = voice.sampleUrl
       ? previewVoice(voice.sampleUrl)
-      : vendor
-        ? speakWith({ vendor, voice: voice.id, rate: prefs.tts.rate }, `你好，我是${voice.name}。`)
+      : option
+        ? speakWith({ option, voice: voice.id, rate: prefs.tts.rate }, `你好，我是${voice.name}。`)
         : Promise.resolve()
     void play.catch(alertSpeechFailure)
   }
@@ -113,81 +158,80 @@ export function GlWorkSpeechSettings() {
             thumbColor={colors.textPrimary}
           />
         </View>
-        <View style={styles.separator} />
         {note || problem ? <Text style={styles.emptyText}>{note ?? problem}</Text> : null}
-        {tts.length > 0 ? (
-          <View style={styles.row}>
-            <Text style={[styles.rowLabel, styles.rowContent]}>播报厂商</Text>
-            <View style={styles.segmented}>
-              {tts.map((entry) => (
-                <Pressable
-                  key={entry.id}
-                  onPress={() =>
-                    save({ vendor: entry.id, voice: entry.tts?.voices[0]?.id ?? null })
-                  }
-                  style={[styles.segment, vendor?.id === entry.id && styles.segmentActive]}
-                >
-                  <Text
-                    style={[
-                      styles.segmentText,
-                      vendor?.id === entry.id && styles.segmentTextActive
-                    ]}
-                  >
-                    {entry.name}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
-          </View>
-        ) : null}
-        {vendor?.protocol === 'volcengine' ? (
-          <View style={styles.row}>
-            <Text style={[styles.rowLabel, styles.rowContent]}>语速</Text>
-            <View style={styles.segmented}>
-              {RATES.map((rate) => (
-                <Pressable
-                  key={rate.value}
-                  onPress={() => save({ rate: rate.value })}
-                  style={[styles.segment, prefs.tts.rate === rate.value && styles.segmentActive]}
-                >
-                  <Text
-                    style={[
-                      styles.segmentText,
-                      prefs.tts.rate === rate.value && styles.segmentTextActive
-                    ]}
-                  >
-                    {rate.label}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
-          </View>
-        ) : null}
-        {(vendor?.tts?.voices ?? []).map((voice) => (
-          <Pressable
-            key={voice.id}
-            style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
-            onPress={() => save({ voice: voice.id })}
-          >
-            <View style={styles.rowContent}>
-              <Text style={styles.rowLabel}>{voice.name}</Text>
-              {voice.description ? (
-                <Text style={styles.rowSublabel} numberOfLines={1}>
-                  {voice.description}
-                </Text>
-              ) : null}
-            </View>
-            <Pressable
-              hitSlop={10}
-              onPress={() => preview(voice)}
-              accessibilityLabel={`试听 ${voice.name}`}
-            >
-              <Play size={18} color={colors.textSecondary} />
-            </Pressable>
-            {choice.voice?.id === voice.id ? <Check size={18} color={colors.textPrimary} /> : null}
-          </Pressable>
+        {options.map((entry) => (
+          <SelectRow
+            key={`${entry.vendor.id}-${entry.kind}`}
+            label={entry.label}
+            sublabel={`${entry.kind === 'stream' ? '边合成边播，开口快' : '整段合成后播放'} · ${entry.model}`}
+            selected={option === entry}
+            onPress={() =>
+              save({
+                vendor: entry.vendor.id,
+                kind: entry.kind,
+                voice: entry.voices[0]?.id ?? null
+              })
+            }
+          />
         ))}
       </View>
+      {option ? (
+        <View style={[styles.section, styles.sectionTopGap]}>
+          {option.vendor.protocol === 'volcengine' ? (
+            <View style={styles.row}>
+              <Text style={[styles.rowLabel, styles.rowContent]}>语速</Text>
+              <View style={styles.segmented}>
+                {RATES.map((rate) => (
+                  <Pressable
+                    key={rate.value}
+                    onPress={() => save({ rate: rate.value })}
+                    style={[styles.segment, prefs.tts.rate === rate.value && styles.segmentActive]}
+                  >
+                    <Text
+                      style={[
+                        styles.segmentText,
+                        prefs.tts.rate === rate.value && styles.segmentTextActive
+                      ]}
+                    >
+                      {rate.label}
+                    </Text>
+                  </Pressable>
+                ))}
+              </View>
+            </View>
+          ) : null}
+          {option.voices.map((voice) => (
+            <Pressable
+              key={voice.id}
+              style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+              onPress={() => save({ vendor: option.vendor.id, kind: option.kind, voice: voice.id })}
+            >
+              <View style={styles.rowContent}>
+                <Text style={styles.rowLabel}>{voice.name}</Text>
+                {voice.description ? (
+                  <Text style={styles.rowSublabel} numberOfLines={1}>
+                    {voice.description}
+                  </Text>
+                ) : null}
+              </View>
+              <Pressable
+                hitSlop={10}
+                onPress={() => preview(voice)}
+                accessibilityLabel={`试听 ${voice.name}`}
+              >
+                <Play size={18} color={colors.textSecondary} />
+              </Pressable>
+              {choice.voice?.id === voice.id ? (
+                <Check size={18} color={colors.textPrimary} />
+              ) : null}
+            </Pressable>
+          ))}
+        </View>
+      ) : null}
     </View>
   )
 }
+
+const local = StyleSheet.create({
+  muted: { color: colors.textMuted }
+})

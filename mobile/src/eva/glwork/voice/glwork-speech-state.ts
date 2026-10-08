@@ -33,3 +33,25 @@ export function stopGlWorkSpeech(): void {
   stopper?.()
   setGlWorkSpeaking(false)
 }
+
+/** The reply read most recently, for 重播. */
+let lastSpoken: string | null = null
+const lastSpokenListeners = new Set<(text: string | null) => void>()
+
+export function setGlWorkLastSpoken(text: string): void {
+  lastSpoken = text
+  for (const listener of lastSpokenListeners) {
+    listener(text)
+  }
+}
+
+export function glWorkLastSpoken(): string | null {
+  return lastSpoken
+}
+
+export function subscribeGlWorkLastSpoken(listener: (text: string | null) => void): () => void {
+  lastSpokenListeners.add(listener)
+  return () => {
+    lastSpokenListeners.delete(listener)
+  }
+}

@@ -15,10 +15,35 @@ export type CompanyVoiceVendor = {
   id: string
   name: string
   protocol: 'dashscope' | 'volcengine'
-  /** Speech recognition, when the administrator turned it on for this member. */
+  /** Realtime recognition (实时), when the administrator turned it on. */
   asr: { model: string } | null
-  /** Read-aloud and its voices, when turned on. */
+  /** Recognition of a finished recording (识别). */
+  asrFile: { model: string } | null
+  /** Streaming read-aloud (实时) and its voices. */
+  ttsStream: { model: string; voices: CompanyVoiceOption[] } | null
+  /** Read-aloud synthesized whole (语音) and its voices. */
   tts: { model: string; voices: CompanyVoiceOption[] } | null
+}
+
+function readModel(value: unknown): { model: string } | null {
+  const model = text(record(value).model)
+  return model ? { model } : null
+}
+
+function readSpeech(value: unknown): { model: string; voices: CompanyVoiceOption[] } | null {
+  const speech = record(value)
+  const model = text(speech.model)
+  if (!model) {
+    return null
+  }
+  const voices = Array.isArray(speech.voices) ? speech.voices : []
+  return {
+    model,
+    voices: voices.flatMap((voice: unknown) => {
+      const read = readVoice(voice)
+      return read ? [read] : []
+    })
+  }
 }
 
 /** What the phone sends to a vendor: a short-lived DashScope token, or Volcengine's API key made for GL Work. */
@@ -59,23 +84,14 @@ function readVendor(value: unknown): CompanyVoiceVendor | null {
   if (!id || (protocol !== 'dashscope' && protocol !== 'volcengine')) {
     return null
   }
-  const asr = record(vendor.asr)
-  const tts = record(vendor.tts)
-  const voices = Array.isArray(tts.voices) ? tts.voices : []
   return {
     id,
     name: text(vendor.name) ?? id,
     protocol,
-    asr: text(asr.model) ? { model: String(asr.model) } : null,
-    tts: text(tts.model)
-      ? {
-          model: String(tts.model),
-          voices: voices.flatMap((voice: unknown) => {
-            const read = readVoice(voice)
-            return read ? [read] : []
-          })
-        }
-      : null
+    asr: readModel(vendor.asr),
+    asrFile: readModel(vendor.asrFile),
+    ttsStream: readSpeech(vendor.ttsStream),
+    tts: readSpeech(vendor.tts)
   }
 }
 
