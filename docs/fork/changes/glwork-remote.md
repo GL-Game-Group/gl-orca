@@ -71,10 +71,10 @@ iOS 模拟器（2026-10-08 跑过）：同样的本地环境，模拟器里的 O
 
 ## 手机聊天视图和代理状态钩子
 
-手机把 Claude 等终端代理显示成聊天时，要靠电脑的代理状态钩子告诉它会话的记录文件（`runtime-mobile-agent-status-builder.ts` 的 `providerSession`），工作状态和权限确认也来自钩子。官方 Orca 默认自动装钩子；GL Work 按公司规则先征得同意（[glwork-cli-tools.md](./glwork-cli-tools.md)）：
+手机把 Claude 等终端代理显示成聊天时，要靠电脑的代理状态钩子告诉它会话的记录文件（`runtime-mobile-agent-status-builder.ts` 的 `providerSession`），工作状态和权限确认也来自钩子。GL Work 默认开启钩子（[glwork-cli-tools.md](./glwork-cli-tools.md)），成员可以在「设置 → 命令行工具 → 代理状态」关掉：
 
-- 第一次登录后问一次（`GlWorkHooksFirstAsk`，“同意并开启 / 暂不开启”，答过就不再问，`<userData>/glwork-hooks-asked`）；固定的开关在「设置 → 命令行工具 → 代理状态」，随时可以开或关；「手机远程」开着、钩子没开时，开关下面也有说明和“开启…”。
-- 手机端（GL Work 版）终端标签在电脑还没上报代理状态时直接按终端显示（`glworkNeedsAgentStatusForChat`，接在 `resolveMobileNativeChat`）：钩子没开就一直是终端，开着时代理第一次上报状态后自动变成聊天。
+- 关掉后，「手机远程」开着时开关下面有说明和“开启…”（同一个同意对话框，`useGlWorkAgentHooksConsent`）。
+- 手机端（GL Work 版）终端标签在电脑还没上报代理状态时直接按终端显示（`glworkNeedsAgentStatusForChat`，接在 `resolveMobileNativeChat`）：钩子关着就一直是终端，开着时代理第一次上报状态后自动变成聊天。
 
 「手机远程」默认打开：没有 `<userData>/glwork-remote.json` 时第一次读取就写入（开、随机密钥），关掉后保持关闭。
 

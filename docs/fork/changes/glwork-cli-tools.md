@@ -11,7 +11,7 @@ GL Work 的成员用自己的订阅登录 Claude Code、Codex、Qoder（公司�
 
 另外两项 GL Work 的默认：
 
-- **代理状态钩子先关闭**：Orca 会往已启用代理自己的配置里写入钩子来显示“工作中、等待中、已完成”（GL Work 默认启用的四个：`~/.claude/settings.json`、`~/.codex/config.toml`、`~/.qwen/settings.json`、`~/.qoder/settings.json`）。公司规则要求修改其他工具的配置前先征得同意，所以 GL Work 首次启动时把 `agentStatusHooksEnabled` 设为关闭，第一次登录后问一次（同意并开启 / 暂不开启），之后在「命令行工具」页的「代理状态」随时开或关，打开前都会列出要改的文件并确认（走 Orca 原有的开关，关闭时 Orca 会移除钩子）。
+- **代理状态钩子默认开启**（负责人 2026-10-08 决定，和官方 Orca 一致）：Orca 会往已启用代理自己的配置里写入钩子来显示“工作中、等待中、已完成”，手机的聊天视图、工作状态和权限确认也靠它（GL Work 默认启用的四个：`~/.claude/settings.json`、`~/.codex/config.toml`、`~/.qwen/settings.json`、`~/.qoder/settings.json`）。新数据目录首次启动、以及之前默认关闭的数据目录在更新后各开启一次（`<userData>/glwork-hooks-default`）；成员可以在「设置 → 命令行工具 → 代理状态」随时关闭或再打开（打开时仍会列出要改的文件并确认），关闭后保持关闭。
 - **只启用 GL Work 的工具**：首次启动时把 Claude Code、Codex、Qwen Code、Qoder 以外的 Orca 代理设为停用，成员可以在「智能体」里自己再打开。
 - **代理先问再动手**：Orca 默认让每个代理跳过所有权限确认（Claude Code `--dangerously-skip-permissions`、Codex `--dangerously-bypass-approvals-and-sandbox` 等，见 `tui-agent-permissions.ts`）。GL Work 首次启动时用 Orca 的 `applyAgentPermissionMode({ mode: 'manual' })` 改成手动：代理执行命令、改文件前先问成员；成员自己加的其他参数保留。成员可以在「智能体」里改回全部允许。
 
