@@ -82,4 +82,5 @@ pnpm test <各功能记录里列出的测试>       # 官方改用 Bun 跑 Vites
 | GL Work 品牌与打包（应用身份、独立数据目录、关闭 Orca 更新和云账号） | [changes/glwork-brand.md](./changes/glwork-brand.md) | `my/glwork-brand` |
 | GL Work 公司账号（GitHub 登录公司服务、设备令牌、公司模型清单、命令行工具的模型来源） | [changes/glwork-account.md](./changes/glwork-account.md) | `my/glwork-account` |
 | GL Work 命令行工具（Claude Code、Codex、Qoder 的检测、安装、登录、停用；代理状态钩子先征得同意） | [changes/glwork-cli-tools.md](./changes/glwork-cli-tools.md) | `my/glwork-cli-tools` |
+| GL Work 手机远程（手机用 GitHub 登录公司服务，经公司中转和 frp 连到自己的电脑；电脑端开关、frpc，手机端登录和电脑列表） | [changes/glwork-remote.md](./changes/glwork-remote.md) | `my/glwork-remote` |
 | ~~Qoder 代理~~（已由官方 #23581 取代，2026-10-08 同步时撤回） | [changes/qoder-agent.md](./changes/qoder-agent.md) | — |
