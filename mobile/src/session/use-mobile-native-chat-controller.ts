@@ -284,6 +284,7 @@ export function useMobileNativeChatController(args: {
   return {
     isTabChatView,
     toggleTabChatView,
+    nativeChatTabId: activeSessionTabId,
     showNativeChat,
     showNativeChatRef,
     nativeChatAgent: activeChatResolution?.agent ?? null,

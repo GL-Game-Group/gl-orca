@@ -19534,7 +19534,8 @@
       "off": "Off. Turn it on to reach this computer from GL Work on your phone, signed in with the same GitHub account.",
       "confirmTitle": "Reach this computer from your phone?",
       "confirmDescription": "GL Work will keep a connection to the company service (frpc) while it is open, so GL Work on your phone, signed in with the same GitHub account, can open this computer’s workspaces, terminals and agents. The traffic is end-to-end encrypted; the company service only passes it on. Paired phones are listed under Settings → Mobile, where you can remove them.",
-      "agree": "Turn on"
+      "agree": "Turn on",
+      "hooksNeeded": "Chat view, working status and permission prompts on your phone need agent status turned on."
     },
     "gate": {
       "title": "Sign in to GL Work",
