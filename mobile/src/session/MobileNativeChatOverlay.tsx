@@ -8,6 +8,7 @@ import { useMobileNativeChatStreamingBubble } from './use-mobile-native-chat-str
 import { useMobileNativeChatComposerTray } from './use-mobile-native-chat-composer-tray'
 import { useMobileNativeChatVisualRenderer } from './MobileNativeChatVisual'
 import { MobileNativeChatVisualContext } from './mobile-native-chat-visual-context'
+import { GlWorkChatWaitingHint } from '../eva/glwork/GlWorkChatWaitingHint'
 
 type Props = {
   controller: MobileNativeChatController
@@ -146,6 +147,7 @@ export function MobileNativeChatOverlay({
           keyboardInset={keyboardInset}
         />
       </MobileNativeChatVisualContext.Provider>
+      <GlWorkChatWaitingHint controller={controller} />
     </View>
   )
 }
