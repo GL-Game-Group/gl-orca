@@ -34,6 +34,7 @@ import {
   type CompanySession
 } from './company-session'
 import { glworkCompanyStyles as styles } from './glwork-company-styles'
+import { normalizeGithubLoginServer } from '../../../../src/shared/github-device-login-http-client'
 
 function currentDeviceName(): string {
   const name = Constants.deviceName?.trim()
@@ -46,16 +47,16 @@ function errorText(error: unknown): string {
 
 function hostState(host: CompanyHost): string {
   if (host.closed) {
-    return 'Closed by the administrator'
+    return '管理员已关闭这台电脑的手机远程'
   }
-  return host.online ? 'Online' : 'Offline — open GL Work on it'
+  return host.online ? '在线' : '离线：在这台电脑上打开 GL Work'
 }
 
 /**
  * GL Work: sign in to the company with GitHub, pick one of your computers, and pair through the
  * company's relay. The pairing then runs through Orca's own confirm screen and transport.
  */
-export function GlWorkCompanyScreen() {
+export function GlWorkCompanyScreen({ embedded = false }: { embedded?: boolean }) {
   const router = useRouter()
   const insets = useSafeAreaInsets()
   const [session, setSession] = useState<CompanySession | null | undefined>(undefined)
@@ -63,6 +64,8 @@ export function GlWorkCompanyScreen() {
   const [hosts, setHosts] = useState<CompanyHost[] | null>(null)
   const [busy, setBusy] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  // Why push when embedded: on GL Work's home there is nothing to replace; back returns home.
+  const navigate = embedded ? router.push : router.replace
 
   const refresh = useCallback(async (current: CompanySession) => {
     try {
@@ -92,10 +95,13 @@ export function GlWorkCompanyScreen() {
     setBusy('sign-in')
     setError(null)
     try {
-      const signedIn = await signInToCompany(
-        server.trim().replace(/\/+$/u, ''),
-        currentDeviceName()
-      )
+      // Why: https only (loopback aside): the phone token and the computers' keys come over it.
+      const origin = normalizeGithubLoginServer(server)
+      if (!origin.ok) {
+        setError(origin.message)
+        return
+      }
+      const signedIn = await signInToCompany(origin.origin, currentDeviceName())
       if (signedIn) {
         await saveCompanySession(signedIn)
         setSession(signedIn)
@@ -119,12 +125,12 @@ export function GlWorkCompanyScreen() {
       const endpoint = companyRelayEndpoint(session.server, host.id)
       const paired = (await loadHosts()).find((saved) => saved.endpoint === endpoint)
       if (paired) {
-        router.replace({ pathname: '/h/[hostId]', params: { hostId: paired.id } })
+        navigate({ pathname: '/h/[hostId]', params: { hostId: paired.id } })
         return
       }
       const pairingUrl = await pairWithCompanyHost(session, host.id, currentDeviceName())
       // Why: hand off to the existing confirm screen so pairing, E2EE and reconnect stay upstream code.
-      router.replace({ pathname: '/pair-confirm', params: { code: pairingUrl } })
+      navigate({ pathname: '/pair-confirm', params: { code: pairingUrl } })
     } catch (failure) {
       setError(errorText(failure))
     } finally {
@@ -143,14 +149,20 @@ export function GlWorkCompanyScreen() {
 
   return (
     <View
-      style={[
-        pairScanStyles.container,
-        { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 8 }
-      ]}
+      style={
+        embedded
+          ? styles.embedded
+          : [
+              pairScanStyles.container,
+              { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 8 }
+            ]
+      }
     >
-      <Pressable style={pairScanStyles.backButton} onPress={() => router.back()}>
-        <ChevronLeft size={22} color={colors.textSecondary} />
-      </Pressable>
+      {embedded ? null : (
+        <Pressable style={pairScanStyles.backButton} onPress={() => router.back()}>
+          <ChevronLeft size={22} color={colors.textSecondary} />
+        </Pressable>
+      )}
 
       {session === undefined ? (
         <View style={pairScanStyles.centered}>
@@ -160,7 +172,7 @@ export function GlWorkCompanyScreen() {
         <View style={pairScanStyles.centered}>
           <Text style={pairScanStyles.title}>GL Work</Text>
           <Text style={pairScanStyles.subtitle}>
-            Sign in to the company with GitHub to reach your computers running GL Work.
+            用 GitHub 登录公司账号，连接你开着 GL Work 的电脑。
           </Text>
           <TextInput
             style={githubLoginStyles.input}
@@ -181,21 +193,21 @@ export function GlWorkCompanyScreen() {
             ) : (
               <GithubIcon size={16} color={colors.bgBase} />
             )}
-            <Text style={pairScanStyles.primaryButtonText}>Sign in with GitHub</Text>
+            <Text style={pairScanStyles.primaryButtonText}>用 GitHub 登录</Text>
           </Pressable>
         </View>
       ) : (
         <ScrollView contentContainerStyle={pairScanStyles.centered}>
-          <Text style={pairScanStyles.title}>Your computers</Text>
+          <Text style={pairScanStyles.title}>我的电脑</Text>
           <Text style={pairScanStyles.subtitle}>
-            Signed in as {session.displayName}. Computers show here once remote access is on in GL
-            Work → Settings → Company account.
+            已登录：{session.displayName}。在电脑上的 GL Work 里打开「设置 → 公司账号 →
+            手机远程」后，电脑会出现在这里。
           </Text>
           <View style={styles.list}>
             {hosts === null ? (
               <ActivityIndicator color={colors.textSecondary} />
             ) : hosts.length === 0 ? (
-              <Text style={styles.empty}>No computers yet.</Text>
+              <Text style={styles.empty}>还没有电脑。</Text>
             ) : (
               hosts.map((host) => (
                 <Pressable
@@ -225,10 +237,10 @@ export function GlWorkCompanyScreen() {
           </View>
           {error && <Text style={githubLoginStyles.errorText}>{error}</Text>}
           <Pressable style={pairScanStyles.secondaryButton} onPress={() => void refresh(session)}>
-            <Text style={pairScanStyles.secondaryButtonText}>Refresh</Text>
+            <Text style={pairScanStyles.secondaryButtonText}>刷新</Text>
           </Pressable>
           <Pressable style={pairScanStyles.secondaryButton} onPress={() => void signOut()}>
-            <Text style={pairScanStyles.secondaryButtonText}>Sign out</Text>
+            <Text style={pairScanStyles.secondaryButtonText}>退出登录</Text>
           </Pressable>
         </ScrollView>
       )}

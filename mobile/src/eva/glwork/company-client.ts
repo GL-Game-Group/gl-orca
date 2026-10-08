@@ -84,7 +84,7 @@ export async function signInToCompany(
   const back = new URL(result.url)
   const code = back.searchParams.get('code')
   if (back.searchParams.get('state') !== state || !code) {
-    throw new Error('The sign-in did not come back from the company service.')
+    throw new Error('没有从公司服务拿到登录结果，请重试。')
   }
   const body = await call(server, '/agent-work/auth/phone/token', {
     method: 'POST',
@@ -92,7 +92,7 @@ export async function signInToCompany(
   })
   const { token, member, displayName, expiresAt } = body
   if (typeof token !== 'string' || typeof member !== 'string' || typeof expiresAt !== 'number') {
-    throw new Error('The company service answered the sign-in unexpectedly.')
+    throw new Error('公司服务返回的登录结果无法识别。')
   }
   return {
     server,
@@ -141,7 +141,7 @@ export async function pairWithCompanyHost(
     body: JSON.stringify({ deviceName })
   })
   if (typeof body.pairingUrl !== 'string') {
-    throw new Error('That computer did not answer with a pairing.')
+    throw new Error('这台电脑没有返回配对信息。')
   }
   return body.pairingUrl
 }

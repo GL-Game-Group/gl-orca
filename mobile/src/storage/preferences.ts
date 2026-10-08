@@ -143,6 +143,11 @@ export function bundledGithubLoginServer(): string {
   return process.env.EXPO_PUBLIC_ORCA_LOGIN_SERVER ?? ''
 }
 
+/** GL Work's phone app rather than Orca's (EXPO_PUBLIC_GLWORK_BUILD=1, mobile/glwork.config.js). */
+export function bundledGlWorkBuild(): boolean {
+  return process.env.EXPO_PUBLIC_GLWORK_BUILD === '1'
+}
+
 // Why: the hybrid shell route is dark in every build but an OTA one. Default-off means a native
 // store build never fetches, writes or sweeps a bundle cache — anything but `'true'`, including an
 // unreadable store, is off there.
