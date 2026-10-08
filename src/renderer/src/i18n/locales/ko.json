@@ -19275,9 +19275,7 @@
       "turnOff": "끄기",
       "confirmTitle": "GL Work에서 에이전트 상태를 표시할까요?",
       "confirmDescription": "GL Work가 코딩 도구 자체 설정에 상태 훅을 추가합니다: 켜 둔 도구의 ~/.claude/settings.json (Claude Code), ~/.codex/config.toml (Codex), ~/.qwen/settings.json (Qwen Code), ~/.qoder/settings.json (Qoder). 훅은 작업 중, 대기 중, 완료만 GL Work에 보고합니다. 나중에 끄면 제거됩니다.",
-      "agree": "동의하고 켜기",
-      "firstAskDescription": "에이전트 상태를 켜면 휴대폰의 GL Work에서 Claude Code와 Codex를 채팅으로 보고 작업 상태와 권한 확인도 볼 수 있습니다. GL Work는 켜 둔 코딩 도구 자체 설정에 상태 훅을 추가합니다: ~/.claude/settings.json, ~/.codex/config.toml, ~/.qwen/settings.json, ~/.qoder/settings.json. 설정 → 명령줄 도구 → 에이전트 상태에서 언제든 켜거나 끌 수 있습니다.",
-      "later": "나중에"
+      "agree": "동의하고 켜기"
     },
     "remote": {
       "title": "휴대폰 원격 접속",

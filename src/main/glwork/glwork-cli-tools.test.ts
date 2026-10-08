@@ -1,4 +1,4 @@
-import { mkdtempSync, rmSync } from 'node:fs'
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -106,7 +106,7 @@ describe('GL Work first run', () => {
   })
   const store = {
     getSettings: () => settings,
-    updateSettings: (updates: typeof settings) => {
+    updateSettings: (updates: Partial<typeof settings>) => {
       settings = { ...settings, ...updates }
     }
   }
@@ -123,10 +123,10 @@ describe('GL Work first run', () => {
     resetGlWorkBuildForTests()
   })
 
-  it('turns agent status hooks off and keeps only GL Work’s tools enabled, once', () => {
+  it('keeps agent status hooks on and only GL Work’s tools enabled, once', () => {
     vi.stubEnv('GLWORK_BUILD', '1')
     applyGlWorkFirstRunSettings(store)
-    expect(settings.agentStatusHooksEnabled).toBe(false)
+    expect(settings.agentStatusHooksEnabled).toBe(true)
     expect(settings.disabledTuiAgents).not.toContain('claude')
     expect(settings.disabledTuiAgents).not.toContain('codex')
     expect(settings.disabledTuiAgents).not.toContain('qwen-code')
@@ -139,6 +139,17 @@ describe('GL Work first run', () => {
     settings = orcaDefaults()
     applyGlWorkFirstRunSettings(store)
     expect(settings).toEqual(orcaDefaults())
+  })
+
+  it('turns the hooks on once for a profile from before, then respects turning them off', () => {
+    vi.stubEnv('GLWORK_BUILD', '1')
+    writeFileSync(join(host.userData, 'glwork-first-run.json'), '{}')
+    settings = { ...orcaDefaults(), agentStatusHooksEnabled: false }
+    applyGlWorkFirstRunSettings(store)
+    expect(settings.agentStatusHooksEnabled).toBe(true)
+    settings = { ...settings, agentStatusHooksEnabled: false }
+    applyGlWorkFirstRunSettings(store)
+    expect(settings.agentStatusHooksEnabled).toBe(false)
   })
 
   it('leaves Orca builds alone', () => {
