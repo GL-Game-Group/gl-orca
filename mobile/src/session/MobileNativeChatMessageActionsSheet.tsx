@@ -8,6 +8,7 @@ import { BottomDrawer } from '../components/BottomDrawer'
 import { useClipboardWriter } from '../platform/clipboard'
 import { colors, spacing, typography } from '../theme/mobile-theme'
 import { nativeChatMessagePlainText } from './mobile-native-chat-message-plain-text'
+import { glWorkReadAloudActions } from '../eva/glwork/voice/glwork-read-aloud-action'
 
 type Props = {
   /** The long-pressed message. The owner mounts this only while the sheet is open. */
@@ -59,7 +60,8 @@ export function MobileNativeChatMessageActionsSheet({
               onPress: () => {
                 selectRequested.current = true
               }
-            }
+            },
+            ...glWorkReadAloudActions(text)
           ]}
         />
       </BottomDrawer>

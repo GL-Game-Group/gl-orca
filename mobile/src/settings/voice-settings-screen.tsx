@@ -7,6 +7,12 @@ import { ChevronLeft, ChevronRight } from 'lucide-react-native'
 import { colors, spacing } from '../theme/mobile-theme'
 import { BottomDrawer } from '../components/BottomDrawer'
 import { VoiceModelList } from '../components/VoiceModelList'
+import { GlWorkCloudAsrList, GlWorkSpeechSettings } from '../eva/glwork/voice/GlWorkVoiceSettings'
+import {
+  clearGlWorkCloudAsr,
+  useGlWorkAsrLabel
+} from '../eva/glwork/voice/use-glwork-voice-settings'
+import { isGlWorkApp } from '../eva/glwork/glwork-app'
 import { useDictationSetupPoller } from '../dictation/use-dictation-setup-poller'
 import {
   isModelInFlight,
@@ -33,6 +39,7 @@ export default function VoiceSettingsScreen({
   onBack: () => void
 }): React.JSX.Element {
   const insets = useSafeAreaInsets()
+  const glworkAsrLabel = useGlWorkAsrLabel()
   const [setup, setSetup] = useState<MobileSpeechSetup | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -165,7 +172,7 @@ export default function VoiceSettingsScreen({
 
   const enabled = setup?.enabled ?? false
   const selectedModel = setup?.models.find((m) => m.id === setup.selectedModelId)
-  const selectedModelLabel = selectedModel?.label ?? 'None selected'
+  const selectedModelLabel = glworkAsrLabel ?? selectedModel?.label ?? 'None selected'
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + spacing.sm }]}>
@@ -256,10 +263,10 @@ export default function VoiceSettingsScreen({
             <Pressable
               style={({ pressed }) => [
                 styles.row,
-                !enabled && styles.disabled,
+                !enabled && !isGlWorkApp() && styles.disabled,
                 pressed && styles.rowPressed
               ]}
-              disabled={!enabled}
+              disabled={!enabled && !isGlWorkApp()}
               testID="voice-model-picker"
               onPress={() => setModelDrawerOpen(true)}
             >
@@ -273,18 +280,23 @@ export default function VoiceSettingsScreen({
             </Pressable>
           </View>
 
+          <GlWorkSpeechSettings />
           {error ? <Text style={styles.error}>{error}</Text> : null}
         </ScrollView>
       )}
 
       <BottomDrawer visible={modelDrawerOpen} onClose={() => setModelDrawerOpen(false)}>
         <Text style={styles.drawerTitle}>Speech Model</Text>
+        <GlWorkCloudAsrList onPicked={() => setModelDrawerOpen(false)} />
         {setup ? (
           <VoiceModelList
             setup={setup}
             disabled={false}
             busyAction={busyAction}
-            onUseModel={(m) => void handleUseModel(m)}
+            onUseModel={(m) => {
+              clearGlWorkCloudAsr()
+              void handleUseModel(m)
+            }}
             onDownload={(m) => void handleDownload(m)}
             onDelete={(m) => void handleDelete(m)}
           />

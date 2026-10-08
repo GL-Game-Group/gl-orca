@@ -2,7 +2,12 @@ import { bundledGlWorkBuild } from '../../storage/preferences'
 
 /** Built with EXPO_PUBLIC_GLWORK_BUILD=1 (glwork.config.js): GL Work's phone app rather than Orca's. */
 export function isGlWorkApp(): boolean {
-  return bundledGlWorkBuild()
+  try {
+    return bundledGlWorkBuild()
+  } catch {
+    // Why: a test that mocks preferences without this export is testing Orca's own build.
+    return false
+  }
 }
 
 /** Where "pair a desktop" leads: GL Work pairs through the company account, Orca by QR code. */

@@ -8,6 +8,7 @@ import { styles } from './mobile-session-styles'
 import type { MobileSessionController } from './use-mobile-session-controller'
 import { FileReader } from './MobileSessionFileReader'
 import { MarkdownReader } from './MobileSessionMarkdownReader'
+import { GlWorkVoiceOverlay } from '../eva/glwork/voice/GlWorkVoiceOverlay'
 
 export function MobileSessionActiveContent({
   controller
@@ -240,6 +241,7 @@ export function MobileSessionActiveContent({
         getSendCompletionGeneration={controller.getSendCompletionGeneration}
         keyboardInset={keyboardLift}
       />
+      <GlWorkVoiceOverlay chat={nativeChatController} />
       {toastMessage && (
         <Animated.View pointerEvents="none" style={[styles.toast, toastAnimatedStyle]}>
           <Text style={styles.toastText}>{toastMessage}</Text>

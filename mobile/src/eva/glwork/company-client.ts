@@ -40,7 +40,8 @@ function record(value: unknown): Record<string, unknown> {
   return typeof value === 'object' && value !== null ? { ...value } : {}
 }
 
-async function call(
+/** A request to the company service; refusals come back as CompanyRequestFailed in Chinese. */
+export async function companyCall(
   server: string,
   path: string,
   init: RequestInit & { token?: string }
@@ -106,7 +107,7 @@ export async function signInToCompany(
   if (back.searchParams.get('state') !== state || !code) {
     throw new Error('没有从公司服务拿到登录结果，请重试。')
   }
-  const body = await call(server, '/agent-work/auth/phone/token', {
+  const body = await companyCall(server, '/agent-work/auth/phone/token', {
     method: 'POST',
     body: JSON.stringify({ code, code_verifier: verifier, device_name: deviceName })
   })
@@ -125,7 +126,9 @@ export async function signInToCompany(
 
 /** The member's computers with remote access turned on. */
 export async function listCompanyHosts(session: CompanySession): Promise<CompanyHost[]> {
-  const body = await call(session.server, '/agent-work/remote/hosts', { token: session.token })
+  const body = await companyCall(session.server, '/agent-work/remote/hosts', {
+    token: session.token
+  })
   const hosts = Array.isArray(body.hosts) ? body.hosts : []
   return hosts.flatMap((entry: unknown) => {
     const host = record(entry)
@@ -156,7 +159,7 @@ export async function pairWithCompanyHost(
   hostId: string,
   deviceName: string
 ): Promise<string> {
-  const body = await call(session.server, `/agent-work/remote/${hostId}/orca/pair`, {
+  const body = await companyCall(session.server, `/agent-work/remote/${hostId}/orca/pair`, {
     method: 'POST',
     token: session.token,
     body: JSON.stringify({ deviceName })
@@ -170,7 +173,10 @@ export async function pairWithCompanyHost(
 /** Revoke the phone's company token; best effort, the local session goes either way. */
 export async function signOutOfCompany(session: CompanySession): Promise<void> {
   try {
-    await call(session.server, '/agent-work/auth/logout', { method: 'POST', token: session.token })
+    await companyCall(session.server, '/agent-work/auth/logout', {
+      method: 'POST',
+      token: session.token
+    })
   } catch {
     // Offline: the token still expires on its own.
   }

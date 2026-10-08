@@ -56,3 +56,9 @@ export function openWebSocket(endpoint: string): WebSocket {
   const Socket: ReactNativeWebSocket = WebSocket
   return new Socket(endpoint, undefined, companySocketOptions(endpoint))
 }
+
+/** A WebSocket with request headers (React Native's third argument), for vendors that authenticate by header. */
+export function openWebSocketWithHeaders(url: string, headers: Record<string, string>): WebSocket {
+  const Socket: ReactNativeWebSocket = WebSocket
+  return new Socket(url, undefined, { headers })
+}
