@@ -155,10 +155,10 @@ describe('GL Work first run', () => {
     // Agents ask first; a member's own extra arguments stay.
     expect(settings.agentDefaultArgs).toMatchObject({ claude: '', codex: '--model gpt-5' })
     expect(settings.agentDefaultEnv).toMatchObject({ goose: {} })
-    // The member's later choices stay.
+    // The member's later choices stay, except Qoder, which GL Work does not offer.
     settings = orcaDefaults()
     applyGlWorkFirstRunSettings(store)
-    expect(settings).toEqual(orcaDefaults())
+    expect(settings).toEqual({ ...orcaDefaults(), disabledTuiAgents: ['qoder'] })
   })
 
   it('turns the hooks on once for a profile from before, then respects turning them off', () => {
@@ -179,7 +179,7 @@ describe('GL Work first run', () => {
 })
 
 describe('GL Work moving from Qoder to Qoder CN', () => {
-  it('switches a profile set up before, once, and leaves later choices alone', () => {
+  it('switches a profile set up before, once, and keeps Qoder off for good', () => {
     host.userData = mkdtempSync(join(tmpdir(), 'glwork-qoder-cn-'))
     vi.stubEnv('GLWORK_BUILD', '1')
     resetGlWorkBuildForTests()
@@ -196,7 +196,7 @@ describe('GL Work moving from Qoder to Qoder CN', () => {
     expect(disabledTuiAgents.toSorted()).toEqual(['gemini', 'qoder'])
     disabledTuiAgents = ['qoder-cn']
     applyGlWorkFirstRunSettings(store)
-    expect(disabledTuiAgents).toEqual(['qoder-cn'])
+    expect(disabledTuiAgents).toEqual(['qoder-cn', 'qoder'])
     rmSync(host.userData, { recursive: true, force: true })
     vi.unstubAllEnvs()
     resetGlWorkBuildForTests()

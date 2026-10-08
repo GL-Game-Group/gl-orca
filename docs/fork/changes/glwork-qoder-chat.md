@@ -4,11 +4,11 @@
 
 ## 做什么
 
-Qoder CLI 和 Qoder 中国版的标签页可以像 Claude 一样切到对话视图，手机上也能显示对话，不再只能看终端。
+Qoder 中国版的标签页可以像 Claude 一样切到对话视图，手机上也能显示对话，不再只能看终端。国际版 Qoder 不支持：GL Work 不提供它（见 [glwork-cli-tools.md](./glwork-cli-tools.md)）。
 
 ## 为什么能这样做
 
-对话视图叠在终端界面上，靠读取代理写在本机的会话记录来显示，不需要代理有专门的结构化模式。Qoder 的会话记录就是 Claude Code 的格式：`user`/`assistant` 记录、`message.content`、`parentUuid`，目录结构也一样（`~/.qoder/projects/<目录>/<会话>.jsonl`、`~/.qoder-cn/projects/…`）。另外它多了几种自己的记录（`active-leaf`、`runtime-config`、`workspace-directories`、`last-prompt`），Claude 的解析器会跳过这些不认识的类型。
+对话视图叠在终端界面上，靠读取代理写在本机的会话记录来显示，不需要代理有专门的结构化模式。Qoder 中国版的会话记录就是 Claude Code 的格式：`user`/`assistant` 记录、`message.content`、`parentUuid`，目录结构也一样（`~/.qoder-cn/projects/<目录>/<会话>.jsonl`）。另外它多了几种自己的记录（`active-leaf`、`runtime-config`、`workspace-directories`、`last-prompt`），Claude 的解析器会跳过这些不认识的类型。
 
 Qoder 的代理状态钩子本来就会带上 `session_id` 和 `transcript_path`（`src/shared/agent-session-resume.ts`），对话视图直接读这个路径。
 
@@ -16,10 +16,10 @@ Qoder 的代理状态钩子本来就会带上 `session_id` 和 `transcript_path`
 
 ## 改动
 
-- `src/shared/qoder-native-chat.ts`（新）：Qoder 的两种版本，以及各自的主目录名。
+- `src/shared/qoder-native-chat.ts`（新）：Qoder 中国版是否走对话视图，以及它的主目录名。
 - `src/main/native-chat/qoder-projects-dir.ts`（新）：钩子没有报告路径时，按会话 id 去 Qoder 自己的 `projects/` 里找，不去 `~/.claude/projects` 找。
 - 接入点：
-  - `src/shared/native-chat-agent-support.ts`：把 Qoder 加进支持对话视图的代理列表，`resolveNativeChatTranscriptAgent` 把它映射到 `'claude'`。
+  - `src/shared/native-chat-agent-support.ts`：把 Qoder 中国版加进支持对话视图的代理列表，`resolveNativeChatTranscriptAgent` 把它映射到 `'claude'`。
   - `src/main/native-chat/session-file-resolver.ts`：按 id 查找前先套用 `withQoderProjectsDir`。
 - 测试：`src/main/native-chat/qoder-native-chat.test.ts`。
 
