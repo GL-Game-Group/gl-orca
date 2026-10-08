@@ -60,3 +60,7 @@
   - `MobileSessionHeaderMoreActionsSheet.tsx`：加入 `glWorkVoiceSheetActions()`。
   - `use-mobile-session-panel-route-actions.tsx`：`showHeaderMoreButton` 加上 `glWorkShowsHeaderMoreButton()`。
   - `MobileSessionSheets.tsx`：渲染 `<GlWorkVoiceQuickSheet />`。
+
+## 识别过之后播报报 OSStatus 561017449（2026-10-08 真机）
+
+语音识别用的 `expo-two-way-audio` 初始化后会一直开着带语音处理的录音引擎，音频会话处于 `playAndRecord`/`voiceChat`（默认从扬声器出声）。这时再用 `setAudioModeAsync` 切到只播放，iOS 会拒绝（`'!pri'`，OSStatus 561017449）。现在切换失败就留在原来的会话里直接播放，不再中断朗读。

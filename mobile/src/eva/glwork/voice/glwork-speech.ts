@@ -172,9 +172,17 @@ function play(source: string, mine: number): Promise<void> {
   })
 }
 
-/** Playback, not recording: dictation leaves the session in play-and-record, which routes to the earpiece. */
-function speakerAudioMode(): Promise<void> {
-  return setAudioModeAsync({ playsInSilentMode: true, allowsRecording: false })
+/**
+ * Playback, not recording, so it uses the speaker and ignores the silent switch. Once dictation has
+ * run, Orca's two-way audio engine keeps the session in play-and-record (speaker by default) and iOS
+ * refuses the switch ('!pri', OSStatus 561017449); that session plays fine, so read on in it.
+ */
+async function speakerAudioMode(): Promise<void> {
+  try {
+    await setAudioModeAsync({ playsInSilentMode: true, allowsRecording: false })
+  } catch {
+    // Keep the session dictation left; see above.
+  }
 }
 
 export type SpeechVoice = { vendor: CompanyVoiceVendor; voice: string; rate: number }
