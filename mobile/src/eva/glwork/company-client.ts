@@ -27,15 +27,24 @@ async function call(
   init: RequestInit & { token?: string }
 ): Promise<Record<string, unknown>> {
   const { token, ...rest } = init
-  const response = await fetch(new URL(path, server).toString(), {
-    ...rest,
-    headers: {
-      ...(token ? { authorization: `Bearer ${token}` } : {}),
-      ...(rest.body ? { 'content-type': 'application/json' } : {})
-    },
-    signal: AbortSignal.timeout(TIMEOUT_MS)
-  })
-  const body = record(await response.json().catch(() => null))
+  // Why not AbortSignal.timeout: Hermes does not implement it.
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS)
+  let response: Response
+  let body: Record<string, unknown>
+  try {
+    response = await fetch(new URL(path, server).toString(), {
+      ...rest,
+      headers: {
+        ...(token ? { authorization: `Bearer ${token}` } : {}),
+        ...(rest.body ? { 'content-type': 'application/json' } : {})
+      },
+      signal: controller.signal
+    })
+    body = record(await response.json().catch(() => null))
+  } finally {
+    clearTimeout(timer)
+  }
   if (!response.ok) {
     const reason = typeof body.error === 'string' ? body.error : `HTTP ${response.status}`
     throw new CompanyRequestFailed(reason, response.status)
@@ -111,6 +120,13 @@ export async function listCompanyHosts(session: CompanySession): Promise<Company
         ]
       : []
   })
+}
+
+/** Where the phone reaches a computer: the company's relay for its tunnel (as the desktop advertises it). */
+export function companyRelayEndpoint(server: string, hostId: string): string {
+  const url = new URL(`/agent-work/remote/${hostId}/orca`, server)
+  url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'
+  return url.toString()
 }
 
 /** Ask one computer, through the relay, for a pairing for this phone (an orca://pair URL). */

@@ -16,8 +16,10 @@ import { colors } from '../../theme/mobile-theme'
 import { GithubIcon } from '../../components/GithubIcon'
 import { pairScanStyles } from '../../pair-scan-styles'
 import { githubLoginStyles } from '../github-login/github-login-styles'
+import { loadHosts } from '../../transport/host-store'
 import {
   CompanyRequestFailed,
+  companyRelayEndpoint,
   listCompanyHosts,
   pairWithCompanyHost,
   signInToCompany,
@@ -113,6 +115,13 @@ export function GlWorkCompanyScreen() {
     setBusy(host.id)
     setError(null)
     try {
+      // Why: each pairing mints a device on the computer; one this phone already holds is opened instead.
+      const endpoint = companyRelayEndpoint(session.server, host.id)
+      const paired = (await loadHosts()).find((saved) => saved.endpoint === endpoint)
+      if (paired) {
+        router.replace({ pathname: '/h/[hostId]', params: { hostId: paired.id } })
+        return
+      }
       const pairingUrl = await pairWithCompanyHost(session, host.id, currentDeviceName())
       // Why: hand off to the existing confirm screen so pairing, E2EE and reconnect stay upstream code.
       router.replace({ pathname: '/pair-confirm', params: { code: pairingUrl } })
