@@ -5,6 +5,7 @@ import type { GlobalSettings } from '../../shared/global-settings-types'
 import type { TuiAgent } from '../../shared/tui-agent'
 import { ALL_TUI_AGENTS } from '../../shared/tui-agent-display-names'
 import { applyAgentPermissionMode } from '../../shared/tui-agent-permissions'
+import { GLWORK_RETIRED_AGENTS } from '../../shared/glwork-retired-agents'
 import { isGlWorkBuild } from './glwork-build'
 
 /** The coding CLIs GL Work offers; Orca's other agents start out switched off (members may turn them on). */
@@ -44,6 +45,7 @@ export function applyGlWorkFirstRunSettings(store: SettingsStore): void {
   const marker = join(app.getPath('userData'), MARKER)
   if (existsSync(marker)) {
     applyQoderCnOnce(store)
+    keepRetiredAgentsOff(store)
     return
   }
   const current = store.getSettings()
@@ -82,6 +84,16 @@ function applyQoderCnOnce(store: SettingsStore): void {
   disabled.add('qoder')
   store.updateSettings({ disabledTuiAgents: [...disabled] })
   writeMarker(marker)
+}
+
+/** Every launch: a retired agent switched back on (an older build's settings, a synced profile) goes off again. */
+function keepRetiredAgentsOff(store: SettingsStore): void {
+  const disabled = new Set(store.getSettings().disabledTuiAgents)
+  if (GLWORK_RETIRED_AGENTS.every((agent) => disabled.has(agent))) {
+    return
+  }
+  GLWORK_RETIRED_AGENTS.forEach((agent) => disabled.add(agent))
+  store.updateSettings({ disabledTuiAgents: [...disabled] })
 }
 
 /** Profiles from before this default had the hooks off without being asked: turn them on once. */

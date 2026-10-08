@@ -13,6 +13,7 @@ GL Work 的成员用自己的订阅登录 Claude Code、Codex、Qoder（公司�
 
 - **代理状态钩子默认开启**（负责人 2026-10-08 决定，和官方 Orca 一致）：Orca 会往已启用代理自己的配置里写入钩子来显示“工作中、等待中、已完成”，手机的聊天视图、工作状态和权限确认也靠它（GL Work 默认启用的四个：`~/.claude/settings.json`、`~/.codex/config.toml`、`~/.qwen/settings.json`、`~/.qoder-cn/settings.json`）。新数据目录首次启动、以及之前默认关闭的数据目录在更新后各开启一次（`<userData>/glwork-hooks-default`）；成员可以在「设置 → 命令行工具 → 代理状态」随时关闭或再打开（打开时仍会列出要改的文件并确认），关闭后保持关闭。
 - **只启用 GL Work 的工具**：首次启动时把 Claude Code、Codex、Qwen Code、Qoder 中国版（`qoder-cn`）以外的 Orca 代理设为停用，成员可以在「智能体」里自己再打开。2026-10-08 从国际版 Qoder 换成中国版：之前已经初始化过的数据目录启动时切换一次（启用 `qoder-cn`、停用 `qoder`，`<userData>/glwork-qoder-cn`），之后按成员自己的设置。
+- **不提供国际版 Qoder**（2026-10-08 负责人决定，两个版本可能冲突）：`src/shared/glwork-retired-agents.ts` 列出 GL Work 不提供的代理。GL Work 版的代理列表里没有它（`src/renderer/src/lib/glwork-agent-catalog.ts`，接入点在 `agent-catalog-entries.ts`），所以设置、新建标签页里都看不到；每次启动都确认它处于停用状态（`keepRetiredAgentsOff`）。停用的代理 Orca 不装状态钩子，所以 GL Work 不会写 `~/.qoder/settings.json`。手机端的代理列表按电脑的停用设置过滤，也看不到。官方 Orca 不受影响。
 - **代理先问再动手**：Orca 默认让每个代理跳过所有权限确认（Claude Code `--dangerously-skip-permissions`、Codex `--dangerously-bypass-approvals-and-sandbox` 等，见 `tui-agent-permissions.ts`）。GL Work 首次启动时用 Orca 的 `applyAgentPermissionMode({ mode: 'manual' })` 改成手动：代理执行命令、改文件前先问成员；成员自己加的其他参数保留。成员可以在「智能体」里改回全部允许。
 
 两项都只在某个数据目录第一次以 GL Work 启动时执行一次（`<userData>/glwork-first-run.json`），之后完全按成员自己的设置。
@@ -52,7 +53,7 @@ GL Work 的成员用自己的订阅登录 Claude Code、Codex、Qoder（公司�
 
 ## 已知限制
 
-- Qoder 用官方的代理支持（#23581，含状态钩子和会话恢复），见 [qoder-agent.md](./qoder-agent.md)。卡片的停用开关对 Qoder 也生效（`agent: 'qoder'`）。
+- Qoder 用官方的代理支持（#23581，含状态钩子和会话恢复），见 [qoder-agent.md](./qoder-agent.md)。卡片对应中国版（`agent: 'qoder-cn'`）。
 - `glwork-cli-tools` 不在 Orca 的设置跳转名单（`SETTINGS_NAV_TARGETS`）里：侧边导航能到达，但 `openSettingsTarget({ pane: 'glwork-cli-tools' })` 会被拒绝，要跳转请用 `pane: 'orca-account'`。
 - Codex 的安装命令需要 Node.js（npm）。
 - 安装、登录是否成功以终端里的输出为准；完成后点「重新检测」。

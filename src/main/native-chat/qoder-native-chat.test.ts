@@ -63,12 +63,12 @@ afterEach(async () => {
   await rm(dir, { recursive: true, force: true })
 })
 
-describe('Qoder in the chat view', () => {
-  it('is a chat agent read with Claude decoders', () => {
-    for (const agent of ['qoder', 'qoder-cn']) {
-      expect(isNativeChatSupportedAgent(agent)).toBe(true)
-      expect(resolveNativeChatTranscriptAgent(agent)).toBe('claude')
-    }
+describe('Qoder CN in the chat view', () => {
+  it('is a chat agent read with Claude decoders; Qoder is not', () => {
+    expect(isNativeChatSupportedAgent('qoder-cn')).toBe(true)
+    expect(resolveNativeChatTranscriptAgent('qoder-cn')).toBe('claude')
+    expect(isNativeChatSupportedAgent('qoder')).toBe(false)
+    expect(resolveNativeChatTranscriptAgent('qoder')).toBeNull()
   })
 
   it('reads a Qoder transcript into user and assistant messages', async () => {
@@ -83,14 +83,10 @@ describe('Qoder in the chat view', () => {
     ])
   })
 
-  it('falls back to each flavour’s own projects root, never Claude’s', async () => {
+  it('falls back to its own projects root, never Claude’s', async () => {
     await resolveSessionFilePath('qoder-cn', 's1')
-    await resolveSessionFilePath('qoder', 's1')
 
-    expect(scanned.dirs).toEqual([
-      join(homedir(), '.qoder-cn', 'projects'),
-      join(homedir(), '.qoder', 'projects')
-    ])
+    expect(scanned.dirs).toEqual([join(homedir(), '.qoder-cn', 'projects')])
   })
 
   it('prefers the transcript path the hook reported', async () => {
