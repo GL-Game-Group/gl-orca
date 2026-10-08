@@ -7,7 +7,7 @@ const REQUEST_TIMEOUT_MS = 15_000
 export type GlWorkRemoteTunnel = {
   member: string
   server: GlWorkFrpsServer
-  tunnel: { id: string; host: string; closed: boolean }
+  tunnel: { id: string; host: string; closed: boolean; client: string | null }
 }
 
 /** Why the company will not run remote access for this computer right now, for the member to read. */
@@ -56,7 +56,12 @@ function ownRemote(answer: Record<string, unknown>): GlWorkRemoteTunnel['tunnel'
       typeof tunnel.id === 'string' &&
       typeof tunnel.host === 'string'
     ) {
-      return { id: tunnel.id, host: tunnel.host, closed: tunnel.closedBy !== null }
+      return {
+        id: tunnel.id,
+        host: tunnel.host,
+        closed: tunnel.closedBy !== null,
+        client: typeof tunnel.client === 'string' ? tunnel.client : null
+      }
     }
   }
   return null
@@ -79,8 +84,10 @@ export async function ensureCompanyRemoteTunnel(
   if (settings.remote === false) {
     throw new CompanyRemoteUnavailable('The administrator has turned remote access off.')
   }
-  if (!ownRemote(answer)) {
-    await call(server, token, 'POST', { type: 'remote' })
+  // Why client: the phone speaks Orca's protocol only to computers registered as GL Work on Orca;
+  // a device that ran the DSH desktop before gets its existing tunnel re-marked.
+  if (ownRemote(answer)?.client !== 'orca') {
+    await call(server, token, 'POST', { type: 'remote', client: 'orca' })
     answer = await call(server, token, 'GET')
   }
   const tunnel = ownRemote(answer)
