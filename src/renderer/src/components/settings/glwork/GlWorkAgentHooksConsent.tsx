@@ -8,7 +8,11 @@ import { useAppStore } from '@/store'
  * Orca's agent status hooks edit the CLIs' own config files, so GL Work starts with them off
  * (src/main/glwork/glwork-first-run.ts) and turns them on only once the member agrees here.
  */
-export function GlWorkAgentHooksConsent(): React.JSX.Element {
+/** Asks before turning the hooks on; shared by this card and the phone remote access row. */
+export function useGlWorkAgentHooksConsent(): {
+  enabled: boolean
+  turnOn: () => Promise<void>
+} {
   const confirm = useConfirmationDialog()
   const enabled = useAppStore((state) => state.settings?.agentStatusHooksEnabled !== false)
   const updateSettings = useAppStore((state) => state.updateSettings)
@@ -26,6 +30,12 @@ export function GlWorkAgentHooksConsent(): React.JSX.Element {
       await updateSettings({ agentStatusHooksEnabled: true })
     }
   }
+  return { enabled, turnOn }
+}
+
+export function GlWorkAgentHooksConsent(): React.JSX.Element {
+  const { enabled, turnOn } = useGlWorkAgentHooksConsent()
+  const updateSettings = useAppStore((state) => state.updateSettings)
 
   return (
     <div className="flex flex-wrap items-center gap-3">

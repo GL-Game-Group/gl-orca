@@ -19286,7 +19286,8 @@
       "off": "Désactivé. Activez-le pour joindre cet ordinateur depuis GL Work sur votre téléphone, connecté avec le même compte GitHub.",
       "confirmTitle": "Joindre cet ordinateur depuis votre téléphone ?",
       "confirmDescription": "Tant qu’il est ouvert, GL Work garde une connexion au service de l’entreprise (frpc) pour que GL Work sur votre téléphone, connecté avec le même compte GitHub, puisse ouvrir les espaces de travail, terminaux et agents de cet ordinateur. Le trafic est chiffré de bout en bout ; le service de l’entreprise ne fait que le relayer. Les téléphones appairés figurent dans Réglages → Mobile, où vous pouvez les retirer.",
-      "agree": "Activer"
+      "agree": "Activer",
+      "hooksNeeded": "La vue chat, l’état de travail et les demandes d’autorisation sur votre téléphone nécessitent d’activer l’état des agents."
     },
     "gate": {
       "title": "Se connecter à GL Work",

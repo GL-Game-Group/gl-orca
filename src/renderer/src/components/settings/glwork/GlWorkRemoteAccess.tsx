@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Smartphone } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { useConfirmationDialog } from '@/components/confirmation-dialog-context'
 import { translate } from '@/i18n/i18n'
+import { useGlWorkAgentHooksConsent } from './GlWorkAgentHooksConsent'
 import type { GlWorkRemoteStatus } from '../../../../../shared/glwork-account-types'
 
 const POLL_MS = 3_000
@@ -32,6 +34,7 @@ function stateLine(status: GlWorkRemoteStatus | null): string {
 export function GlWorkRemoteAccess(): React.JSX.Element | null {
   const api = window.api.glwork
   const confirm = useConfirmationDialog()
+  const hooks = useGlWorkAgentHooksConsent()
   const [status, setStatus] = useState<GlWorkRemoteStatus | null>(null)
   const [busy, setBusy] = useState(false)
 
@@ -91,6 +94,19 @@ export function GlWorkRemoteAccess(): React.JSX.Element | null {
         </p>
         <p className="text-xs text-muted-foreground">{stateLine(status)}</p>
         {status?.message ? <p className="text-xs text-destructive">{status.message}</p> : null}
+        {status?.enabled && !hooks.enabled ? (
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            <p className="text-xs text-muted-foreground">
+              {translate(
+                'glwork.remote.hooksNeeded',
+                'Chat view, working status and permission prompts on your phone need agent status turned on.'
+              )}
+            </p>
+            <Button type="button" variant="outline" size="sm" onClick={() => void hooks.turnOn()}>
+              {translate('glwork.hooks.turnOn', 'Turn on…')}
+            </Button>
+          </div>
+        ) : null}
       </div>
       <Switch
         checked={status?.enabled === true}
