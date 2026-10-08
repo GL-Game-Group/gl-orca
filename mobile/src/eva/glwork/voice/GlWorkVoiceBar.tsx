@@ -21,6 +21,7 @@ import {
   holdToTalkZone,
   type HoldToTalkZone
 } from './glwork-hold-to-talk-gesture'
+import { GlWorkSpeechControl } from './GlWorkSpeechControl'
 import { useGlWorkHoldToTalk } from './use-glwork-hold-to-talk'
 
 export type GlWorkVoiceBarProps = {
@@ -141,12 +142,15 @@ export function GlWorkVoiceBar(props: GlWorkVoiceBarProps) {
             </Text>
           )}
         </View>
-        {props.sessionOptions ? (
-          <MobileNativeChatSessionOptionPickers
-            {...props.sessionOptions}
-            sendInFlight={props.sending}
-          />
-        ) : null}
+        <View style={styles.right}>
+          <GlWorkSpeechControl />
+          {props.sessionOptions ? (
+            <MobileNativeChatSessionOptionPickers
+              {...props.sessionOptions}
+              sendInFlight={props.sending}
+            />
+          ) : null}
+        </View>
       </View>
     </View>
   )
@@ -185,6 +189,10 @@ const styles = StyleSheet.create({
     borderColor: colors.borderSubtle,
     borderRadius: radii.card,
     backgroundColor: colors.bgPanel
+  },
+  right: {
+    alignItems: 'flex-end',
+    gap: 2
   },
   side: {
     width: 40,

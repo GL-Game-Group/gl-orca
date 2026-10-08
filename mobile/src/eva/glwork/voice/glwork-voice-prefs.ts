@@ -11,6 +11,8 @@ export type GlWorkVoicePrefs = {
   tts: {
     autoRead: boolean
     vendor: string | null
+    /** Streamed (实时) or whole (语音); null: whichever the vendor offers first. */
+    kind: 'stream' | 'file' | null
     voice: string | null
     /** Volcengine's speech_rate, -50 (slow) … 100 (fast); Qwen reads at its own pace. */
     rate: number
@@ -21,7 +23,7 @@ const KEY = 'glwork:voice-prefs'
 const DEFAULTS: GlWorkVoicePrefs = {
   asrVendor: null,
   inputMode: 'keyboard',
-  tts: { autoRead: false, vendor: null, voice: null, rate: 0 }
+  tts: { autoRead: false, vendor: null, kind: null, voice: null, rate: 0 }
 }
 
 let current: GlWorkVoicePrefs = DEFAULTS
@@ -43,6 +45,7 @@ function read(raw: string | null): GlWorkVoicePrefs {
       tts: {
         autoRead: tts.autoRead === true,
         vendor: typeof tts.vendor === 'string' ? tts.vendor : null,
+        kind: tts.kind === 'stream' || tts.kind === 'file' ? tts.kind : null,
         voice: typeof tts.voice === 'string' ? tts.voice : null,
         rate: typeof tts.rate === 'number' ? Math.max(-50, Math.min(100, tts.rate)) : 0
       }
