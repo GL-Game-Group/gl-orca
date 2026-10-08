@@ -1,6 +1,7 @@
 import { File, Paths } from 'expo-file-system'
 import * as ExpoCrypto from 'expo-crypto'
 import { base64ToBytes } from './cloud-asr'
+import { pcmWavBytes } from './glwork-pcm-wav'
 import { SPEECH_STREAM_RATE } from './glwork-speech-stream'
 
 const QWEN_TTS =
@@ -118,32 +119,7 @@ export async function volcAudio(
 
 /** A streamed reading gathered whole, as a WAV file in the cache (when it cannot be streamed). */
 export function writePcmWav(parts: readonly Uint8Array[]): string {
-  const size = parts.reduce((sum, part) => sum + part.length, 0)
-  const bytes = new Uint8Array(44 + size)
-  const view = new DataView(bytes.buffer)
-  const ascii = (offset: number, value: string): void => {
-    for (let i = 0; i < value.length; i += 1) {
-      bytes[offset + i] = value.charCodeAt(i)
-    }
-  }
-  ascii(0, 'RIFF')
-  view.setUint32(4, 36 + size, true)
-  ascii(8, 'WAVEfmt ')
-  view.setUint32(16, 16, true)
-  view.setUint16(20, 1, true)
-  view.setUint16(22, 1, true)
-  view.setUint32(24, SPEECH_STREAM_RATE, true)
-  view.setUint32(28, SPEECH_STREAM_RATE * 2, true)
-  view.setUint16(32, 2, true)
-  view.setUint16(34, 16, true)
-  ascii(36, 'data')
-  view.setUint32(40, size, true)
-  let offset = 44
-  for (const part of parts) {
-    bytes.set(part, offset)
-    offset += part.length
-  }
   const file = new File(Paths.cache, `glwork-speech-${ExpoCrypto.randomUUID()}.wav`)
-  file.write(bytes)
+  file.write(pcmWavBytes(parts, SPEECH_STREAM_RATE))
   return file.uri
 }

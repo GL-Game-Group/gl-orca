@@ -26,6 +26,7 @@ export function useGlWorkCloudDictation(
 ): UseMobileDictationResult | null {
   const capture = useDictationCapture()
   const [vendor, setVendor] = useState<string | null>(() => currentGlWorkVoicePrefs().asrVendor)
+  const [kind, setKind] = useState(() => currentGlWorkVoicePrefs().asrKind)
   const [status, setStatus] = useState<DictationStatus>('idle')
   const [error, setError] = useState<string | null>(null)
   const sessionRef = useRef<CloudAsrSession | null>(null)
@@ -33,8 +34,12 @@ export function useGlWorkCloudDictation(
   optionsRef.current = options
 
   useEffect(() => {
-    void loadGlWorkVoicePrefs().then((prefs) => setVendor(prefs.asrVendor))
-    return subscribeGlWorkVoicePrefs((prefs) => setVendor(prefs.asrVendor))
+    const take = (prefs: { asrVendor: string | null; asrKind: 'realtime' | 'file' }): void => {
+      setVendor(prefs.asrVendor)
+      setKind(prefs.asrKind)
+    }
+    void loadGlWorkVoicePrefs().then(take)
+    return subscribeGlWorkVoicePrefs(take)
   }, [])
 
   // `notify` false: start's caller reports the rejection itself (as with Orca's dictation).
@@ -75,7 +80,7 @@ export function useGlWorkCloudDictation(
     setError(null)
     setStatus('starting')
     try {
-      sessionRef.current = await startCloudAsr(vendor, {
+      sessionRef.current = await startCloudAsr(vendor, kind, {
         onText: setGlWorkDictationLive,
         onError: fail
       })
@@ -95,7 +100,7 @@ export function useGlWorkCloudDictation(
       fail(err, false)
       throw err
     }
-  }, [capture, fail, vendor])
+  }, [capture, fail, vendor, kind])
 
   const stop = useCallback(async () => {
     const session = sessionRef.current

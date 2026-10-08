@@ -30,6 +30,14 @@ export async function startVolcAsr(): Promise<CloudAsrSession> {
   throw unavailable()
 }
 
+export function startQwenFileAsr(): CloudAsrSession {
+  throw unavailable()
+}
+
+export function startVolcFileAsr(): CloudAsrSession {
+  throw unavailable()
+}
+
 export async function previewVoice(): Promise<void> {
   throw unavailable()
 }

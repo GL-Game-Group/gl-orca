@@ -103,3 +103,14 @@
   - 对话页的“…”里是“输入方式：语音 / 键盘”（点一下切换）和“语音设置”；
   - “语音设置”是第二级（`GlWorkVoiceQuickSheet.tsx`）：识别列表（含电脑上的模型）、播报列表、语速、音色。
 - 语音模式输入栏右侧、模型选择上方有一个小按钮（`GlWorkSpeechControl.tsx`）：朗读时是“停止”，平时是“重播最近一次朗读”。
+
+## 普通识别接入，加上官方原模式（2026-10-09）
+
+识别和播报都是千问、火山各两种（实时、普通），识别另外还有 Orca 原有的“电脑上的模型”：
+
+- 普通识别（“千问识别”“火山识别”）：按住时先把麦克风的 PCM 存起来，松手后整段做成 WAV（base64）发出去（`file-asr.ts`）。超过 170 秒的录音会被拒绝。
+  - 千问用 `qwen3-asr-flash`，走 multimodal-generation 接口，音频以 data URL 放在 user 消息里（`qwen-file-asr.ts`）；
+  - 火山用录音文件识别极速版 `/api/v3/auc/bigmodel/recognize/flash`，资源 ID `volc.bigasr.auc_turbo`，看响应头 `X-Api-Status-Code`（`volc-file-asr.ts`）。
+  - 按住时卡片显示“正在听…（松开后识别）”。
+- 选择保存为 `asrVendor` 加 `asrKind`（`realtime`/`file`）。键盘模式的麦克风和语音模式的按住说话都按这个选择识别。
+- “电脑上的模型”就是 Orca 原来的识别方式，用于键盘模式的麦克风。按住说话需要松手时就拿到文字，电脑识别的结果是异步写进输入框的，所以语音模式选它时，按住说话改用第一个云端识别。

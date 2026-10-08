@@ -18,8 +18,6 @@ export type RecognitionOption = {
   model: string
   /** 千问实时, 千问识别, 火山实时, 火山识别. */
   label: string
-  /** Recognition of a finished recording is listed but not wired yet. */
-  available: boolean
 }
 
 /** "千问语音" → "千问": the vendor's name without the word every option adds. */
@@ -52,8 +50,7 @@ export function recognitionOptions(vendors: readonly CompanyVoiceVendor[]): Reco
         vendor,
         kind: 'realtime',
         model: vendor.asr.model,
-        label: `${name}实时`,
-        available: true
+        label: `${name}实时`
       })
     }
     if (vendor.asrFile) {
@@ -61,8 +58,7 @@ export function recognitionOptions(vendors: readonly CompanyVoiceVendor[]): Reco
         vendor,
         kind: 'file',
         model: vendor.asrFile.model,
-        label: `${name}识别`,
-        available: false
+        label: `${name}识别`
       })
     }
     return options

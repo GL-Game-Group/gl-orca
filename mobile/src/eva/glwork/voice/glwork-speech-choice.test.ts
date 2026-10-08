@@ -19,6 +19,7 @@ const vendor = (
 })
 const prefs = (tts: Partial<GlWorkVoicePrefs['tts']> = {}): GlWorkVoicePrefs => ({
   asrVendor: null,
+  asrKind: 'realtime',
   inputMode: 'keyboard',
   tts: { autoRead: true, vendor: null, kind: null, voice: null, rate: 0, ...tts }
 })

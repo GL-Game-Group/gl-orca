@@ -6,5 +6,7 @@
 export { loadCompanySession } from '../company-session'
 export { companyVoiceToken, fetchCompanyVoiceVendors } from './company-voice'
 export { startQwenAsr } from './qwen-asr'
+export { startQwenFileAsr } from './qwen-file-asr'
 export { startVolcAsr } from './volc-asr'
+export { startVolcFileAsr } from './volc-file-asr'
 export { previewVoice, speakGlWorkReply, speakWith } from './glwork-speech'
