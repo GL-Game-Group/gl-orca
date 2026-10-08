@@ -37,7 +37,7 @@ import { MobileNativeChatLiveLine } from './MobileNativeChatLiveLine'
 import { MobileNativeChatStopButton } from './MobileNativeChatStopButton'
 import { MobileAgentWorkingIndicator } from './MobileAgentWorkingIndicator'
 import type { PendingNativeChatImage } from './mobile-native-chat-image-attachment'
-import { MobileNativeChatComposer } from './MobileNativeChatComposer'
+import { GlWorkChatComposer } from '../eva/glwork/voice/GlWorkChatComposer'
 import { MobileNativeChatPromptCard } from './MobileNativeChatPromptCard'
 import { NO_COMPOSER_TRAY, type ComposerTrayProps } from './use-mobile-native-chat-composer-tray'
 import type { MobileChatPermission } from './mobile-native-chat-permission'
@@ -444,7 +444,7 @@ export function MobileNativeChatView({
           <Text style={styles.sendErrorText}>{sendErrorMessage}</Text>
         </View>
       ) : null}
-      <MobileNativeChatComposer
+      <GlWorkChatComposer
         structuredCommands={
           structuredActivityUi ? (sessionOptions?.controller.conversationCommands ?? []) : undefined
         }

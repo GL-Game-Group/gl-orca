@@ -13,6 +13,7 @@ const vendor = (id: string, voices: string[] | null): CompanyVoiceVendor => ({
 })
 const prefs = (tts: Partial<GlWorkVoicePrefs['tts']> = {}): GlWorkVoicePrefs => ({
   asrVendor: null,
+  inputMode: 'keyboard',
   tts: { autoRead: true, vendor: null, voice: null, rate: 0, ...tts }
 })
 

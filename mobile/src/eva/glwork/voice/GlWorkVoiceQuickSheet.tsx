@@ -14,6 +14,44 @@ import {
 } from './glwork-voice-sheet-state'
 import { useGlWorkVoicePrefs, useGlWorkVoiceVendors } from './use-glwork-voice-settings'
 
+const INPUT_MODES = [
+  { mode: 'keyboard', label: '键盘' },
+  { mode: 'voice', label: '语音' }
+] as const
+
+/** How the chat composer takes input: Orca's keyboard row, or hold-to-talk. */
+function InputModePicker() {
+  const prefs = useGlWorkVoicePrefs()
+  return (
+    <View style={[styles.section, styles.sectionTopGap]}>
+      <View style={styles.row}>
+        <View style={styles.rowContent}>
+          <Text style={styles.rowLabel}>输入方式</Text>
+          <Text style={styles.rowSublabel}>语音：按住说话，松开发送；左滑取消，右滑改文字</Text>
+        </View>
+        <View style={styles.segmented}>
+          {INPUT_MODES.map((entry) => (
+            <Pressable
+              key={entry.mode}
+              onPress={() => void saveGlWorkVoicePrefs((p) => ({ ...p, inputMode: entry.mode }))}
+              style={[styles.segment, prefs.inputMode === entry.mode && styles.segmentActive]}
+            >
+              <Text
+                style={[
+                  styles.segmentText,
+                  prefs.inputMode === entry.mode && styles.segmentTextActive
+                ]}
+              >
+                {entry.label}
+              </Text>
+            </Pressable>
+          ))}
+        </View>
+      </View>
+    </View>
+  )
+}
+
 /** Which recognizer the mic uses: the desktop's own dictation, or a company vendor. */
 function QuickAsrPicker() {
   const prefs = useGlWorkVoicePrefs()
@@ -60,6 +98,8 @@ export function GlWorkVoiceQuickSheet() {
     <BottomDrawer visible={open} onClose={() => setGlWorkVoiceSheetOpen(false)}>
       <View>
         <Text style={styles.heading}>语音</Text>
+        <View style={styles.sectionTopGap} />
+        {open ? <InputModePicker /> : null}
         <View style={styles.sectionTopGap} />
         {open ? <QuickAsrPicker /> : null}
         {open ? <GlWorkSpeechSettings /> : null}
