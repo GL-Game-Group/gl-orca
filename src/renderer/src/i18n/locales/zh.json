@@ -19275,7 +19275,9 @@
       "turnOff": "关闭",
       "confirmTitle": "在 GL Work 里显示代理状态？",
       "confirmDescription": "GL Work 会在这些编程工具自己的设置里加入状态钩子：已启用的工具中的 ~/.claude/settings.json（Claude Code）、~/.codex/config.toml（Codex）、~/.qwen/settings.json（Qwen Code）、~/.qoder/settings.json（Qoder）。钩子只向 GL Work 报告“工作中、等待中、已完成”。以后关闭时会移除它们。",
-      "agree": "同意并开启"
+      "agree": "同意并开启",
+      "firstAskDescription": "开启代理状态后，手机上的 GL Work 可以用对话方式查看 Claude Code、Codex，并显示工作状态和权限确认。GL Work 会在已启用的编程工具自己的设置里加入状态钩子：~/.claude/settings.json, ~/.codex/config.toml, ~/.qwen/settings.json, ~/.qoder/settings.json。以后可以随时在「设置 → 命令行工具 → 代理状态」开启或关闭。",
+      "later": "暂不开启"
     },
     "remote": {
       "title": "手机远程",

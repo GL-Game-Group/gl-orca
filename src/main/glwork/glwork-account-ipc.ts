@@ -17,6 +17,7 @@ import { startCompanySignIn, type PendingSignIn } from './glwork-sign-in'
 import { readGlWorkModelSources, writeGlWorkModelSource } from './glwork-model-sources'
 import { readGlWorkCliToolStatuses } from './glwork-cli-tools'
 import { reconcileGlWorkRemote, registerGlWorkRemoteIpcHandlers } from './glwork-remote'
+import { registerGlWorkHooksPromptIpcHandlers } from './glwork-hooks-prompt'
 
 let pending: PendingSignIn | null = null
 let lastError: string | null = null
@@ -170,4 +171,5 @@ export function registerGlWorkAccountIpcHandlers(): void {
     setModelSource(tool, choice)
   )
   registerGlWorkRemoteIpcHandlers()
+  registerGlWorkHooksPromptIpcHandlers()
 }
