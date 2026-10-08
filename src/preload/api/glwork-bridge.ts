@@ -37,9 +37,6 @@ export type GlWorkApi = {
   /** Remote access from the phone through the company's relay (src/main/glwork/glwork-remote.ts). */
   remoteStatus: () => Promise<GlWorkRemoteStatus>
   setRemote: (enabled: boolean) => Promise<GlWorkRemoteStatus>
-  /** Whether the one-time agent status question after the first sign-in is still to be asked. */
-  hooksPromptDue: () => Promise<boolean>
-  hooksPromptAnswered: () => Promise<void>
 }
 
 function readSignedIn(): boolean {
@@ -77,7 +74,5 @@ export const glworkApi: GlWorkApi = {
   cliTools: (refresh) => ipcRenderer.invoke('glwork:cliTools', refresh === true),
   setModelSource: (tool, choice) => ipcRenderer.invoke('glwork:setModelSource', tool, choice),
   remoteStatus: () => ipcRenderer.invoke('glwork:remoteStatus'),
-  setRemote: (enabled) => ipcRenderer.invoke('glwork:setRemote', enabled),
-  hooksPromptDue: () => ipcRenderer.invoke('glwork:hooksPromptDue'),
-  hooksPromptAnswered: () => ipcRenderer.invoke('glwork:hooksPromptAnswered')
+  setRemote: (enabled) => ipcRenderer.invoke('glwork:setRemote', enabled)
 }

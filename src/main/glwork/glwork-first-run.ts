@@ -11,6 +11,8 @@ import { isGlWorkBuild } from './glwork-build'
 export const GLWORK_AGENTS: readonly TuiAgent[] = ['claude', 'codex', 'qwen-code', 'qoder']
 
 const MARKER = 'glwork-first-run.json'
+/** Agent status hooks turned on once per profile (owner's decision, 2026-10-08); turning them off sticks. */
+const HOOKS_MARKER = 'glwork-hooks-default'
 
 type FirstRunSettings = Pick<
   GlobalSettings,
@@ -22,19 +24,21 @@ type SettingsStore = {
     FirstRunSettings,
     'disabledTuiAgents' | 'agentDefaultArgs' | 'agentDefaultEnv'
   >
-  updateSettings: (updates: FirstRunSettings) => unknown
+  updateSettings: (updates: Partial<FirstRunSettings>) => unknown
 }
 
 /**
- * eva: GL Work's defaults, once per profile and before Orca installs anything at startup:
- * agent status hooks stay off until the member agrees (they edit Claude Code's and Codex's
- * own config files), only GL Work's coding CLIs are enabled, and agents ask before they run
- * commands or edit files (Orca starts them skipping every permission prompt).
+ * eva: GL Work's defaults, once per profile and before Orca installs anything at startup: only GL
+ * Work's coding CLIs are enabled, agents ask before they run commands or edit files (Orca starts
+ * them skipping every permission prompt), and the agent status hooks are on — the phone's chat view,
+ * working status and permission prompts need them. Settings → Coding tools → Agent status turns
+ * them off, and that sticks.
  */
 export function applyGlWorkFirstRunSettings(store: SettingsStore): void {
   if (!isGlWorkBuild()) {
     return
   }
+  applyHooksDefaultOnce(store)
   const marker = join(app.getPath('userData'), MARKER)
   if (existsSync(marker)) {
     return
@@ -52,9 +56,18 @@ export function applyGlWorkFirstRunSettings(store: SettingsStore): void {
     agentDefaultEnv: current.agentDefaultEnv
   })
   store.updateSettings({
-    agentStatusHooksEnabled: false,
     disabledTuiAgents: [...disabled],
     ...manual
   })
+  writeFileSync(marker, `${JSON.stringify({ appliedAt: new Date().toISOString() })}\n`)
+}
+
+/** Profiles from before this default had the hooks off without being asked: turn them on once. */
+function applyHooksDefaultOnce(store: SettingsStore): void {
+  const marker = join(app.getPath('userData'), HOOKS_MARKER)
+  if (existsSync(marker)) {
+    return
+  }
+  store.updateSettings({ agentStatusHooksEnabled: true })
   writeFileSync(marker, `${JSON.stringify({ appliedAt: new Date().toISOString() })}\n`)
 }

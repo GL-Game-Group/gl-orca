@@ -19274,9 +19274,7 @@
       "turnOff": "Desactivar",
       "confirmTitle": "¿Mostrar el estado de los agentes en GL Work?",
       "confirmDescription": "GL Work añadirá sus hooks de estado a la configuración de las propias herramientas: ~/.claude/settings.json (Claude Code), ~/.codex/config.toml (Codex), ~/.qwen/settings.json (Qwen Code), ~/.qoder/settings.json (Qoder), de las herramientas que tengas activadas. Solo informan a GL Work de trabajando, esperando y terminado. Si lo desactivas más tarde, se eliminan.",
-      "agree": "Aceptar y activar",
-      "firstAskDescription": "Con el estado de los agentes activado, GL Work en tu teléfono muestra Claude Code y Codex como chats, con su estado de trabajo y las solicitudes de permiso. GL Work añade sus hooks de estado a la configuración de las herramientas que tengas activadas: ~/.claude/settings.json, ~/.codex/config.toml, ~/.qwen/settings.json, ~/.qoder/settings.json. Puedes activarlo o desactivarlo cuando quieras en Ajustes → Herramientas de línea de comandos → Estado de los agentes.",
-      "later": "Ahora no"
+      "agree": "Aceptar y activar"
     },
     "remote": {
       "title": "Acceso remoto desde el teléfono",
