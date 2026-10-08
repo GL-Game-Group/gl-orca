@@ -4,12 +4,19 @@ import { join } from 'node:path'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { GlobalSettings } from '../../shared/global-settings-types'
 
-type Host = { userData: string; onPath: Set<string>; signedIn: Set<string>; ran: string[] }
+type Host = {
+  userData: string
+  onPath: Set<string>
+  signedIn: Set<string>
+  ran: string[]
+  cnStatusFails: boolean
+}
 const host = vi.hoisted((): Host => ({
   userData: '',
   onPath: new Set(),
   signedIn: new Set(),
-  ran: []
+  ran: [],
+  cnStatusFails: false
 }))
 
 vi.mock('electron', () => ({
@@ -29,8 +36,11 @@ vi.mock('../ipc/preflight-command-exec', () => ({
   isCommandOnPath: async (command: string) => host.onPath.has(command),
   execLocalPreflightCommandOrThrow: async (command: string, args: string[]) => {
     host.ran.push([command, ...args].join(' '))
-    // Like qodercli 1.1.65: its status exits 0 either way and says which in JSON.
-    if (command === 'qodercli') {
+    // Like qodercli 1.1.65 (CN assumed alike): its status exits 0 either way and says which in JSON.
+    if (command === 'qoderclicn') {
+      if (host.cnStatusFails) {
+        throw new Error('unknown command status')
+      }
       const loggedIn = host.signedIn.has(command)
       return { stdout: JSON.stringify({ logged_in: loggedIn, email: 'x@y.z' }), stderr: '' }
     }
@@ -53,34 +63,43 @@ describe('coding tools', () => {
   })
 
   it('reports installed and signed in from the CLIs’ own status commands only', async () => {
-    host.onPath = new Set(['claude', 'codex', 'qodercli'])
-    host.signedIn = new Set(['claude', 'qodercli'])
+    host.onPath = new Set(['claude', 'codex', 'qoderclicn'])
+    host.signedIn = new Set(['claude', 'qoderclicn'])
     const tools = await readGlWorkCliToolStatuses()
     expect(tools.map((t) => [t.id, t.installed, t.signedIn])).toEqual([
       ['claude', true, true],
       ['codex', true, false],
-      ['qoder', true, true]
+      ['qoder-cn', true, true]
     ])
     expect(host.ran).toEqual([
       'claude auth status',
       'codex login status',
-      'qodercli status -o json'
+      'qoderclicn status -o json'
     ])
     // Only logged_in is taken from Qoder's status; account details never come back.
     expect(JSON.stringify(tools)).not.toContain('x@y.z')
   })
 
-  it('finds Qoder under either name, and re-reads the shell PATH when asked to check again', async () => {
-    host.onPath = new Set(['qodercli'])
+  it('finds Qoder CN under either name, and re-reads the shell PATH when asked to check again', async () => {
+    host.onPath = new Set(['qodercn'])
     const tools = await readGlWorkCliToolStatuses(true)
-    expect(tools.find((t) => t.id === 'qoder')).toMatchObject({
+    expect(tools.find((t) => t.id === 'qoder-cn')).toMatchObject({
       installed: true,
       signedIn: false,
-      signInCommand: 'qodercli login',
-      // Orca's agent id, so the card's switch-off toggle covers Qoder too.
-      agent: 'qoder'
+      installCommand: 'curl -fsSL https://qoder.com.cn/install | bash',
+      signInCommand: 'qoderclicn',
+      // Orca's agent id, so the card's switch-off toggle covers Qoder CN too.
+      agent: 'qoder-cn'
     })
-    expect(host.ran).toEqual(['reread PATH', 'qodercli status -o json'])
+    expect(host.ran).toEqual(['reread PATH', 'qoderclicn status -o json'])
+  })
+
+  it('reads an unanswered Qoder CN status as unknown, not signed out', async () => {
+    host.onPath = new Set(['qoderclicn'])
+    host.cnStatusFails = true
+    const tools = await readGlWorkCliToolStatuses()
+    expect(tools.find((t) => t.id === 'qoder-cn')?.signedIn).toBeNull()
+    host.cnStatusFails = false
   })
 
   it('offers the official install command for a CLI that is missing, and runs nothing for it', async () => {
@@ -130,7 +149,8 @@ describe('GL Work first run', () => {
     expect(settings.disabledTuiAgents).not.toContain('claude')
     expect(settings.disabledTuiAgents).not.toContain('codex')
     expect(settings.disabledTuiAgents).not.toContain('qwen-code')
-    expect(settings.disabledTuiAgents).not.toContain('qoder')
+    expect(settings.disabledTuiAgents).not.toContain('qoder-cn')
+    expect(settings.disabledTuiAgents).toContain('qoder')
     expect(settings.disabledTuiAgents).toContain('gemini')
     // Agents ask first; a member's own extra arguments stay.
     expect(settings.agentDefaultArgs).toMatchObject({ claude: '', codex: '--model gpt-5' })
@@ -155,5 +175,30 @@ describe('GL Work first run', () => {
   it('leaves Orca builds alone', () => {
     applyGlWorkFirstRunSettings(store)
     expect(settings).toEqual(orcaDefaults())
+  })
+})
+
+describe('GL Work moving from Qoder to Qoder CN', () => {
+  it('switches a profile set up before, once, and leaves later choices alone', () => {
+    host.userData = mkdtempSync(join(tmpdir(), 'glwork-qoder-cn-'))
+    vi.stubEnv('GLWORK_BUILD', '1')
+    resetGlWorkBuildForTests()
+    writeFileSync(join(host.userData, 'glwork-first-run.json'), '{}')
+    writeFileSync(join(host.userData, 'glwork-hooks-default'), '{}')
+    let disabledTuiAgents: GlobalSettings['disabledTuiAgents'] = ['qoder-cn', 'gemini']
+    const store = {
+      getSettings: () => ({ disabledTuiAgents, agentDefaultArgs: {}, agentDefaultEnv: {} }),
+      updateSettings: (updates: Partial<Pick<GlobalSettings, 'disabledTuiAgents'>>) => {
+        disabledTuiAgents = updates.disabledTuiAgents ?? disabledTuiAgents
+      }
+    }
+    applyGlWorkFirstRunSettings(store)
+    expect(disabledTuiAgents.toSorted()).toEqual(['gemini', 'qoder'])
+    disabledTuiAgents = ['qoder-cn']
+    applyGlWorkFirstRunSettings(store)
+    expect(disabledTuiAgents).toEqual(['qoder-cn'])
+    rmSync(host.userData, { recursive: true, force: true })
+    vi.unstubAllEnvs()
+    resetGlWorkBuildForTests()
   })
 })

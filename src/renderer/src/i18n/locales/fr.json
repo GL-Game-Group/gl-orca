@@ -19251,7 +19251,7 @@
     },
     "cli": {
       "title": "Outils de développement",
-      "sectionDescription": "Claude Code, Codex et Qoder sur cet ordinateur : installer, se connecter ou désactiver.",
+      "sectionDescription": "Claude Code, Codex et Qoder CN sur cet ordinateur : installer, se connecter ou désactiver.",
       "description": "Chaque membre installe ces outils et se connecte avec son propre compte ; GL Work vérifie seulement et vous aide à démarrer.",
       "recheck": "Vérifier à nouveau",
       "notInstalled": "Non installé",
@@ -19274,7 +19274,7 @@
       "turnOn": "Activer…",
       "turnOff": "Désactiver",
       "confirmTitle": "Afficher l'état des agents dans GL Work ?",
-      "confirmDescription": "GL Work ajoutera ses hooks d'état aux réglages des outils eux-mêmes : ~/.claude/settings.json (Claude Code), ~/.codex/config.toml (Codex), ~/.qwen/settings.json (Qwen Code), ~/.qoder/settings.json (Qoder), pour les outils que vous avez activés. Ils signalent seulement en cours, en attente et terminé à GL Work. Les désactiver plus tard les supprime.",
+      "confirmDescription": "GL Work ajoutera ses hooks d'état aux réglages des outils eux-mêmes : ~/.claude/settings.json (Claude Code), ~/.codex/config.toml (Codex), ~/.qwen/settings.json (Qwen Code), ~/.qoder-cn/settings.json (Qoder CN), pour les outils que vous avez activés. Ils signalent seulement en cours, en attente et terminé à GL Work. Les désactiver plus tard les supprime.",
       "agree": "Accepter et activer"
     },
     "remote": {

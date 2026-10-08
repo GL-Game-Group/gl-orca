@@ -8,9 +8,10 @@ type CliTool = Omit<GlWorkCliToolStatus, 'installed' | 'signedIn'> & {
   commands: readonly string[]
   /**
    * An official status command: by exit code (0 signed in), or by the boolean `logged_in` of its
-   * JSON output (every other field, account details included, is dropped unread).
+   * JSON output (every other field, account details included, is dropped unread). `json-if-any`:
+   * an undocumented command — no answer (fails, or no `logged_in`) means unknown, not signed out.
    */
-  status: { args: string[]; read: 'exit-code' | 'json-logged-in' } | null
+  status: { args: string[]; read: 'exit-code' | 'json-logged-in' | 'json-if-any' } | null
 }
 
 /** The CLIs and their official commands (vendor docs, checked 2026-10). */
@@ -34,29 +35,31 @@ export const GLWORK_CLI_TOOLS: readonly CliTool[] = [
     agent: 'codex'
   },
   {
-    id: 'qoder',
-    name: 'Qoder',
-    // Why: its installer puts qodercli in ~/.local/bin and a `qoder` dispatcher in ~/.qoder/entry.
-    commands: ['qodercli', 'qoder'],
-    installCommand: 'curl -fsSL https://qoder.com/install | bash',
-    signInCommand: 'qodercli login',
-    // Why: `qodercli status` exits 0 signed in or not (1.1.65); its JSON says which.
-    status: { args: ['status', '-o', 'json'], read: 'json-logged-in' },
-    agent: 'qoder'
+    id: 'qoder-cn',
+    name: 'Qoder 中国版',
+    // Why: Qoder CLI CN installs qoderclicn (Orca also accepts its qodercn alias).
+    commands: ['qoderclicn', 'qodercn'],
+    installCommand: 'curl -fsSL https://qoder.com.cn/install | bash',
+    // Why: its docs sign in from the CLI's own screen (/login); it asks by itself on first run.
+    signInCommand: 'qoderclicn',
+    // Why: undocumented for CN; the international qodercli answers `status -o json` with logged_in.
+    status: { args: ['status', '-o', 'json'], read: 'json-if-any' },
+    agent: 'qoder-cn'
   }
 ]
 
-function jsonSaysLoggedIn(stdout: string): boolean {
+/** The JSON's boolean `logged_in`, or null when there is none. */
+function jsonLoggedIn(stdout: string): boolean | null {
   try {
     const parsed: unknown = JSON.parse(stdout)
-    return (
-      typeof parsed === 'object' &&
+    return typeof parsed === 'object' &&
       parsed !== null &&
       'logged_in' in parsed &&
-      parsed.logged_in === true
-    )
+      typeof parsed.logged_in === 'boolean'
+      ? parsed.logged_in
+      : null
   } catch {
-    return false
+    return null
   }
 }
 
@@ -69,9 +72,13 @@ async function signedIn(tool: CliTool): Promise<boolean | null> {
       tool.commands[0] ?? '',
       tool.status.args
     )
-    return tool.status.read === 'exit-code' || jsonSaysLoggedIn(stdout)
+    if (tool.status.read === 'exit-code') {
+      return true
+    }
+    const loggedIn = jsonLoggedIn(stdout)
+    return loggedIn ?? (tool.status.read === 'json-if-any' ? null : false)
   } catch {
-    return false
+    return tool.status.read === 'json-if-any' ? null : false
   }
 }
 

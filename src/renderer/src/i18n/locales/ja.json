@@ -19251,7 +19251,7 @@
     },
     "cli": {
       "title": "コーディングツール",
-      "sectionDescription": "このコンピューターの Claude Code、Codex、Qoder：インストール、サインイン、無効化。",
+      "sectionDescription": "このコンピューターの Claude Code、Codex、Qoder CN：インストール、サインイン、無効化。",
       "description": "各メンバーが自分でインストールし、自分のアカウントでサインインします。GL Work は確認と開始の手助けだけを行います。",
       "recheck": "再確認",
       "notInstalled": "未インストール",
@@ -19274,7 +19274,7 @@
       "turnOn": "オンにする…",
       "turnOff": "オフにする",
       "confirmTitle": "GL Work で Agent の状態を表示しますか？",
-      "confirmDescription": "GL Work はコーディングツール自身の設定に状態フックを追加します：有効にしているツールの ~/.claude/settings.json（Claude Code）、~/.codex/config.toml（Codex）、~/.qwen/settings.json（Qwen Code）、~/.qoder/settings.json（Qoder）。フックは作業中・待機中・完了を GL Work に報告するだけです。後でオフにすると削除されます。",
+      "confirmDescription": "GL Work はコーディングツール自身の設定に状態フックを追加します：有効にしているツールの ~/.claude/settings.json（Claude Code）、~/.codex/config.toml（Codex）、~/.qwen/settings.json（Qwen Code）、~/.qoder-cn/settings.json（Qoder CN）。フックは作業中・待機中・完了を GL Work に報告するだけです。後でオフにすると削除されます。",
       "agree": "同意してオンにする"
     },
     "remote": {

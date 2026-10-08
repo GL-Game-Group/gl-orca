@@ -28,7 +28,7 @@ function stateLine(tool: GlWorkCliToolStatus): string {
   return translate('glwork.cli.signedIn', 'Signed in')
 }
 
-/** Claude Code, Codex and Qoder: install and sign in through the vendors' own commands, or switch off. */
+/** Claude Code, Codex and Qoder CN: install and sign in through the vendors' own commands, or switch off. */
 export function GlWorkCliTools(): React.JSX.Element | null {
   const api = window.api.glwork
   const confirm = useConfirmationDialog()

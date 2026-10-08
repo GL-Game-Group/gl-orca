@@ -8,11 +8,13 @@ import { applyAgentPermissionMode } from '../../shared/tui-agent-permissions'
 import { isGlWorkBuild } from './glwork-build'
 
 /** The coding CLIs GL Work offers; Orca's other agents start out switched off (members may turn them on). */
-export const GLWORK_AGENTS: readonly TuiAgent[] = ['claude', 'codex', 'qwen-code', 'qoder']
+export const GLWORK_AGENTS: readonly TuiAgent[] = ['claude', 'codex', 'qwen-code', 'qoder-cn']
 
 const MARKER = 'glwork-first-run.json'
 /** Agent status hooks turned on once per profile (owner's decision, 2026-10-08); turning them off sticks. */
 const HOOKS_MARKER = 'glwork-hooks-default'
+/** GL Work moved from Qoder to Qoder CN (2026-10-08): profiles set up before switch once. */
+const QODER_CN_MARKER = 'glwork-qoder-cn'
 
 type FirstRunSettings = Pick<
   GlobalSettings,
@@ -41,6 +43,7 @@ export function applyGlWorkFirstRunSettings(store: SettingsStore): void {
   applyHooksDefaultOnce(store)
   const marker = join(app.getPath('userData'), MARKER)
   if (existsSync(marker)) {
+    applyQoderCnOnce(store)
     return
   }
   const current = store.getSettings()
@@ -59,7 +62,26 @@ export function applyGlWorkFirstRunSettings(store: SettingsStore): void {
     disabledTuiAgents: [...disabled],
     ...manual
   })
-  writeFileSync(marker, `${JSON.stringify({ appliedAt: new Date().toISOString() })}\n`)
+  writeMarker(marker)
+  // A new profile starts with Qoder CN already in place of Qoder.
+  writeMarker(join(app.getPath('userData'), QODER_CN_MARKER))
+}
+
+function writeMarker(path: string): void {
+  writeFileSync(path, `${JSON.stringify({ appliedAt: new Date().toISOString() })}\n`)
+}
+
+/** Profiles set up when GL Work offered Qoder: offer Qoder CN instead, once. */
+function applyQoderCnOnce(store: SettingsStore): void {
+  const marker = join(app.getPath('userData'), QODER_CN_MARKER)
+  if (existsSync(marker)) {
+    return
+  }
+  const disabled = new Set(store.getSettings().disabledTuiAgents)
+  disabled.delete('qoder-cn')
+  disabled.add('qoder')
+  store.updateSettings({ disabledTuiAgents: [...disabled] })
+  writeMarker(marker)
 }
 
 /** Profiles from before this default had the hooks off without being asked: turn them on once. */
@@ -69,5 +91,5 @@ function applyHooksDefaultOnce(store: SettingsStore): void {
     return
   }
   store.updateSettings({ agentStatusHooksEnabled: true })
-  writeFileSync(marker, `${JSON.stringify({ appliedAt: new Date().toISOString() })}\n`)
+  writeMarker(marker)
 }

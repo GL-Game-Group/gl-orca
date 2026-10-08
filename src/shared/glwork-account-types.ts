@@ -44,7 +44,7 @@ export type GlWorkModelSource = {
 export type GlWorkModelSources = Record<GlWorkModelSourceTool, GlWorkModelSource | null>
 
 /** A coding CLI GL Work looks after: members install it and sign in themselves (docs/fork/changes/glwork-cli-tools.md). */
-export type GlWorkCliToolId = 'claude' | 'codex' | 'qoder'
+export type GlWorkCliToolId = 'claude' | 'codex' | 'qoder-cn'
 
 export type GlWorkCliToolStatus = {
   id: GlWorkCliToolId
@@ -57,7 +57,7 @@ export type GlWorkCliToolStatus = {
   /** The official sign-in command; the member signs in through the vendor's own flow. */
   signInCommand: string
   /** Orca's agent id, for switching the CLI off in new sessions; null until Orca knows the CLI. */
-  agent: 'claude' | 'codex' | 'qoder' | null
+  agent: 'claude' | 'codex' | 'qoder-cn' | null
 }
 
 /** Remote access from the phone through the company's relay (docs/fork/changes/glwork-remote.md). */

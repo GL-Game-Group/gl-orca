@@ -22,7 +22,7 @@ export function useGlWorkAgentHooksConsent(): {
       title: translate('glwork.hooks.confirmTitle', 'Show agent status in GL Work?'),
       description: translate(
         'glwork.hooks.confirmDescription',
-        'GL Work will add its status hooks to the coding tools’ own settings: ~/.claude/settings.json (Claude Code), ~/.codex/config.toml (Codex), ~/.qwen/settings.json (Qwen Code), ~/.qoder/settings.json (Qoder), for the tools you have enabled. They only report working, waiting and done to GL Work. Turning this off later removes them.'
+        'GL Work will add its status hooks to the coding tools’ own settings: ~/.claude/settings.json (Claude Code), ~/.codex/config.toml (Codex), ~/.qwen/settings.json (Qwen Code), ~/.qoder-cn/settings.json (Qoder CN), for the tools you have enabled. They only report working, waiting and done to GL Work. Turning this off later removes them.'
       ),
       confirmLabel: translate('glwork.hooks.agree', 'Agree and turn on')
     })
