@@ -11,6 +11,7 @@ import { isStaleRpcSocketEvent, logRpcSocketClose } from './rpc-socket-close-evi
 import { describeSocketEvent, redactSocketEndpoint } from './socket-event-debug'
 import type { ConnectionLogEmitter, ConnectionState, RpcResponse } from './types'
 import { websocketPayloadToUint8 } from './websocket-payload-bytes'
+import { openWebSocket } from '../eva/glwork/company-socket'
 
 const CONNECT_TIMEOUT_MS = 12_000
 const HANDSHAKE_TIMEOUT_MS = 5_000
@@ -46,7 +47,7 @@ export class RpcClientSocketSession {
   private handshakeTimer: ReturnType<typeof setTimeout> | null = null
 
   constructor(private readonly options: SocketSessionOptions) {
-    this.socket = new WebSocket(options.endpoint)
+    this.socket = openWebSocket(options.endpoint)
     this.attachHandlers()
     this.armConnectTimeout()
   }
