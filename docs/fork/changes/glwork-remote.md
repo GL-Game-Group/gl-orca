@@ -69,6 +69,13 @@ pnpm test src/main/glwork          # 含 frpc 配置和日志、配对接口（�
 
 iOS 模拟器（2026-10-08 跑过）：同样的本地环境，模拟器里的 Orca 手机端开发版（`npx expo prebuild` 生成 `mobile/ios/`，Xcode 27 下第三方 Pod 的部署版本低于 15 会报错，构建时加 `IPHONEOS_DEPLOYMENT_TARGET=17.0`；本机的 Xcode 27 没有模拟器窗口程序，用一个只在本地生成工程里的 XCUITest 目标点按，`mobile/ios/` 不入库）：系统网页登录窗口 → 假 GitHub 选成员 → 回到 App 列出电脑（这台在线）→ 点它 → Orca 的配对确认 → 连上电脑（绿点）；电脑「设置 → 移动端」里出现 “iPhone 17”，Orca 仍只监听 `127.0.0.1`；再点一次直接打开，电脑上的设备数不变。
 
+## 手机聊天视图和代理状态钩子
+
+手机把 Claude 等终端代理显示成聊天时，要靠电脑的代理状态钩子告诉它会话的记录文件（`runtime-mobile-agent-status-builder.ts` 的 `providerSession`），工作状态和权限确认也来自钩子。GL Work 在成员同意前不开钩子（[glwork-cli-tools.md](./glwork-cli-tools.md)），这时聊天会一直是空的。所以：
+
+- 电脑端「手机远程」开着、钩子没开时，下面多一行说明和“开启…”按钮（同一个同意对话框，`useGlWorkAgentHooksConsent`）。
+- 手机端聊天等会话超过 8 秒，显示原因和“切换到终端”（`GlWorkChatWaitingHint`，挂在 `MobileNativeChatOverlay`；`MobileNativeChatController` 多了 `nativeChatTabId`）。Qoder 不支持聊天视图，一直是终端，不受影响。
+
 ## 已知限制
 
 - 真机还没有跑过，要等公司服务部署后经 `agent.glwork.net` 走一遍。
