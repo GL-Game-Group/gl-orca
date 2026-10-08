@@ -25,6 +25,8 @@
 ## 手机端
 
 - 扫码页多一个入口“Or use your GL Work company account”（`/glwork`）：输入公司服务地址（默认 `https://agent.glwork.net`）→ 系统网页登录窗口（`expo-web-browser` 的 `openAuthSessionAsync`，ASWebAuthenticationSession，PKCE，回调 `glwork://auth`）→ 手机令牌存钥匙串（仅本机）→ 列出开了手机远程的电脑 → 点在线的那台配对 → Orca 的 `/pair-confirm`。
+- 点一台电脑时，如果手机已经保存了指向同一中转地址的电脑，直接打开它，不再新建设备。
+- 请求超时用 `AbortController` 加定时器：Hermes 没有 `AbortSignal.timeout`（Node 测试里有，模拟器上才暴露出来）。
 - Orca 的 WebSocket 改由 `openWebSocket` 创建：只有地址是公司服务的 `wss://<同一主机>/agent-work/remote/...` 时才带 `Authorization`，其他主机（局域网电脑、别的域名、`ws://`）一律不带（`company-socket.test.ts`）。这个文件不引用原生模块，Orca 的传输层测试不受影响；读取钥匙串的 `company-session.ts` 在 `_layout.tsx` 里随应用启动加载。
 - 文案目前是英文（Orca 手机端没有多语言），品牌和中文随 R3 后续一起做。
 
@@ -65,10 +67,12 @@ pnpm test src/main/glwork          # 含 frpc 配置和日志、配对接口（�
 
 本机全链路（2026-10-08 跑过）：本地公司服务（agent-work `gateway/src/dev-runtime.ts`，挂上 WebSocket 中转，`AGENT_WORK_DEV_FRPS_PORT=7100`，macOS 的隔空播放占着 7000）+ 本地 frps 0.71.0（`vhostHTTPPort = 8080`，server plugin 指向公司服务）+ 开发版 GL Work（`GLWORK_BUILD=1 GLWORK_SERVER=http://127.0.0.1:8787`）。打开手机远程后 frps 登记 `wuming.tun_…`；脚本模拟手机：公司登录 → 列表里有这台电脑 → 配对 → 经中转完成 Orca 的 E2EE 握手，`status.get`、`repo.list` 正常；不带或伪造手机令牌 401；直接访问本机 `/glwork/remote/pair`（不带或带错密钥）403；Orca 仍只监听 `127.0.0.1`；配对的手机出现在「设置 → 移动端」；界面上关闭、重新打开（弹出说明）都正常。
 
+iOS 模拟器（2026-10-08 跑过）：同样的本地环境，模拟器里的 Orca 手机端开发版（`npx expo prebuild` 生成 `mobile/ios/`，Xcode 27 下第三方 Pod 的部署版本低于 15 会报错，构建时加 `IPHONEOS_DEPLOYMENT_TARGET=17.0`；本机的 Xcode 27 没有模拟器窗口程序，用一个只在本地生成工程里的 XCUITest 目标点按，`mobile/ios/` 不入库）：系统网页登录窗口 → 假 GitHub 选成员 → 回到 App 列出电脑（这台在线）→ 点它 → Orca 的配对确认 → 连上电脑（绿点）；电脑「设置 → 移动端」里出现 “iPhone 17”，Orca 仍只监听 `127.0.0.1`；再点一次直接打开，电脑上的设备数不变。
+
 ## 已知限制
 
-- 手机端在模拟器、真机上还没有实际跑过（需要 CocoaPods 生成原生工程）；上面是用脚本按手机端的协议走的。
-- 每次在手机上点“连接”都会新建一个设备；重复配对留下的旧设备要在「设置 → 移动端」里移除。
+- 真机还没有跑过，要等公司服务部署后经 `agent.glwork.net` 走一遍。
+- 拿到配对信息后在确认页点“取消”，电脑上会留下一个没用过的设备，要在「设置 → 移动端」里移除。
 - 运行时端口变化（6768 被占用时 Orca 换端口）最长 60 秒后 frpc 才跟上。
 - 只做了 macOS 的 frpc。
 
