@@ -19286,6 +19286,12 @@
       "confirmTitle": "¿Conectarte a este ordenador desde tu teléfono?",
       "confirmDescription": "Mientras esté abierto, GL Work mantendrá una conexión con el servicio de la empresa (frpc) para que GL Work en tu teléfono, con la misma cuenta de GitHub, pueda abrir los espacios de trabajo, terminales y agentes de este ordenador. El tráfico va cifrado de extremo a extremo; el servicio de la empresa solo lo reenvía. Los teléfonos emparejados aparecen en Ajustes → Móvil, donde puedes quitarlos.",
       "agree": "Activar"
+    },
+    "gate": {
+      "title": "Inicia sesión en GL Work",
+      "description": "GL Work es el espacio de trabajo de IA de la empresa. Inicia sesión con tu cuenta de GitHub de la empresa para continuar.",
+      "waiting": "Termina de iniciar sesión en el navegador y vuelve aquí.",
+      "server": "Servicio de la empresa: {{server}}"
     }
   }
 }

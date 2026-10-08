@@ -1,4 +1,4 @@
-import { ipcMain } from 'electron'
+import { BrowserWindow, ipcMain } from 'electron'
 import type {
   GlWorkAccountStatus,
   GlWorkModelSources,
@@ -20,6 +20,15 @@ import { reconcileGlWorkRemote, registerGlWorkRemoteIpcHandlers } from './glwork
 
 let pending: PendingSignIn | null = null
 let lastError: string | null = null
+
+/** Windows show the sign-in screen while signed out (GlWorkSignInGate); tell them when that changes. */
+function notifyAccountChanged(): void {
+  for (const window of BrowserWindow.getAllWindows()) {
+    if (!window.isDestroyed()) {
+      window.webContents.send('glwork:accountChanged')
+    }
+  }
+}
 
 function errorText(error: unknown): string {
   return error instanceof Error ? error.message : String(error)
@@ -48,6 +57,7 @@ async function signIn(): Promise<GlWorkAccountStatus> {
   try {
     const signedIn = await attempt.done
     writeGlWorkAccount({ server, ...signedIn })
+    notifyAccountChanged()
     void reconcileGlWorkRemote()
   } catch (error) {
     lastError = errorText(error)
@@ -63,6 +73,7 @@ async function signOut(): Promise<GlWorkAccountStatus> {
   const account = readGlWorkAccount()
   clearGlWorkAccount()
   lastError = null
+  notifyAccountChanged()
   // Why first: the device token is about to be revoked, so frpc must not keep the tunnel.
   await reconcileGlWorkRemote()
   if (account) {
@@ -83,6 +94,7 @@ async function models(): Promise<GlWorkModelsResult> {
       // Why: a revoked or expired token is useless; ask for a fresh sign-in instead of retrying it.
       clearGlWorkAccount()
       lastError = error.message
+      notifyAccountChanged()
     }
     return { ok: false, error: errorText(error) }
   }
@@ -137,6 +149,10 @@ export function registerGlWorkAccountIpcHandlers(): void {
   // Why sync: the settings navigation is built synchronously and must know which account pane to show.
   ipcMain.on('glwork:isBuildSync', (event) => {
     event.returnValue = isGlWorkBuild()
+  })
+  // Why sync: the window decides between the sign-in screen and the workspace before its first paint.
+  ipcMain.on('glwork:signedInSync', (event) => {
+    event.returnValue = isGlWorkBuild() && readGlWorkAccount() !== null
   })
   ipcMain.handle('glwork:status', () => status())
   ipcMain.handle('glwork:signIn', () => signIn())

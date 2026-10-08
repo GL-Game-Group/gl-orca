@@ -16,6 +16,10 @@ export type GlWorkModelSourceResult =
 export type GlWorkApi = {
   /** Whether this app is GL Work rather than Orca; fixed for the process. */
   isBuild: boolean
+  /** Signed in to the company when this window loaded (GL Work only); later changes come through onAccountChanged. */
+  signedInAtLoad: boolean
+  /** Sign-in, sign-out, or the company revoking the sign-in; returns an unsubscribe. */
+  onAccountChanged: (listener: () => void) => () => void
   status: () => Promise<GlWorkAccountStatus>
   /** Opens the browser for GitHub sign-in and resolves once it comes back, fails or is cancelled. */
   signIn: () => Promise<GlWorkAccountStatus>
@@ -35,6 +39,14 @@ export type GlWorkApi = {
   setRemote: (enabled: boolean) => Promise<GlWorkRemoteStatus>
 }
 
+function readSignedIn(): boolean {
+  try {
+    return ipcRenderer.sendSync('glwork:signedInSync') === true
+  } catch {
+    return false
+  }
+}
+
 function readIsBuild(): boolean {
   try {
     return ipcRenderer.sendSync('glwork:isBuildSync') === true
@@ -45,6 +57,14 @@ function readIsBuild(): boolean {
 
 export const glworkApi: GlWorkApi = {
   isBuild: readIsBuild(),
+  signedInAtLoad: readSignedIn(),
+  onAccountChanged: (listener) => {
+    const handler = (): void => listener()
+    ipcRenderer.on('glwork:accountChanged', handler)
+    return () => {
+      ipcRenderer.removeListener('glwork:accountChanged', handler)
+    }
+  },
   status: () => ipcRenderer.invoke('glwork:status'),
   signIn: () => ipcRenderer.invoke('glwork:signIn'),
   cancelSignIn: () => ipcRenderer.invoke('glwork:cancelSignIn'),
